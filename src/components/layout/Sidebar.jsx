@@ -48,21 +48,22 @@ const Sidebar = ({ isOpen, onClose }) => {
                 <nav className="flex-1 px-4 overflow-y-auto no-scrollbar">
                     <ul className="space-y-2">
                         {[
-                            'Inicio',
-                            'Misión y Visión',
-                            '¿Quiénes somos?',
-                            'Noticias y Eventos',
-                            'Multimedia',
-                            'FAQ',
-                            'Equipo'
+                            { label: 'Inicio', href: '/' },
+                            { label: 'Misión y Visión', href: '/mision-vision' },
+                            { label: '¿Quiénes somos?', href: '/quienes-somos' },
+                            { label: 'Áreas de Interés', href: '/areas-de-interes' },
+                            { label: 'Noticias y Eventos', href: '#' },
+                            { label: 'Multimedia', href: '#' },
+                            { label: 'FAQ', href: '#' },
+                            { label: 'Equipo', href: '#' }
                         ].map((item) => (
-                            <li key={item}>
+                            <li key={item.label}>
                                 <Link
-                                    href="#"
+                                    href={item.href}
                                     className="block px-4 py-3 text-white hover:bg-slate-800 rounded-lg transition-colors font-semibold"
                                     onClick={onClose}
                                 >
-                                    {item}
+                                    {item.label}
                                 </Link>
                             </li>
                         ))}

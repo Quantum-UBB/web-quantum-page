@@ -14,13 +14,15 @@ export default async function Home() {
          creating the continuous effect the user requested.
       */}
       <div className="fixed inset-0 z-[-1]">
-        <Image
-          src="/home.jpg"
-          alt="Quantum Background"
-          fill
-          className="object-cover"
-          priority
-        />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/background.mp4" type="video/mp4" />
+        </video>
         {/* Dark Overlay for text readability */}
         <div className="absolute inset-0 bg-black/60"></div>
       </div>

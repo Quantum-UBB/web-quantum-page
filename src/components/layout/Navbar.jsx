@@ -101,8 +101,10 @@ const Navbar = () => {
                 </div>
 
 
-                {/* TOP BAR (Main Dark Header) */}
-                <div className={`w-full bg-[#1D272E] flex items-center justify-between px-6 transition-all duration-700 ease-in-out overflow-hidden ${isScrolled ? 'h-0 opacity-0' : 'h-32 md:h-48 opacity-100'
+                {/* TOP BAR (Main Header) - Completely hidden when scrolled */}
+                <div className={`w-full bg-[#1D272E] flex items-center justify-between px-6 transition-all duration-500 ease-in-out overflow-hidden ${isScrolled
+                    ? 'h-0 opacity-0 pointer-events-none invisible'
+                    : 'h-32 md:h-48 opacity-100'
                     }`}>
                     {/* Left: Hamburger */}
                     <button
@@ -114,7 +116,7 @@ const Navbar = () => {
                     </button>
 
                     {/* Center: Large Logo */}
-                    <div className={`flex flex-col items-center transition-transform duration-700 delay-0 origin-top ${isScrolled ? 'scale-75 translate-y-10 opacity-0' : 'scale-100 translate-y-0 opacity-100'
+                    <div className={`flex flex-col items-center transition-all duration-700 ease-in-out origin-center ${isScrolled ? 'scale-50 opacity-0' : 'scale-100 opacity-100'
                         }`}>
                         <div className="relative w-64 h-24 md:w-96 md:h-36">
                             <Image
@@ -201,19 +203,31 @@ const Navbar = () => {
                         </button>
                     </div>
 
-                    {/* Center Content: Links + Logo */}
-                    <div className={`w-full max-w-7xl px-16 h-full items-center ${isScrolled ? 'grid grid-cols-[1fr_auto_1fr] hidden md:grid' : 'flex justify-center'}`}>
-                        {/* SCROLLED STATE: LEFT GROUP */}
-                        {isScrolled && (
-                            <div className="flex justify-end gap-8 font-bold text-white uppercase tracking-wider text-sm pr-8 animate-fade-in-up">
+                    {/* Unified Content Area */}
+                    <div className="w-full max-w-7xl px-4 md:px-16 h-full relative">
+
+                        {/* 1. NOT SCROLLED STATE (Standard Links) */}
+                        <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isScrolled ? 'opacity-0 scale-95 pointer-events-none -translate-y-2' : 'opacity-100 scale-100 translate-y-0'
+                            }`}>
+                            <ul className="flex items-center space-x-6 md:space-x-12 font-bold text-white uppercase tracking-wider text-xs md:text-sm">
+                                <li><Link href="/" className="hover:text-black/50 transition">Inicio</Link></li>
+                                <li><Link href="/mision-vision" className="hover:text-black/50 transition">Misión y Visión</Link></li>
+                                <li><Link href="#" className="hover:text-black/50 transition">Noticias y Eventos</Link></li>
+                                <li><Link href="/areas-de-interes" className="hover:text-black/50 transition">Áreas de Interés</Link></li>
+                            </ul>
+                        </div>
+
+                        {/* 2. SCROLLED STATE (Compact Grid with Logo) */}
+                        <div className={`absolute inset-0 hidden md:grid grid-cols-[1fr_auto_1fr] items-center transition-all duration-500 ease-in-out ${isScrolled ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-105 pointer-events-none'
+                            }`}>
+                            {/* Left Group */}
+                            <div className="flex justify-end gap-8 font-bold text-white uppercase tracking-wider text-sm pr-8">
                                 <Link href="/" className="hover:text-black/50 transition whitespace-nowrap">Inicio</Link>
                                 <Link href="/mision-vision" className="hover:text-black/50 transition whitespace-nowrap">Misión y Visión</Link>
                             </div>
-                        )}
 
-                        {/* SCROLLED STATE: LOGO */}
-                        {isScrolled && (
-                            <div className="flex justify-center px-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                            {/* Middle Logo */}
+                            <div className="flex justify-center px-4">
                                 <div className="relative w-32 h-10">
                                     <Image
                                         src="/quantum-logo.png"
@@ -223,25 +237,13 @@ const Navbar = () => {
                                     />
                                 </div>
                             </div>
-                        )}
 
-                        {/* SCROLLED STATE: RIGHT GROUP */}
-                        {isScrolled && (
-                            <div className="flex justify-start gap-8 font-bold text-white uppercase tracking-wider text-sm pl-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                            {/* Right Group */}
+                            <div className="flex justify-start gap-8 font-bold text-white uppercase tracking-wider text-sm pl-8">
                                 <Link href="#" className="hover:text-black/50 transition whitespace-nowrap">Noticias y Eventos</Link>
                                 <Link href="/areas-de-interes" className="hover:text-black/50 transition whitespace-nowrap">Áreas de Interés</Link>
                             </div>
-                        )}
-
-                        {/* NOT SCROLLED STATE: ALL LINKS */}
-                        {!isScrolled && (
-                            <ul className="flex items-center space-x-12 font-bold text-white uppercase tracking-wider text-sm">
-                                <li><Link href="/" className="hover:text-black/50 transition">Inicio</Link></li>
-                                <li><Link href="/mision-vision" className="hover:text-black/50 transition">Misión y Visión</Link></li>
-                                <li><Link href="#" className="hover:text-black/50 transition">Noticias y Eventos</Link></li>
-                                <li><Link href="/areas-de-interes" className="hover:text-black/50 transition">Áreas de Interés</Link></li>
-                            </ul>
-                        )}
+                        </div>
                     </div>
                 </div>
             </header>

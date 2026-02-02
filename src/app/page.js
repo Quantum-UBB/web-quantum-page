@@ -1,9 +1,29 @@
+'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getLandingData } from "../services/dataService";
 
-export default async function Home() {
-  const data = await getLandingData();
+export default function Home() {
+  const [data, setData] = useState(null);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    async function fetchData() {
+      const result = await getLandingData();
+      setData(result);
+    }
+    fetchData();
+
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (!data) return <div className="min-h-screen bg-black" />;
 
   return (
     <div className="flex flex-col min-h-screen relative">

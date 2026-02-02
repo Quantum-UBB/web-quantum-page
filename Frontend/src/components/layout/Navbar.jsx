@@ -163,85 +163,86 @@ const Navbar = () => {
                 <div className={`w-full bg-primary relative flex items-center justify-center transition-all duration-700 ease-in-out shadow-xl ${isScrolled ? 'h-16' : 'h-12'
                     }`}>
 
-                    {/* Left Absolute: Hamburger (Scrolled) */}
-                    <div className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 transition-opacity duration-300 ${!isScrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                        <button
-                            onClick={() => setIsSidebarOpen(true)}
-                            className="text-white p-2 hover:bg-black/10 rounded-full transition-transform hover:scale-110 cursor-pointer"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                        </button>
-                    </div>
+                    {/* Main Flex Container for Bottom Bar - Balanced for perfect centering */}
+                    <div className={`w-full max-w-[1800px] px-4 md:px-8 h-full flex items-center transition-all duration-500`}>
 
-                    {/* Right Absolute: Icons (Scrolled) */}
-                    <div className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 flex items-center gap-4 text-white transition-opacity duration-300 ${!isScrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-
-                        {/* SEARCH INPUT (SCROLLED) - Uses same state, visual persistence */}
-                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isSearchOpen ? 'w-48 opacity-100 mr-1' : 'w-0 opacity-0'
-                            }`}>
-                            <input
-                                type="text"
-                                placeholder="Buscar..."
-                                className="w-full bg-black/20 border border-white/20 rounded-full px-3 py-1.5 text-xs text-white focus:outline-none focus:border-white/50 focus:bg-black/30 placeholder-white/50 font-[family-name:var(--font-orbitron)]"
-                            />
+                        {/* 1. Left Section: Balanced width (Reverted to stable flex-1) */}
+                        <div className={`flex-1 flex items-center justify-start ${isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                            <button
+                                onClick={() => setIsSidebarOpen(true)}
+                                className="text-white p-2 hover:bg-black/10 rounded-full transition-transform hover:scale-110 cursor-pointer"
+                            >
+                                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                            </button>
                         </div>
 
-                        {/* Search Trigger (Scrolled) */}
-                        <button
-                            onClick={toggleSearch}
-                            className={`p-2 rounded-full transition-all duration-300 hover:scale-110 cursor-pointer ${isSearchOpen ? 'bg-white text-emerald-600' : 'hover:bg-black/10'}`}
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        </button>
-
-                        {/* Login Trigger (Scrolled) */}
-                        <button
-                            onClick={toggleLogin}
-                            className={`p-2 rounded-full transition-all duration-300 hover:scale-110 cursor-pointer ${isLoginOpen ? 'bg-[#1D272E] text-white' : 'bg-white/20 hover:bg-white/30'}`}
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        </button>
-                    </div>
-
-                    {/* Unified Content Area */}
-                    <div className="w-full max-w-7xl px-4 md:px-16 h-full relative">
-
-                        {/* 1. NOT SCROLLED STATE (Standard Links) */}
-                        <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isScrolled ? 'opacity-0 scale-95 pointer-events-none -translate-y-2' : 'opacity-100 scale-100 translate-y-0'
-                            }`}>
-                            <ul className="flex items-center space-x-6 md:space-x-12 font-bold text-white uppercase tracking-wider text-xs md:text-sm">
-                                <li><Link href="/" className="hover:text-black/50 transition">Inicio</Link></li>
-                                <li><Link href="/mision-vision" className="hover:text-black/50 transition">Misión y Visión</Link></li>
-                                <li><Link href="#" className="hover:text-black/50 transition">Noticias y Eventos</Link></li>
-                                <li><Link href="/areas-de-interes" className="hover:text-black/50 transition">Áreas de Interés</Link></li>
-                            </ul>
-                        </div>
-
-                        {/* 2. SCROLLED STATE (Compact Grid with Logo) */}
-                        <div className={`absolute inset-0 hidden md:grid grid-cols-[1fr_auto_1fr] items-center transition-all duration-500 ease-in-out ${isScrolled ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-105 pointer-events-none'
-                            }`}>
-                            {/* Left Group */}
-                            <div className="flex justify-end gap-8 font-bold text-white uppercase tracking-wider text-sm pr-8">
-                                <Link href="/" className="hover:text-black/50 transition whitespace-nowrap">Inicio</Link>
-                                <Link href="/mision-vision" className="hover:text-black/50 transition whitespace-nowrap">Misión y Visión</Link>
+                        {/* 2. Center Section: Guaranteed absolute centering */}
+                        <div className={`shrink-0 h-full relative z-10 ${isScrolled ? 'w-[70%] md:w-[60%] lg:w-[50%]' : 'w-full'}`}>
+                            {/* NOT SCROLLED STATE */}
+                            <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isScrolled ? 'opacity-0 scale-95 pointer-events-none -translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`}>
+                                <ul className="flex items-center space-x-6 md:space-x-12 font-bold text-white uppercase tracking-wider text-xs md:text-sm whitespace-nowrap">
+                                    <li><Link href="/" className="hover:text-black/50 transition">Inicio</Link></li>
+                                    <li><Link href="/mision-vision" className="hover:text-black/50 transition">Misión y Visión</Link></li>
+                                    <li><Link href="#" className="hover:text-black/50 transition">Noticias y Eventos</Link></li>
+                                    <li><Link href="/areas-de-interes" className="hover:text-black/50 transition">Áreas de Interés</Link></li>
+                                </ul>
                             </div>
 
-                            {/* Middle Logo */}
-                            <div className="flex justify-center px-4">
-                                <div className="relative w-32 h-10">
-                                    <Image
-                                        src="/quantum-logo.png"
-                                        alt="Quantum Student Logo"
-                                        fill
-                                        className="object-contain"
-                                    />
+                            {/* SCROLLED STATE - Balanced Flex for absolute logo centering */}
+                            <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isScrolled ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-105 pointer-events-none'}`}>
+                                {/* MANUAL ADJUSTMENT: Change the -translate-x value below to manually control shift distance when search is open */}
+                                <div className={`flex items-center w-full font-bold text-white uppercase tracking-widest text-xs lg:text-[13px] transition-transform duration-500 ${isSearchOpen ? '-translate-x-24 md:-translate-x-36 lg:-translate-x-48' : 'translate-x-0'}`}>
+
+                                    {/* Left Links Group */}
+                                    <div className="flex-1 flex justify-end gap-8 lg:gap-14">
+                                        <Link href="/" className="hover:text-black/50 transition">Inicio</Link>
+                                        <Link href="/mision-vision" className="hover:text-black/50 transition whitespace-nowrap">Misión y Visión</Link>
+                                    </div>
+
+                                    {/* Center Logo */}
+                                    <div className="relative shrink-0 w-26 h-9 lg:w-30 lg:h-10 mx-6 lg:mx-14">
+                                        <Image src="/quantum-logo.png" alt="Logo" fill className="object-contain" />
+                                    </div>
+
+                                    {/* Right Links Group */}
+                                    <div className="flex-1 flex justify-start gap-8 lg:gap-14">
+                                        <Link href="#" className="hover:text-black/50 transition whitespace-nowrap">Noticias y Eventos</Link>
+                                        <Link href="/areas-de-interes" className="hover:text-black/50 transition whitespace-nowrap">Áreas de Interés</Link>
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Right Group */}
-                            <div className="flex justify-start gap-8 font-bold text-white uppercase tracking-wider text-sm pl-8">
-                                <Link href="#" className="hover:text-black/50 transition whitespace-nowrap">Noticias y Eventos</Link>
-                                <Link href="/areas-de-interes" className="hover:text-black/50 transition whitespace-nowrap">Áreas de Interés</Link>
+                            {/* Mobile Scrolled State (Just Logo/Title or similar) */}
+                            <div className={`absolute inset-0 flex md:hidden items-center justify-center transition-all duration-500 ${isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                                <span className="font-bold text-white tracking-widest text-lg font-[family-name:var(--font-orbitron)]">QUANTUM</span>
+                            </div>
+                        </div>
+
+                        {/* 3. Right Section: Balanced width */}
+                        <div className={`flex-1 flex items-center justify-end ${isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                            <div className="flex items-center gap-3 text-white">
+                                {/* Search Input Container */}
+                                <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isSearchOpen ? 'w-40 md:w-64 opacity-100 mr-1' : 'w-0 opacity-0'}`}>
+                                    <input
+                                        type="text"
+                                        placeholder="Buscar..."
+                                        className="w-full bg-black/20 border border-white/20 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-white/50 focus:bg-black/30 placeholder-white/50 font-[family-name:var(--font-orbitron)]"
+                                    />
+                                </div>
+
+                                <button
+                                    onClick={toggleSearch}
+                                    className={`p-2.5 rounded-full transition-all duration-300 hover:scale-110 cursor-pointer ${isSearchOpen ? 'bg-white text-emerald-600' : 'hover:bg-black/10'}`}
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                </button>
+
+                                <button
+                                    onClick={toggleLogin}
+                                    className={`p-2.5 rounded-full transition-all duration-300 hover:scale-110 cursor-pointer ${isLoginOpen ? 'bg-[#1D272E] text-white' : 'bg-white/20 hover:bg-white/30'}`}
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -228,8 +228,8 @@ const Navbar = () => {
                         {/* SCROLLED STATE: RIGHT GROUP */}
                         {isScrolled && (
                             <div className="flex justify-start gap-8 font-bold text-white uppercase tracking-wider text-sm pl-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                                <Link href="#" className="hover:text-black/50 transition whitespace-nowrap">Noticias y Eventos</Link>
-                                <Link href="/areas-de-interes" className="hover:text-black/50 transition whitespace-nowrap">Áreas de Interés</Link>
+                                <Link href="/news" className="hover:text-black/50 transition whitespace-nowrap">Noticias y Eventos</Link>
+                                <Link href="/interest-areas" className="hover:text-black/50 transition whitespace-nowrap">Áreas de Interés</Link>
                             </div>
                         )}
 
@@ -238,8 +238,8 @@ const Navbar = () => {
                             <ul className="flex items-center space-x-12 font-bold text-white uppercase tracking-wider text-sm">
                                 <li><Link href="/" className="hover:text-black/50 transition">Inicio</Link></li>
                                 <li><Link href="/mision-vision" className="hover:text-black/50 transition">Misión y Visión</Link></li>
-                                <li><Link href="#" className="hover:text-black/50 transition">Noticias y Eventos</Link></li>
-                                <li><Link href="/areas-de-interes" className="hover:text-black/50 transition">Áreas de Interés</Link></li>
+                                <li><Link href="/news" className="hover:text-black/50 transition">Noticias y Eventos</Link></li>
+                                <li><Link href="/interest-areas" className="hover:text-black/50 transition">Áreas de Interés</Link></li>
                             </ul>
                         )}
                     </div>

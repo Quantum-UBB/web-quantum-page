@@ -177,3 +177,63 @@ export const getAreasData = async () => {
         ]
     };
 };
+
+export const getNewsData = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    
+    return {
+        featured: {
+            id: 1,
+            title: "La Revolución Cuántica en la Educación Digital",
+            description: "Descubre cómo las nuevas tecnologías están transformando la manera en que aprendemos y compartimos conocimiento globalmente. Una mirada profunda al futuro del aprendizaje.",
+            image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=100&w=3840&auto=format&fit=crop",
+            author: "Richard McClintock",
+            date: "2024-03-15",
+            tag: "Tecnología"
+        },
+        recent: [
+            {
+                id: 2,
+                title: "Inteligencia Artificial Generativa",
+                date: "2024-03-14",
+                image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 3,
+                title: "El Futuro del Desarrollo Web",
+                date: "2024-03-13",
+                image: "https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 4,
+                title: "Ciberseguridad en 2024",
+                date: "2024-03-12",
+                image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                id: 5,
+                title: "Blockchain más allá de las Criptos",
+                date: "2024-03-10",
+                image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1000&auto=format&fit=crop"
+            }
+        ],
+        grid: [
+            {
+                id: 6,
+                title: "Tema 1: Arquitectura de Software",
+                description: "Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur.",
+                image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=100&w=3840&auto=format&fit=crop",
+                author: "Dr. Smith",
+                date: "2024-03-08"
+            },
+            {
+                id: 7,
+                title: "Tema 2: Cloud Computing",
+                description: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form.",
+                image: "https://images.unsplash.com/photo-1484417894907-623942c8ee29?q=80&w=1000&auto=format&fit=crop",
+                author: "Sarah Johnson",
+                date: "2024-03-05"
+            }
+        ]
+    };
+};

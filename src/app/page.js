@@ -60,7 +60,7 @@ export default async function Home() {
       <section id="features" className="py-24 relative">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">Características Cuánticas</h2>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white">Características Cuánticas</h2>
             <p className="text-gray-200 max-w-2xl mx-auto drop-shadow-md">
               Descubre por qué nuestra arquitectura es la base sólida que tu próximo proyecto necesita.
             </p>

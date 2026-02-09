@@ -50,9 +50,9 @@ const Sidebar = ({ isOpen, onClose }) => {
                         {[
                             { label: 'Inicio', href: '/' },
                             { label: 'Misión y Visión', href: '/mision-vision' },
-                            { label: '¿Quiénes somos?', href: '/quienes-somos' },
-                            { label: 'Áreas de Interés', href: '/areas-de-interes' },
-                            { label: 'Noticias y Eventos', href: '#' },
+                            { label: '¿Quiénes somos?', href: '/about' },
+                            { label: 'Áreas de Interés', href: '/interest-areas' },
+                            { label: 'Noticias y Eventos', href: '/news' },
                             { label: 'Multimedia', href: '#' },
                             { label: 'FAQ', href: '#' },
                             { label: 'Equipo', href: '#' }

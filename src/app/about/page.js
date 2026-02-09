@@ -25,7 +25,7 @@ export default async function About() {
       </div>
 
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden flex items-center pt-48 pb-10 lg:pt-56 lg:pb-20">
+      <section className="relative overflow-hidden flex items-center pt-48 pb-10 lg:pt-64 lg:pb-20">
         <div className="container mx-auto px-4 relative z-20 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight text-white drop-shadow-lg">
             {data.hero.title}

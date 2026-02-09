@@ -24,7 +24,7 @@ export default async function MissionVision() {
       </div>
 
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden flex items-center pt-48 pb-10 lg:pt-56 lg:pb-16 text-center">
+      <section className="relative overflow-hidden flex items-center pt-48 pb-10 lg:pt-64 lg:pb-16 text-center">
         <div className="container mx-auto px-4 relative z-20">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight text-white drop-shadow-lg font-[family-name:var(--font-orbitron)]">
             {data.hero.title}

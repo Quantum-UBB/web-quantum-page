@@ -1,0 +1,11 @@
+# IDEs y Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependencias (por si acaso se instalan en la raíz)
+node_modules/
+
+# Logs
+*.log

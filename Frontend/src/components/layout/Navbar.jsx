@@ -182,9 +182,10 @@ const Navbar = () => {
                             <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isScrolled ? 'opacity-0 scale-95 pointer-events-none -translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`}>
                                 <ul className="flex items-center space-x-6 md:space-x-12 font-bold text-white uppercase tracking-wider text-xs md:text-sm whitespace-nowrap">
                                     <li><Link href="/" className="hover:text-black/50 transition">Inicio</Link></li>
-                                    <li><Link href="/mision-vision" className="hover:text-black/50 transition">Misión y Visión</Link></li>
+                                    <li><Link href="/mission_vision" className="hover:text-black/50 transition">Misión y Visión</Link></li>
                                     <li><Link href="#" className="hover:text-black/50 transition">Noticias y Eventos</Link></li>
-                                    <li><Link href="/areas-de-interes" className="hover:text-black/50 transition">Áreas de Interés</Link></li>
+
+                                    <li><Link href="/investigations" className="hover:text-black/50 transition">Investigaciones</Link></li>
                                 </ul>
                             </div>
 
@@ -196,7 +197,7 @@ const Navbar = () => {
                                     {/* Left Links Group */}
                                     <div className="flex-1 flex justify-end gap-8 lg:gap-14">
                                         <Link href="/" className="hover:text-black/50 transition">Inicio</Link>
-                                        <Link href="/mision-vision" className="hover:text-black/50 transition whitespace-nowrap">Misión y Visión</Link>
+                                        <Link href="/mission_vision" className="hover:text-black/50 transition whitespace-nowrap">Misión y Visión</Link>
                                     </div>
 
                                     {/* Center Logo */}
@@ -207,7 +208,7 @@ const Navbar = () => {
                                     {/* Right Links Group */}
                                     <div className="flex-1 flex justify-start gap-8 lg:gap-14">
                                         <Link href="#" className="hover:text-black/50 transition whitespace-nowrap">Noticias y Eventos</Link>
-                                        <Link href="/areas-de-interes" className="hover:text-black/50 transition whitespace-nowrap">Áreas de Interés</Link>
+                                        <Link href="/investigations" className="hover:text-black/50 transition whitespace-nowrap">Investigaciones</Link>
                                     </div>
                                 </div>
                             </div>

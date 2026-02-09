@@ -49,9 +49,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                     <ul className="space-y-2">
                         {[
                             { label: 'Inicio', href: '/' },
-                            { label: 'Misión y Visión', href: '/mision-vision' },
-                            { label: '¿Quiénes somos?', href: '/quienes-somos' },
-                            { label: 'Áreas de Interés', href: '/areas-de-interes' },
+                            { label: 'Misión y Visión', href: '/mission_vision' },
+                            { label: '¿Quiénes somos?', href: '/about_us' },
+                            { label: 'Investigaciones', href: '/investigations' },
+                            { label: 'Mis Investigaciones', href: '/my-investigations' },
                             { label: 'Noticias y Eventos', href: '#' },
                             { label: 'Multimedia', href: '#' },
                             { label: 'FAQ', href: '#' },

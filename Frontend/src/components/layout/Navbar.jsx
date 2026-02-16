@@ -15,10 +15,19 @@ const Navbar = () => {
     const loginRef = useRef(null);
 
     useEffect(() => {
+        let ticking = false;
+        
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+             if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    setIsScrolled(window.scrollY > 50);
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
-        window.addEventListener('scroll', handleScroll);
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -102,7 +111,7 @@ const Navbar = () => {
 
 
                 {/* TOP BAR (Main Header) - Completely hidden when scrolled */}
-                <div className={`w-full bg-[#1D272E] flex items-center justify-between px-6 transition-all duration-500 ease-in-out overflow-hidden ${isScrolled
+                <div className={`w-full bg-[#1D272E] flex items-center justify-between px-6 transition-[height,opacity,visibility] duration-500 ease-in-out overflow-hidden ${isScrolled
                     ? 'h-0 opacity-0 pointer-events-none invisible'
                     : 'h-32 md:h-48 opacity-100'
                     }`}>
@@ -116,7 +125,7 @@ const Navbar = () => {
                     </button>
 
                     {/* Center: Large Logo */}
-                    <div className={`flex flex-col items-center transition-all duration-700 ease-in-out origin-center ${isScrolled ? 'scale-50 opacity-0' : 'scale-100 opacity-100'
+                    <div className={`flex flex-col items-center transition-[transform,opacity] duration-700 ease-in-out origin-center will-change-transform ${isScrolled ? 'scale-50 opacity-0' : 'scale-100 opacity-100'
                         }`}>
                         <div className="relative w-64 h-24 md:w-96 md:h-36">
                             <Image
@@ -132,7 +141,7 @@ const Navbar = () => {
                     {/* Right: Icons (Top Bar) */}
                     <div className="flex items-center gap-4 text-white relative">
                         {/* SEARCH INPUT - EXPANDING */}
-                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isSearchOpen ? 'w-64 opacity-100 mr-2' : 'w-0 opacity-0'
+                        <div className={`overflow-hidden transition-[width,opacity] duration-300 ease-in-out ${isSearchOpen ? 'w-64 opacity-100 mr-2' : 'w-0 opacity-0'
                             }`}>
                             <input
                                 type="text"
@@ -160,7 +169,7 @@ const Navbar = () => {
                 </div>
 
                 {/* BOTTOM BAR (Green Nav) */}
-                <div className={`w-full bg-primary relative flex items-center justify-center transition-all duration-700 ease-in-out shadow-xl ${isScrolled ? 'h-16' : 'h-12'
+                <div className={`w-full bg-primary relative flex items-center justify-center transition-[height,box-shadow] duration-700 ease-in-out shadow-xl will-change-[height] ${isScrolled ? 'h-16' : 'h-12'
                     }`}>
 
                     {/* Main Flex Container for Bottom Bar - Balanced for perfect centering */}
@@ -183,8 +192,7 @@ const Navbar = () => {
                                 <ul className="flex items-center space-x-6 md:space-x-12 font-bold text-white uppercase tracking-wider text-xs md:text-sm whitespace-nowrap">
                                     <li><Link href="/" className="hover:text-black/50 transition">Inicio</Link></li>
                                     <li><Link href="/mission_vision" className="hover:text-black/50 transition">Misión y Visión</Link></li>
-                                    <li><Link href="#" className="hover:text-black/50 transition">Noticias y Eventos</Link></li>
-
+                                    <li><Link href="/news" className="hover:text-black/50 transition">Noticias y Eventos</Link></li>
                                     <li><Link href="/investigations" className="hover:text-black/50 transition">Investigaciones</Link></li>
                                 </ul>
                             </div>
@@ -207,7 +215,7 @@ const Navbar = () => {
 
                                     {/* Right Links Group */}
                                     <div className="flex-1 flex justify-start gap-8 lg:gap-14">
-                                        <Link href="#" className="hover:text-black/50 transition whitespace-nowrap">Noticias y Eventos</Link>
+                                        <Link href="/news" className="hover:text-black/50 transition whitespace-nowrap">Noticias y Eventos</Link>
                                         <Link href="/investigations" className="hover:text-black/50 transition whitespace-nowrap">Investigaciones</Link>
                                     </div>
                                 </div>

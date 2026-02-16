@@ -15,10 +15,19 @@ const Navbar = () => {
     const loginRef = useRef(null);
 
     useEffect(() => {
+        let ticking = false;
+        
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+             if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    setIsScrolled(window.scrollY > 50);
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
-        window.addEventListener('scroll', handleScroll);
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -102,7 +111,7 @@ const Navbar = () => {
 
 
                 {/* TOP BAR (Main Header) - Completely hidden when scrolled */}
-                <div className={`w-full bg-[#1D272E] flex items-center justify-between px-6 transition-all duration-500 ease-in-out overflow-hidden ${isScrolled
+                <div className={`w-full bg-[#1D272E] flex items-center justify-between px-6 transition-[height,opacity,visibility] duration-500 ease-in-out overflow-hidden ${isScrolled
                     ? 'h-0 opacity-0 pointer-events-none invisible'
                     : 'h-32 md:h-48 opacity-100'
                     }`}>
@@ -116,7 +125,7 @@ const Navbar = () => {
                     </button>
 
                     {/* Center: Large Logo */}
-                    <div className={`flex flex-col items-center transition-all duration-700 ease-in-out origin-center ${isScrolled ? 'scale-50 opacity-0' : 'scale-100 opacity-100'
+                    <div className={`flex flex-col items-center transition-[transform,opacity] duration-700 ease-in-out origin-center will-change-transform ${isScrolled ? 'scale-50 opacity-0' : 'scale-100 opacity-100'
                         }`}>
                         <div className="relative w-64 h-24 md:w-96 md:h-36">
                             <Image
@@ -132,7 +141,7 @@ const Navbar = () => {
                     {/* Right: Icons (Top Bar) */}
                     <div className="flex items-center gap-4 text-white relative">
                         {/* SEARCH INPUT - EXPANDING */}
-                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isSearchOpen ? 'w-64 opacity-100 mr-2' : 'w-0 opacity-0'
+                        <div className={`overflow-hidden transition-[width,opacity] duration-300 ease-in-out ${isSearchOpen ? 'w-64 opacity-100 mr-2' : 'w-0 opacity-0'
                             }`}>
                             <input
                                 type="text"
@@ -160,7 +169,7 @@ const Navbar = () => {
                 </div>
 
                 {/* BOTTOM BAR (Green Nav) */}
-                <div className={`w-full bg-primary relative flex items-center justify-center transition-all duration-700 ease-in-out shadow-xl ${isScrolled ? 'h-16' : 'h-12'
+                <div className={`w-full bg-primary relative flex items-center justify-center transition-[height,box-shadow] duration-700 ease-in-out shadow-xl will-change-[height] ${isScrolled ? 'h-16' : 'h-12'
                     }`}>
 
                     {/* Left Absolute: Hamburger (Scrolled) */}
@@ -177,7 +186,7 @@ const Navbar = () => {
                     <div className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 flex items-center gap-4 text-white transition-opacity duration-300 ${!isScrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
 
                         {/* SEARCH INPUT (SCROLLED) - Uses same state, visual persistence */}
-                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isSearchOpen ? 'w-48 opacity-100 mr-1' : 'w-0 opacity-0'
+                        <div className={`overflow-hidden transition-[width,opacity] duration-300 ease-in-out ${isSearchOpen ? 'w-48 opacity-100 mr-1' : 'w-0 opacity-0'
                             }`}>
                             <input
                                 type="text"
@@ -207,18 +216,18 @@ const Navbar = () => {
                     <div className="w-full max-w-7xl px-4 md:px-16 h-full relative">
 
                         {/* 1. NOT SCROLLED STATE (Standard Links) */}
-                        <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isScrolled ? 'opacity-0 scale-95 pointer-events-none -translate-y-2' : 'opacity-100 scale-100 translate-y-0'
+                        <div className={`absolute inset-0 flex items-center justify-center transition-[opacity,transform] duration-500 ease-in-out will-change-[opacity,transform] ${isScrolled ? 'opacity-0 scale-95 pointer-events-none -translate-y-2' : 'opacity-100 scale-100 translate-y-0'
                             }`}>
                             <ul className="flex items-center space-x-6 md:space-x-12 font-bold text-white uppercase tracking-wider text-xs md:text-sm">
-                                <li><Link href="/" className="hover:text-black/50 transition">Inicio</Link></li>
-                                <li><Link href="/mision-vision" className="hover:text-black/50 transition">Misión y Visión</Link></li>
-                                <li><Link href="/news" className="hover:text-black/50 transition">Noticias y Eventos</Link></li>
-                                <li><Link href="/interest-areas" className="hover:text-black/50 transition">Áreas de Interés</Link></li>
+                                <li><Link href="/" className="hover:text-black/50 transition-colors">Inicio</Link></li>
+                                <li><Link href="/mision-vision" className="hover:text-black/50 transition-colors">Misión y Visión</Link></li>
+                                <li><Link href="/news" className="hover:text-black/50 transition-colors">Noticias y Eventos</Link></li>
+                                <li><Link href="/interest-areas" className="hover:text-black/50 transition-colors">Áreas de Interés</Link></li>
                             </ul>
                         </div>
 
                         {/* 2. SCROLLED STATE (Compact Grid with Logo) */}
-                        <div className={`absolute inset-0 hidden md:grid grid-cols-[1fr_auto_1fr] items-center transition-all duration-500 ease-in-out ${isScrolled ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-105 pointer-events-none'
+                        <div className={`absolute inset-0 hidden md:grid grid-cols-[1fr_auto_1fr] items-center transition-[opacity,transform] duration-500 ease-in-out will-change-[opacity,transform] ${isScrolled ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-105 pointer-events-none'
                             }`}>
                             {/* Left Group */}
                             <div className="flex justify-end gap-8 font-bold text-white uppercase tracking-wider text-sm pr-8">

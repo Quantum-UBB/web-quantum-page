@@ -67,8 +67,30 @@ export default async function About() {
                 key={value.id}
                 className="p-8 rounded-2xl glass-panel hover:bg-white/10 transition-colors border border-white/10 group backdrop-blur-md"
               >
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
-                  <div className="text-white font-bold text-xl">{value.icon === 'Lightbulb' ? '💡' : value.icon === 'Users' ? '🤝' : '❤️'}</div>
+                <div className="w-14 h-14 rounded-xl bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center mb-6 backdrop-blur-sm group-hover:scale-110 group-hover:bg-cyan-500/30 transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+                  {(() => {
+                    const iconClass = "w-7 h-7 text-cyan-400 group-hover:text-cyan-300 transition-colors duration-300";
+                    switch (value.icon) {
+                      case 'Lightbulb':
+                        return (
+                          <svg className={iconClass} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                          </svg>
+                        );
+                      case 'Users':
+                        return (
+                           <svg className={iconClass} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                          </svg>
+                        );
+                      default: // Heart check
+                        return (
+                          <svg className={iconClass} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          </svg>
+                        );
+                    }
+                  })()}
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3 drop-shadow-md">{value.title}</h3>
                 <p className="text-gray-200 leading-relaxed drop-shadow-sm">

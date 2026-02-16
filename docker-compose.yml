@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: quantum-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-quantum_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-quantum_pass}
+      POSTGRES_DB: ${DB_NAME:-quantum_db}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile # Note: You'll need to create this file in /Backend if you want to run it via Docker
+    container_name: quantum-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - DB_HOST=db
+      - DB_USER=${DB_USER:-quantum_user}
+      - DB_PASSWORD=${DB_PASSWORD:-quantum_pass}
+      - DB_NAME=${DB_NAME:-quantum_db}
+      - DB_PORT=5432
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

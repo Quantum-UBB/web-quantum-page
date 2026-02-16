@@ -119,9 +119,10 @@ export default function NewsDetailPage({ params }) {
             </p>
             
             {article.content ? (
-                <div className="whitespace-pre-wrap font-sans leading-relaxed">
-                    {article.content}
-                </div>
+                <div 
+                    className="leading-relaxed [&>h2]:text-2xl [&>h2]:font-bold [&>h2]:text-white [&>h2]:mt-8 [&>h2]:mb-4 [&>h3]:text-xl [&>h3]:font-bold [&>h3]:text-cyan-400 [&>h3]:mt-6 [&>h3]:mb-3 [&>p]:mb-4 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:mb-4 [&>li]:mb-2"
+                    dangerouslySetInnerHTML={{ __html: article.content }}
+                />
             ) : (
                 <p className="text-gray-500 italic">
                     [Contenido completo de la noticia no disponible en esta vista previa.]

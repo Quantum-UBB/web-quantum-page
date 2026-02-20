@@ -24,7 +24,7 @@ export default async function MissionVision() {
       </div>
 
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden flex items-center pt-48 pb-10 lg:pt-56 lg:pb-16 text-center">
+      <section className="relative overflow-hidden flex items-center pt-48 pb-10 lg:pt-64 lg:pb-16 text-center">
         <div className="container mx-auto px-4 relative z-20">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight text-white drop-shadow-lg font-[family-name:var(--font-orbitron)]">
             {data.hero.title}
@@ -58,8 +58,10 @@ export default async function MissionVision() {
              {/* Decorative Element or Image Placeholder */}
             <div className="md:w-1/2 flex justify-center">
                  <div className="w-64 h-64 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 blur-[100px] opacity-20 absolute"></div>
-                 <div className="relative z-10 p-10 border border-white/10 rounded-full bg-black/20 backdrop-blur-sm">
-                    <span className="text-9xl">🚀</span>
+                 <div className="relative z-10 w-40 h-40 rounded-full border border-purple-500/30 bg-purple-600/10 backdrop-blur-md flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.15)]">
+                    <svg className="w-20 h-20 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
                  </div>
             </div>
           </div>
@@ -83,8 +85,11 @@ export default async function MissionVision() {
             {/* Decorative Element */}
              <div className="md:w-1/2 flex justify-center">
                  <div className="w-64 h-64 rounded-full bg-gradient-to-tr from-cyan-600 to-teal-600 blur-[100px] opacity-20 absolute"></div>
-                 <div className="relative z-10 p-10 border border-white/10 rounded-full bg-black/20 backdrop-blur-sm">
-                    <span className="text-9xl">👁️</span>
+                 <div className="relative z-10 w-40 h-40 rounded-full border border-cyan-500/30 bg-cyan-600/10 backdrop-blur-md flex items-center justify-center shadow-[0_0_30px_rgba(6,182,212,0.15)]">
+                    <svg className="w-20 h-20 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                        <circle cx="12" cy="12" r="3" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                  </div>
             </div>
           </div>

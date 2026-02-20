@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import Sidebar from './Sidebar';
 
 const Navbar = () => {
@@ -10,15 +11,30 @@ const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isLoginOpen, setIsLoginOpen] = useState(false);
+    
+    const pathname = usePathname();
+    const isNewsSection = pathname?.startsWith('/news');
+    
+    // Force compact state if on news section, otherwise use scroll state
+    const showCompactNav = isNewsSection || isScrolled;
 
     // Close login when clicking outside (optional UX improvement)
     const loginRef = useRef(null);
 
     useEffect(() => {
+        let ticking = false;
+        
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+             if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    setIsScrolled(window.scrollY > 50);
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
-        window.addEventListener('scroll', handleScroll);
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -101,8 +117,8 @@ const Navbar = () => {
                 </div>
 
 
-                {/* TOP BAR (Main Header) - Completely hidden when scrolled */}
-                <div className={`w-full bg-[#1D272E] flex items-center justify-between px-6 transition-all duration-500 ease-in-out overflow-hidden ${isScrolled
+                {/* TOP BAR (Main Header) - Completely hidden when scrolled OR on news section */}
+                <div className={`w-full bg-[#1D272E] flex items-center justify-between px-6 transition-[height,opacity,visibility] duration-500 ease-in-out overflow-hidden ${showCompactNav
                     ? 'h-0 opacity-0 pointer-events-none invisible'
                     : 'h-32 md:h-48 opacity-100'
                     }`}>
@@ -116,7 +132,7 @@ const Navbar = () => {
                     </button>
 
                     {/* Center: Large Logo */}
-                    <div className={`flex flex-col items-center transition-all duration-700 ease-in-out origin-center ${isScrolled ? 'scale-50 opacity-0' : 'scale-100 opacity-100'
+                    <div className={`flex flex-col items-center transition-[transform,opacity] duration-700 ease-in-out origin-center will-change-transform ${showCompactNav ? 'scale-50 opacity-0' : 'scale-100 opacity-100'
                         }`}>
                         <div className="relative w-64 h-24 md:w-96 md:h-36">
                             <Image
@@ -132,7 +148,7 @@ const Navbar = () => {
                     {/* Right: Icons (Top Bar) */}
                     <div className="flex items-center gap-4 text-white relative">
                         {/* SEARCH INPUT - EXPANDING */}
-                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isSearchOpen ? 'w-64 opacity-100 mr-2' : 'w-0 opacity-0'
+                        <div className={`overflow-hidden transition-[width,opacity] duration-300 ease-in-out ${isSearchOpen ? 'w-64 opacity-100 mr-2' : 'w-0 opacity-0'
                             }`}>
                             <input
                                 type="text"
@@ -160,14 +176,14 @@ const Navbar = () => {
                 </div>
 
                 {/* BOTTOM BAR (Green Nav) */}
-                <div className={`w-full bg-primary relative flex items-center justify-center transition-all duration-700 ease-in-out shadow-xl ${isScrolled ? 'h-16' : 'h-12'
+                <div className={`w-full bg-primary relative flex items-center justify-center transition-[height,box-shadow] duration-700 ease-in-out shadow-xl will-change-[height] ${showCompactNav ? 'h-16' : 'h-12'
                     }`}>
 
                     {/* Main Flex Container for Bottom Bar - Balanced for perfect centering */}
                     <div className={`w-full max-w-[1800px] px-4 md:px-8 h-full flex items-center transition-all duration-500`}>
 
                         {/* 1. Left Section: Balanced width (Reverted to stable flex-1) */}
-                        <div className={`flex-1 flex items-center justify-start ${isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                        <div className={`flex-1 flex items-center justify-start ${showCompactNav ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             <button
                                 onClick={() => setIsSidebarOpen(true)}
                                 className="text-white p-2 hover:bg-black/10 rounded-full transition-transform hover:scale-110 cursor-pointer"
@@ -177,20 +193,19 @@ const Navbar = () => {
                         </div>
 
                         {/* 2. Center Section: Guaranteed absolute centering */}
-                        <div className={`shrink-0 h-full relative z-10 ${isScrolled ? 'w-[70%] md:w-[60%] lg:w-[50%]' : 'w-full'}`}>
+                        <div className={`shrink-0 h-full relative z-10 ${showCompactNav ? 'w-[70%] md:w-[60%] lg:w-[50%]' : 'w-full'}`}>
                             {/* NOT SCROLLED STATE */}
-                            <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isScrolled ? 'opacity-0 scale-95 pointer-events-none -translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`}>
+                            <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${showCompactNav ? 'opacity-0 scale-95 pointer-events-none -translate-y-2' : 'opacity-100 scale-100 translate-y-0'}`}>
                                 <ul className="flex items-center space-x-6 md:space-x-12 font-bold text-white uppercase tracking-wider text-xs md:text-sm whitespace-nowrap">
                                     <li><Link href="/" className="hover:text-black/50 transition">Inicio</Link></li>
                                     <li><Link href="/mission_vision" className="hover:text-black/50 transition">Misión y Visión</Link></li>
-                                    <li><Link href="#" className="hover:text-black/50 transition">Noticias y Eventos</Link></li>
-
+                                    <li><Link href="/news" className="hover:text-black/50 transition">Noticias y Eventos</Link></li>
                                     <li><Link href="/investigations" className="hover:text-black/50 transition">Investigaciones</Link></li>
                                 </ul>
                             </div>
 
                             {/* SCROLLED STATE - Balanced Flex for absolute logo centering */}
-                            <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${isScrolled ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-105 pointer-events-none'}`}>
+                            <div className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out ${showCompactNav ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-105 pointer-events-none'}`}>
                                 {/* MANUAL ADJUSTMENT: Change the -translate-x value below to manually control shift distance when search is open */}
                                 <div className={`flex items-center w-full font-bold text-white uppercase tracking-widest text-xs lg:text-[13px] transition-transform duration-500 ${isSearchOpen ? '-translate-x-24 md:-translate-x-36 lg:-translate-x-48' : 'translate-x-0'}`}>
 
@@ -207,20 +222,20 @@ const Navbar = () => {
 
                                     {/* Right Links Group */}
                                     <div className="flex-1 flex justify-start gap-8 lg:gap-14">
-                                        <Link href="#" className="hover:text-black/50 transition whitespace-nowrap">Noticias y Eventos</Link>
+                                        <Link href="/news" className="hover:text-black/50 transition whitespace-nowrap">Noticias y Eventos</Link>
                                         <Link href="/investigations" className="hover:text-black/50 transition whitespace-nowrap">Investigaciones</Link>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Mobile Scrolled State (Just Logo/Title or similar) */}
-                            <div className={`absolute inset-0 flex md:hidden items-center justify-center transition-all duration-500 ${isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                            <div className={`absolute inset-0 flex md:hidden items-center justify-center transition-all duration-500 ${showCompactNav ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                                 <span className="font-bold text-white tracking-widest text-lg font-[family-name:var(--font-orbitron)]">QUANTUM</span>
                             </div>
                         </div>
 
                         {/* 3. Right Section: Balanced width */}
-                        <div className={`flex-1 flex items-center justify-end ${isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                        <div className={`flex-1 flex items-center justify-end ${showCompactNav ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             <div className="flex items-center gap-3 text-white">
                                 {/* Search Input Container */}
                                 <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isSearchOpen ? 'w-40 md:w-64 opacity-100 mr-1' : 'w-0 opacity-0'}`}>

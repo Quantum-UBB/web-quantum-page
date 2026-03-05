@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { Playfair_Display } from 'next/font/google';
+import { JetBrains_Mono } from 'next/font/google';
 import { useAuth } from '@/context/AuthContext';
 
 // Definición de fuentes
-const playfair = Playfair_Display({ subsets: ['latin'] });
+const jetbrains = JetBrains_Mono({ subsets: ['latin'] });
 
 // 10. Panel Industrial (Edición Serif - Temático)
 export const IndustrialPanelSerif = (props) => {
@@ -21,7 +21,7 @@ export const IndustrialPanelSerif = (props) => {
     const bgSideColor = isEnCurso ? '#1E3A8A' : '#0F172A';
 
     return (
-        <div className={`bg-[#1E293B] rounded-lg overflow-hidden border border-slate-700 hover:border-slate-500 transition-all ${playfair.className} flex flex-col h-full shadow-lg hover:shadow-2xl`}>
+        <div className={`bg-[#1E293B] rounded-lg overflow-hidden border border-slate-700 hover:border-slate-500 transition-all ${jetbrains.className} flex flex-col h-full shadow-lg hover:shadow-2xl`}>
             <div className="flex flex-1">
                 {/* Barra Lateral con Estado Vertical */}
                 <div
@@ -52,13 +52,13 @@ export const IndustrialPanelSerif = (props) => {
                     </div>
 
                     <div className="flex-1">
-                        <p className="text-sm text-slate-400 mb-1 font-sans">{props.researcher}</p>
-                        <p className="text-xs text-slate-500 mb-4 font-sans">{props.lastUpdate}</p>
+                        <p className="text-sm text-slate-400 mb-1">{props.researcher}</p>
+                        <p className="text-xs text-slate-500 mb-4">{props.lastUpdate}</p>
 
                         {/* Etiquetas / Tags */}
                         <div className="flex flex-wrap gap-2 mb-4 min-h-[24px]">
                             {props.tags && props.tags.map(tag => (
-                                <span key={tag} className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700 font-sans">
+                                <span key={tag} className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
                                     {tag}
                                 </span>
                             ))}
@@ -69,7 +69,7 @@ export const IndustrialPanelSerif = (props) => {
                     <div className="mt-auto pt-4 border-t border-slate-700/50 flex items-center justify-between">
                         <Link href={`/investigations/${props.id}`} className="inline-flex items-center gap-2 group/link">
                             <span
-                                className="text-sm font-bold border-b pb-0.5 transition-colors font-sans"
+                                className="text-sm font-bold border-b pb-0.5 transition-colors"
                                 style={{ color: mainColor, borderColor: mainColor }}
                             >
                                 Ver Detalles

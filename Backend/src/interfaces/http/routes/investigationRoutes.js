@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import * as controller from '../controllers/InvestigationController.js';
 import { authMiddleware } from '../middlewares/authMiddleware.js';
+import { upload } from '../middlewares/uploadMiddleware.js';
 
 const router = Router();
 
@@ -11,7 +12,7 @@ router.get('/', controller.getAll);
 router.get('/tags', controller.getTags);
 router.get('/my/:researcher', controller.getMy);
 router.get('/:id', controller.getById);
-router.post('/', controller.create);
+router.post('/', upload.single('pdf'), controller.create);
 router.patch('/:id/visibility', controller.toggleVisibility);
 
 export default router;

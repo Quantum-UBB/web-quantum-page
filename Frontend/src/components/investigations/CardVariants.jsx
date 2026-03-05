@@ -1,21 +1,24 @@
 import Link from 'next/link';
 import { Playfair_Display } from 'next/font/google';
+import { useAuth } from '@/context/AuthContext';
 
 // Definición de fuentes
 const playfair = Playfair_Display({ subsets: ['latin'] });
 
 // 10. Panel Industrial (Edición Serif - Temático)
 export const IndustrialPanelSerif = (props) => {
+    const { isAuthenticated, user } = useAuth();
+
     // Lógica de Color Estricta: Solo 2 estados
     const isEnCurso = props.status === 'En Curso';
-    const isAdmin = true; // Mock: Cambiar a lógica de auth real en el futuro
+    const isAdmin = isAuthenticated && (user?.role === 'Administrador' || user?.role === 'Moderador');
 
-    // RGB(186, 17, 73) -> #BA1149 (Rojo/Carmesí) para 'En Curso'
+    // Azul -> #3B82F6 para 'En Curso'
     // Esmeralda -> #14E19D para 'Finalizado' (u otros)
-    const mainColor = isEnCurso ? '#BA1149' : '#14E19D';
+    const mainColor = isEnCurso ? '#3B82F6' : '#14E19D';
 
-    // Fondo lateral: Rojo oscuro o Pizarra oscuro
-    const bgSideColor = isEnCurso ? '#3A0515' : '#0F172A';
+    // Fondo lateral: Azul oscuro o Pizarra oscuro
+    const bgSideColor = isEnCurso ? '#1E3A8A' : '#0F172A';
 
     return (
         <div className={`bg-[#1E293B] rounded-lg overflow-hidden border border-slate-700 hover:border-slate-500 transition-all ${playfair.className} flex flex-col h-full shadow-lg hover:shadow-2xl`}>
@@ -80,9 +83,9 @@ export const IndustrialPanelSerif = (props) => {
                                     e.preventDefault();
                                     props.onTogglePublicar && props.onTogglePublicar(props.id);
                                 }}
-                                className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded border border-slate-700 transition-all flex items-center gap-2 ${props.publicada
-                                        ? 'bg-[#BA1149] text-white border-[#BA1149] hover:bg-transparent hover:text-[#BA1149]'
-                                        : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                                className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded border transition-all flex items-center gap-2 ${props.publicada
+                                    ? 'bg-slate-600 text-white border-slate-500 hover:bg-slate-700 hover:border-slate-600'
+                                    : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700 hover:text-white'
                                     }`}
                                 title={props.publicada ? "Dejar de publicar esta investigación" : "Publicar esta investigación"}
                             >

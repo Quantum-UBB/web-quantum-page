@@ -13,6 +13,9 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Serve static files
+app.use('/uploads', express.static('uploads'));
+
 // Routes
 
 app.use('/api/investigations', investigationRoutes);

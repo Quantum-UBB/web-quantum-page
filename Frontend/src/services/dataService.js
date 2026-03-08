@@ -7,35 +7,10 @@ export const getLandingData = async () => {
 
     return {
         hero: {
-            title: "Conectando Mentes, Creando Futuro",
-            subtitle: "Descubre un ecosistema digital donde el conocimiento no tiene límites. Quantum Student revoluciona la forma en que aprendes, interactúas y creces, fusionando la tecnología más avanzada con una comunidad apasionada por la excelencia.",
+            title: "Una cuántica a la Chilena",
+            subtitle: "Somos el grupo más grande de estudiantes de pregrado de la 8va región en tecnologías cuánticas. Quantum Student es tu puerta de entrada al futuro.",
             cta: "Comenzar Ahora",
-        },
-        features: [
-            {
-                id: 1,
-                title: "Arquitectura Modular",
-                description: "Diseñado para crecer. Separación clara entre UI y lógica de negocio para máxima flexibilidad.",
-                icon: "Box", // Nombre del icono para renderizar en el componente
-            },
-            {
-                id: 2,
-                title: "Rendimiento Cuántico",
-                description: "Optimizado para velocidad extrema con Next.js y renderizado estático.",
-                icon: "Zap",
-            },
-            {
-                id: 3,
-                title: "Seguridad Robusta",
-                description: "Protección de datos y estándares modernos desde el primer día.",
-                icon: "Shield",
-            },
-        ],
-        stats: {
-            users: "10k+",
-            uptime: "99.9%",
-            speed: "<100ms",
-        },
+        }
     };
 };
 
@@ -45,16 +20,16 @@ export const getAboutData = async () => {
 
     return {
         hero: {
-            title: "Nuestra Esencia Cuántica",
-            subtitle: "Somos exploradores del código, arquitectos de realidades digitales y creyentes en el poder de la tecnología para transformar vidas.",
+            title: "Identidad Quantum",
+            subtitle: "Promovemos la adopción temprana de tecnologías cuánticas para modelar el capital humano avanzado del futuro.",
         },
         mission: {
             title: "Misión",
-            description: "Empoderar a la próxima generación de desarrolladores con herramientas y conocimientos que rompen barreras.",
+            description: "Promover la adopción temprana y local de tecnologías cuánticas entre estudiantes para modelar el futuro capital humano avanzado.",
         },
         vision: {
             title: "Visión",
-            description: "Un futuro donde la tecnología es accesible, ética y potencia la creatividad humana sin límites.",
+            description: "Posicionarnos en los próximos 5 años como un centro de manufactura y generación de capital humano en tecnologías cuánticas.",
         },
         values: [
             {
@@ -85,25 +60,25 @@ export const getMissionVisionData = async () => {
 
     return {
         hero: {
-            title: "El Norte de Nuestra Brújula",
-            subtitle: "Definimos el rumbo de la educación tecnológica con propósitos claros y una mirada inquebrantable hacia el futuro.",
+            title: "Nuestro Propósito",
+            subtitle: "Definimos el rumbo de la educación tecnológica local con una mirada de impacto regional y global.",
         },
         mission: {
             title: "Nuestra Misión",
-            mainText: "Democratizar el acceso a la educación tecnológica de élite, eliminando las barreras geográficas y económicas que frenan el talento global.",
+            mainText: "Nuestra misión es promover la adopción temprana y local de tecnologías cuánticas entre estudiantes, creando un entorno propicio para el desarrollo de nuevas habilidades.",
             points: [
-                "Crear contenido educativo de vanguardia accesible para todos.",
-                "Fomentar comunidades de aprendizaje autodidacta y colaborativo.",
-                "Impulsar la innovación a través de proyectos de código abierto.",
+                "Generar capital humano avanzado en tecnologías cuánticas.",
+                "Fomentar la investigación local desde el pregrado.",
+                "Impactar en la industria regional con soluciones de vanguardia.",
             ]
         },
         vision: {
             title: "Nuestra Visión",
-            mainText: "Ser el ecosistema de referencia mundial donde nace la próxima generación de innovadores, líderes técnicos y creadores de cambio.",
+            mainText: "Para el 2030, seremos el centro de referencia en manufactura y formación de capital humano en tecnologías cuánticas de la 8va región.",
             points: [
-                "Establecer el estándar de oro en pedagogía digital.",
-                "Conectar talento emergente con oportunidades globales.",
-                "Construir una red descentralizada de conocimiento compartido.",
+                "Liderar la investigación de pregrado en la macrozona sur.",
+                "Consolidar laboratorios de óptica y sensores avanzados.",
+                "Conectar el talento local con la red global de física cuántica.",
             ]
         },
         pillars: [
@@ -129,50 +104,43 @@ export const getAreasData = async () => {
     return {
         hero: {
             title: "Explora Nuestros Universos",
-            subtitle: "Sumérgete en las disciplinas que están redefiniendo el mañana. Desde la inteligencia sintética hasta la computación cuántica.",
+            subtitle: "Desde la fotónica hasta el control avanzado. Especialízate en las tecnologías que impulsan la infraestructura física del mañana.",
         },
         areas: [
             {
                 id: 1,
-                title: "Inteligencia Artificial",
-                description: "Redes neuronales, Machine Learning y la revolución cognitiva.",
-                icon: "Brain", 
-                color: "from-pink-500 to-rose-500"
+                title: "Fibra Óptica",
+                description: "Desarrollo de plataformas de fibra óptica para comunicaciones de alta velocidad.",
+                icon: "Activity",
+                color: "from-blue-500 to-cyan-500"
             },
             {
                 id: 2,
-                title: "Computación Cuántica",
-                description: "Procesamiento de información más allá de los límites binarios.",
-                icon: "Atom",
-                color: "from-cyan-400 to-blue-600"
+                title: "Sensores Ópticos",
+                description: "Diseño y aplicación de sensores ópticos de alta precisión.",
+                icon: "Eye",
+                color: "from-emerald-400 to-teal-600"
             },
             {
                 id: 3,
-                title: "Ciberseguridad",
-                description: "Defensa digital en un mundo hiperconectado y vulnerable.",
-                icon: "Shield",
-                color: "from-green-400 to-emerald-600"
+                title: "Sistemas Embebidos",
+                description: "Programación de microcomputadores y microcontroladores para aplicaciones industriales.",
+                icon: "Cpu",
+                color: "from-amber-400 to-orange-500"
             },
             {
                 id: 4,
-                title: "Blockchain & Web3",
-                description: "Descentralización, contratos inteligentes y economía digital.",
-                icon: "Link",
-                color: "from-yellow-400 to-orange-500"
+                title: "Tecnología FPGA",
+                description: "Diseño lógico programable y procesamiento de señales en tiempo real.",
+                icon: "Cpu",
+                color: "from-purple-400 to-indigo-500"
             },
             {
                 id: 5,
-                title: "Desarrollo Cloud",
-                description: "Arquitecturas escalables, serverless y microservicios.",
-                icon: "Cloud",
-                color: "from-sky-400 to-indigo-500"
-            },
-            {
-                id: 6,
-                title: "Diseño UX/UI",
-                description: "Creando experiencias digitales que enamoran y funcionan.",
-                icon: "PenTool",
-                color: "from-purple-400 to-violet-600"
+                title: "Control Automático",
+                description: "Modelado y diseño de sistemas de control automático para procesos complejos.",
+                icon: "Settings",
+                color: "from-slate-400 to-slate-600"
             }
         ]
     };
@@ -180,7 +148,7 @@ export const getAreasData = async () => {
 
 export const getNewsData = async () => {
     await new Promise((resolve) => setTimeout(resolve, 100));
-    
+
     return {
         featured: {
             id: 1,
@@ -322,7 +290,7 @@ export const getEventsData = async () => {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
-    
+
     const nextMonth = new Date(today);
     nextMonth.setMonth(today.getMonth() + 1);
 
@@ -335,8 +303,8 @@ export const getEventsData = async () => {
             title: "Hackathon Cuántico 2026",
             description: "Únete a nosotros para 48 horas de codificación intensiva y desafíos de computación cuántica.",
             fullDescription: "Este hackathon reúne a las mentes más brillantes para resolver problemas complejos utilizando algoritmos cuánticos. Tendrás acceso a simuladores de última generación y mentoría de expertos de la industria. Los equipos competirán por premios en efectivo y la oportunidad de presentar sus soluciones a líderes tecnológicos.",
-            date: tomorrow.toISOString(), 
-            endDate: new Date(tomorrow.getTime() + 48*60*60*1000).toISOString(),
+            date: tomorrow.toISOString(),
+            endDate: new Date(tomorrow.getTime() + 48 * 60 * 60 * 1000).toISOString(),
             image: "https://picsum.photos/seed/quantum/1200/600",
             location: "Plataforma Virtual Quantum",
             locationUrl: "https://quantum-hackathon.example.com",
@@ -349,9 +317,9 @@ export const getEventsData = async () => {
             title: "Webinar: IA en Educación Superior",
             description: "Explorando cómo la IA está personalizando el aprendizaje.",
             fullDescription: "Descubre las últimas tendencias en inteligencia artificial aplicada a la educación. Analizaremos casos de éxito, herramientas emergentes y el impacto ético de la IA en el aula. Ideal para educadores, administradores y estudiantes interesados en el futuro del aprendizaje.",
-            date: lastMonth.toISOString(), 
-            endDate: new Date(lastMonth.getTime() + 2*60*60*1000).toISOString(),
-            image: "https://picsum.photos/seed/ai/1200/600", 
+            date: lastMonth.toISOString(),
+            endDate: new Date(lastMonth.getTime() + 2 * 60 * 60 * 1000).toISOString(),
+            image: "https://picsum.photos/seed/ai/1200/600",
             location: "Zoom",
             locationUrl: "#",
             status: "past",
@@ -363,9 +331,9 @@ export const getEventsData = async () => {
             title: "Conferencia de Ciberseguridad Global",
             description: "Protegiendo el futuro digital y la privacidad.",
             fullDescription: "La conferencia anual de seguridad informática más importante de la región. Expertos internacionales discutirán sobre criptografía post-cuántica, defensa activa y normativas de privacidad global. Incluye talleres prácticos y networking.",
-            date: nextMonth.toISOString(), 
-            endDate: new Date(nextMonth.getTime() + 8*60*60*1000).toISOString(),
-            image: "https://picsum.photos/seed/cyber/1200/600", 
+            date: nextMonth.toISOString(),
+            endDate: new Date(nextMonth.getTime() + 8 * 60 * 60 * 1000).toISOString(),
+            image: "https://picsum.photos/seed/cyber/1200/600",
             location: "Centro de Convenciones Santiago",
             locationUrl: "https://maps.google.com",
             status: "scheduled",

@@ -66,15 +66,15 @@ export const IndustrialPanelSerif = (props) => {
                     </div>
 
                     {/* Botones de Acción */}
-                    <div className="mt-auto pt-4 border-t border-slate-700/50 flex items-center justify-between">
-                        <Link href={`/investigations/${props.id}`} className="inline-flex items-center gap-2 group/link">
+                    <div className="mt-auto pt-4 border-t border-slate-700/50 flex items-center justify-between gap-4">
+                        <Link href={`/investigations/${props.id}`} className="inline-flex items-center gap-2 group/link whitespace-nowrap flex-shrink-0">
                             <span
                                 className="text-sm font-bold border-b pb-0.5 transition-colors"
                                 style={{ color: mainColor, borderColor: mainColor }}
                             >
                                 Ver Detalles
                             </span>
-                            <svg className="w-4 h-4 transition-transform group-hover/link:translate-x-1" fill="none" stroke={mainColor} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            <svg className="w-4 h-4 transition-transform group-hover/link:translate-x-1 flex-shrink-0" fill="none" stroke={mainColor} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                         </Link>
 
                         {isAdmin && (

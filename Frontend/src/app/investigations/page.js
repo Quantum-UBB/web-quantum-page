@@ -113,7 +113,7 @@ export default function InvestigacionesPage() {
             <div className="fixed inset-0 z-0 bg-[#0F172A]">
             </div>
 
-            <main className="min-h-screen pb-20 relative z-10 -mt-[190px] md:-mt-[250px] pt-32 xl:pt-40 max-w-[1400px] mx-auto px-6 lg:px-12">
+            <main className="min-h-screen pb-20 relative z-10 -mt-[190px] md:-mt-[250px] pt-32 xl:pt-40 max-w-[1150px] mx-auto px-6 lg:px-12">
                 {/* 1. HERO SECTION - Minimal & Professional */}
                 <div className="mb-16 text-center">
 
@@ -154,8 +154,8 @@ export default function InvestigacionesPage() {
                     </div>
                 </div>
 
-                {/* 3. MAIN GRID with Dynamic Data */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {/* 3. MAIN GRID with Dynamic Data - Intermediate width (3 columns on large screens) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                     {filteredInvestigations.map((inv) => (
                         <div key={inv.id} className="h-full">
                             <IndustrialPanelSerif

@@ -165,11 +165,6 @@ const Navbar = () => {
                                 <button type="submit" disabled={isLoggingIn} className={`w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-2.5 rounded-none shadow-lg shadow-emerald-900/20 transition-all transform hover:scale-[1.02] active:scale-95 font-[family-name:var(--font-orbitron)] tracking-widest border border-white/10 ${isLoggingIn ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                     {isLoggingIn ? 'INGRESANDO...' : 'INICIAR SESIÓN'}
                                 </button>
-
-                                <div className="text-center pt-2">
-                                    <span className="text-gray-500 text-xs font-[family-name:var(--font-orbitron)]">¿No tienes cuenta? </span>
-                                    <a href="#" className="text-[#14E19D] text-xs font-bold hover:underline font-[family-name:var(--font-orbitron)]">Regístrate aquí</a>
-                                </div>
                             </form>
                         </>
                     )}

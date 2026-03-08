@@ -35,6 +35,10 @@ export const InvestigationSchema = new EntitySchema({
             type: "varchar",
             nullable: true
         },
+        pdfUrl: {
+            type: "varchar",
+            nullable: true
+        },
         progress: {
             type: "int",
             default: 0

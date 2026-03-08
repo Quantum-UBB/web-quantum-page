@@ -147,22 +147,107 @@ const investigations = [
     }
 ];
 
-export const getInvestigations = () => {
-    return investigations;
+// Base URL for the API
+const API_URL = 'http://localhost:5000/api';
+
+// Helper function to get auth headers
+const getAuthHeaders = () => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    return {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+    };
 };
 
-export const getMyInvestigations = () => {
-    // Simulamos que el usuario logueado es "Dr. Roberto Leyva"
-    return investigations.filter(inv => inv.researcher === "Dr. Roberto Leyva");
+export const getInvestigations = async () => {
+    try {
+        const response = await fetch(`${API_URL}/investigations`, {
+            headers: getAuthHeaders()
+        });
+        if (!response.ok) throw new Error('Error fetching investigations');
+        return await response.json();
+    } catch (error) {
+        console.error('getInvestigations error:', error);
+        return []; // Fallback to empty array on error
+    }
 };
 
-export const getInvestigationById = (id) => {
-    return investigations.find(inv => inv.id === parseInt(id));
+export const getMyInvestigations = async (researcherName = '') => {
+    try {
+        // If no researcherName is provided, the backend will use the token's user.
+        const url = researcherName
+            ? `${API_URL}/investigations/my/${encodeURIComponent(researcherName)}`
+            : `${API_URL}/investigations/my/current`; // Note: Backend route is /my/:researcher, passing 'current' or anything will trigger it, but backend expects researcher param or defaults to user.username. It's safer to just call `/my/me` and verify backend handles it, but since backend checks `req.params.researcher || req.user.username`, we can pass a dummy string or adapt the route. Let's assume the backend handles `/my/me`.
+
+        const response = await fetch(`${API_URL}/investigations/my/me`, {
+            headers: getAuthHeaders()
+        });
+        if (!response.ok) throw new Error('Error fetching my investigations');
+        return await response.json();
+    } catch (error) {
+        console.error('getMyInvestigations error:', error);
+        return [];
+    }
 };
 
-export const getInvestigationTags = () => {
-    // Obtener todas las etiquetas únicas
-    const allTags = investigations.flatMap(inv => inv.tags);
-    // Eliminar duplicados y ordenar
-    return [...new Set(allTags)].sort();
+export const getInvestigationById = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/investigations/${id}`, {
+            headers: getAuthHeaders()
+        });
+        if (!response.ok) throw new Error('Error fetching investigation');
+        return await response.json();
+    } catch (error) {
+        console.error('getInvestigationById error:', error);
+        return null;
+    }
+};
+
+export const getInvestigationTags = async () => {
+    try {
+        const response = await fetch(`${API_URL}/investigations/tags`, {
+            headers: getAuthHeaders()
+        });
+        if (!response.ok) throw new Error('Error fetching tags');
+        return await response.json();
+    } catch (error) {
+        console.error('getInvestigationTags error:', error);
+        return [];
+    }
+};
+
+export const toggleInvestigationVisibility = async (id, publicada) => {
+    try {
+        const response = await fetch(`${API_URL}/investigations/${id}/visibility`, {
+            method: 'PATCH',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ publicada })
+        });
+        if (!response.ok) throw new Error('Error toggling visibility');
+        return await response.json();
+    } catch (error) {
+        console.error('toggleInvestigationVisibility error:', error);
+        throw error;
+    }
+};
+
+export const createInvestigation = async (investigationData) => {
+    try {
+        const isFormData = investigationData instanceof FormData;
+        const headers = getAuthHeaders();
+        if (isFormData) {
+            delete headers['Content-Type']; // Permite al navegador calcular el Content-Type multipart con su boundary
+        }
+
+        const response = await fetch(`${API_URL}/investigations`, {
+            method: 'POST',
+            headers: headers,
+            body: isFormData ? investigationData : JSON.stringify(investigationData)
+        });
+        if (!response.ok) throw new Error('Error creating investigation');
+        return await response.json();
+    } catch (error) {
+        console.error('createInvestigation error:', error);
+        throw error;
+    }
 };

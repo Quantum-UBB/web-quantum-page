@@ -26,7 +26,10 @@ export const getById = async (req, res) => {
 
 export const getMy = async (req, res) => {
     try {
-        const researcher = req.params.researcher || req.user.username;
+        let researcher = req.params.researcher || req.user.username;
+        if (researcher === 'me') {
+            researcher = req.user.username;
+        }
         const investigations = await GetMyInvestigations.execute(req.user, researcher);
         res.status(200).json(investigations);
     } catch (error) {
@@ -45,7 +48,13 @@ export const getTags = async (req, res) => {
 
 export const create = async (req, res) => {
     try {
-        const newInvestigation = await CreateInvestigation.execute(req.user, req.body);
+        const payload = { ...req.body };
+        if (req.file) {
+            // Generar la URL relativa para el archivo público
+            payload.pdfUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+        }
+
+        const newInvestigation = await CreateInvestigation.execute(req.user, payload);
         res.status(201).json(newInvestigation);
     } catch (error) {
         res.status(500).json({ error: error.message });

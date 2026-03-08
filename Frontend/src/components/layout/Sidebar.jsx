@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 const Sidebar = ({ isOpen, onClose }) => {
+    const { isAuthenticated } = useAuth();
     return (
         <>
             {/* Overlay */}
@@ -53,7 +55,6 @@ const Sidebar = ({ isOpen, onClose }) => {
                             { label: '¿Quiénes somos?', href: '/about_us' },
                             { label: 'Áreas de Interés', href: '/areas_of_interest' },
                             { label: 'Investigaciones', href: '/investigations' },
-                            { label: 'Mis Investigaciones', href: '/my-investigations' },
                             { label: 'Noticias y Eventos', href: '/news' },
                             { label: 'Multimedia', href: '#' },
                             { label: 'FAQ', href: '#' },

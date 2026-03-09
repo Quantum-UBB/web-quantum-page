@@ -20,3 +20,9 @@ export const updateRole = async (userId, newRole) => {
     await repository.update(userId, { role: newRole });
     return await findById(userId);
 };
+
+export const findAll = async () => {
+    return await repository.find({
+        select: ["id", "username", "email", "role"] // Exclude password from the results
+    });
+};

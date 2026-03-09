@@ -91,36 +91,7 @@ export default function NewsPage() {
                   <p className="text-gray-400 text-lg">Explora los eventos que moldean el futuro.</p>
               </div>
               
-              <div className="flex gap-3">
-                  <Link 
-                      href="/news/event/create"
-                      className="bg-gray-800 hover:bg-gray-700 text-purple-400 border border-purple-500/30 px-5 py-2 rounded-lg font-medium transition-all hover:shadow-[0_0_15px_rgba(168,85,247,0.2)] flex items-center gap-2"
-                  >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                      Crear Evento
-                  </Link>
-                  <Link 
-                      href="/news/create"
-                      className="bg-gray-800 hover:bg-gray-700 text-cyan-400 border border-cyan-500/30 px-5 py-2 rounded-lg font-medium transition-all hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] flex items-center gap-2"
-                  >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                      Crear Noticia
-                  </Link>
-                  <Link 
-                      href="/my-events"
-                      className="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600/50 px-5 py-2 rounded-lg font-medium transition-all hover:border-gray-400 flex items-center gap-2"
-                  >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                      Mis Eventos
-                  </Link>
-                  <Link 
-                      href="/my-news"
-                      className="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-600/50 px-5 py-2 rounded-lg font-medium transition-all hover:border-gray-400 flex items-center gap-2"
-                  >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                      Mis Noticias
-                  </Link>
-              </div>
+              {/* Creation buttons were moved to private user sections */}
           </div>
 
           {/* Top Section: Hero + Sidebar */}

@@ -1,6 +1,16 @@
 import * as RegisterUser from '../../../application/use-cases/RegisterUser.js';
 import * as AssignRole from '../../../application/use-cases/AssignRole.js';
 import * as LoginUser from '../../../application/use-cases/LoginUser.js';
+import * as GetAllUsers from '../../../application/use-cases/GetAllUsers.js';
+
+export const getAll = async (req, res) => {
+    try {
+        const users = await GetAllUsers.execute(req.user);
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(403).json({ error: error.message });
+    }
+};
 
 export const login = async (req, res) => {
     try {

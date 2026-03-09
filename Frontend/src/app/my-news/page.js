@@ -49,7 +49,7 @@ export default function MyNewsPage() {
     }
 
     return (
-        <main className="min-h-screen pb-20 relative bg-[#1D272E]">
+        <main className="min-h-screen pb-20 relative bg-[#1D272E] -mt-[190px] md:-mt-[300px] z-10">
             {/* Background Overlay */}
             <div className="fixed inset-0 z-0 bg-[#1D272E]">
                 <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent"></div>

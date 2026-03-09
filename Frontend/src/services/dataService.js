@@ -262,3 +262,54 @@ export const deleteEvent = async (id) => {
     if (!response.ok) throw new Error('Network response was not ok');
     return true;
 };
+
+export const registerUser = async (userData, token) => {
+    const response = await fetch(`${API_URL}/users/register`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(userData)
+    });
+    
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al crear el usuario');
+    }
+    
+    return await response.json();
+};
+
+export const getAllUsers = async (token) => {
+    const response = await fetch(`${API_URL}/users`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error fetching users');
+    }
+
+    return await response.json();
+};
+
+export const updateUserRole = async (userId, newRole, token) => {
+    const response = await fetch(`${API_URL}/users/assign-role`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ userId, newRole })
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error assigning role');
+    }
+
+    return await response.json();
+};

@@ -164,11 +164,20 @@ export const getInvestigations = async () => {
         const response = await fetch(`${API_URL}/investigations`, {
             headers: getAuthHeaders()
         });
-        if (!response.ok) throw new Error('Error fetching investigations');
+
+        if (response.status === 401 || response.status === 403) {
+            console.warn('Authentication issue detected while fetching investigations');
+            // Podríamos disparar un evento global de logout aquí si fuera necesario
+        }
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Error fetching investigations: ${response.status} ${errorText}`);
+        }
         return await response.json();
     } catch (error) {
         console.error('getInvestigations error:', error);
-        return []; // Fallback to empty array on error
+        return []; // Fallback to empty array to prevent UI crash
     }
 };
 

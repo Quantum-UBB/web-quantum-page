@@ -17,12 +17,17 @@ export const AuthProvider = ({ children }) => {
     const storedUser = localStorage.getItem("user");
 
     if (storedToken && storedUser) {
-      setToken(storedToken);
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        setToken(storedToken);
+        setUser(parsedUser);
       } catch (err) {
-        console.error("Error al parsear el usuario:", err);
-        logout();
+        console.error("Error al parsear el usuario del localStorage:", err);
+        // Limpiar datos corruptos
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setToken(null);
+        setUser(null);
       }
     }
     setLoading(false);

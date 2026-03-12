@@ -148,7 +148,7 @@ const investigations = [
 ];
 
 // Base URL for the API
-const API_URL = 'http://localhost:5000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {

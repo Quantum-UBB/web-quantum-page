@@ -24,7 +24,8 @@ export const AuthProvider = ({ children }) => {
       if (storedToken) {
         try {
           // Validar el token con el backend
-          const response = await fetch("http://localhost:5000/api/users/me", {
+          const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+          const response = await fetch(`${API_URL}/users/me`, {
             headers: {
               "Authorization": `Bearer ${storedToken}`,
             },
@@ -67,7 +68,8 @@ export const AuthProvider = ({ children }) => {
    */
   const login = async (email, password) => {
     try {
-      const response = await fetch("http://localhost:5000/api/users/login", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${API_URL}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

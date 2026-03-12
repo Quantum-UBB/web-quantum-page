@@ -64,7 +64,7 @@ export default function Home() {
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
-              href="#features"
+              href="/news"
               className="px-8 py-4 rounded-full bg-white text-black font-bold hover:bg-gray-200 transition-all transform hover:scale-105 shadow-xl"
             >
               {data.hero.cta}
@@ -76,35 +76,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FEATURES SECTION (Now directly in page) */}
-      <section id="features" className="py-24 relative">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white">Características Cuánticas</h2>
-            <p className="text-gray-200 max-w-2xl mx-auto drop-shadow-md">
-              Descubre por qué nuestra arquitectura es la base sólida que tu próximo proyecto necesita.
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {data.features.map((feature) => (
-              <div
-                key={feature.id}
-                className="p-8 rounded-2xl glass-panel hover:bg-white/10 transition-colors border border-white/10 group backdrop-blur-md"
-              >
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
-                  {/* Fallback simple icon representation */}
-                  <div className="text-white font-bold text-xl">{feature.id}</div>
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3 drop-shadow-md">{feature.title}</h3>
-                <p className="text-gray-200 leading-relaxed drop-shadow-sm">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
     </div>
   );

@@ -5,27 +5,28 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Sidebar from './Sidebar';
+import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isLoginOpen, setIsLoginOpen] = useState(false);
-    
+
     const pathname = usePathname();
-    const isNewsSection = pathname?.startsWith('/news');
-    
-    // Force compact state if on news section, otherwise use scroll state
-    const showCompactNav = isNewsSection || isScrolled;
+    const isCompactRoute = pathname?.startsWith('/news') || pathname?.startsWith('/my-investigations') || pathname?.startsWith('/investigations') || pathname?.startsWith('/my-news') || pathname?.startsWith('/my-events') || pathname?.startsWith('/create-user') || pathname?.startsWith('/manage-users');
+
+    // Force compact state if on compact routes, otherwise use scroll state
+    const showCompactNav = isCompactRoute || isScrolled;
 
     // Close login when clicking outside (optional UX improvement)
     const loginRef = useRef(null);
 
     useEffect(() => {
         let ticking = false;
-        
+
         const handleScroll = () => {
-             if (!ticking) {
+            if (!ticking) {
                 window.requestAnimationFrame(() => {
                     setIsScrolled(window.scrollY > 50);
                     ticking = false;
@@ -38,6 +39,13 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Auth Context Hooks
+    const { user, login, logout, isAuthenticated } = useAuth();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loginError, setLoginError] = useState('');
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
+
     // Toggle Handlers
     const toggleSearch = () => {
         setIsSearchOpen(!isSearchOpen);
@@ -47,6 +55,28 @@ const Navbar = () => {
     const toggleLogin = () => {
         setIsLoginOpen(!isLoginOpen);
         if (isSearchOpen) setIsSearchOpen(false); // Close search if login opens
+    };
+
+    const handleLoginSubmit = async (e) => {
+        e.preventDefault();
+        setLoginError('');
+        setIsLoggingIn(true);
+
+        const result = await login(email, password);
+
+        if (result.success) {
+            setIsLoginOpen(false);
+            setEmail('');
+            setPassword('');
+        } else {
+            setLoginError(result.message || 'Error al iniciar sesión');
+        }
+        setIsLoggingIn(false);
+    };
+
+    const handleLogout = () => {
+        logout();
+        setIsLoginOpen(false);
     };
 
     return (
@@ -75,45 +105,85 @@ const Navbar = () => {
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
 
-                    <div className="text-center mb-6">
-                        <h3 className="text-xl font-bold text-white mb-1 font-[family-name:var(--font-orbitron)] tracking-wider">Bienvenido</h3>
-                        <p className="text-xs text-[#14E19D] uppercase tracking-widest font-[family-name:var(--font-orbitron)]">Acceso Estudiantes</p>
-                    </div>
+                    {isAuthenticated ? (
+                        <div className="text-center">
+                            <h3 className="text-xl font-bold text-white mb-2 font-[family-name:var(--font-orbitron)] tracking-wider">Hola, {user.name}</h3>
+                            <p className="text-xs text-[#14E19D] uppercase tracking-widest font-[family-name:var(--font-orbitron)] mb-6">Rol: {user.role}</p>
 
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block text-gray-400 text-xs font-bold mb-1 ml-1 font-[family-name:var(--font-orbitron)] tracking-widest">USUARIO / EMAIL</label>
-                            <input
-                                type="text"
-                                className="w-full bg-slate-800/50 border border-slate-600 rounded-none px-4 py-2 text-white focus:outline-none focus:border-[#14E19D] focus:ring-1 focus:ring-[#14E19D] transition-all placeholder-gray-600 font-[family-name:var(--font-orbitron)] text-sm"
-                                placeholder="usuario@quantum.edu"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-gray-400 text-xs font-bold mb-1 ml-1 font-[family-name:var(--font-orbitron)] tracking-widest">CONTRASEÑA</label>
-                            <input
-                                type="password"
-                                className="w-full bg-slate-800/50 border border-slate-600 rounded-none px-4 py-2 text-white focus:outline-none focus:border-[#14E19D] focus:ring-1 focus:ring-[#14E19D] transition-all placeholder-gray-600 font-[family-name:var(--font-orbitron)] text-sm"
-                                placeholder="••••••••"
-                            />
-                        </div>
+                            <Link href="/my-news" onClick={() => setIsLoginOpen(false)} className="block w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-none mb-3 border border-slate-600 transition-colors">
+                                MIS NOTICIAS
+                            </Link>
 
-                        <div className="flex items-center justify-between text-xs text-gray-400 font-[family-name:var(--font-orbitron)]">
-                            <label className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
-                                <input type="checkbox" className="rounded-none bg-slate-800 border-slate-600 checked:bg-[#14E19D] checked:border-[#14E19D] focus:ring-0 transition-all" /> Recordarme
-                            </label>
-                            <a href="#" className="hover:text-[#14E19D] transition-colors">¿Olvidaste tu clave?</a>
-                        </div>
+                            <Link href="/my-events" onClick={() => setIsLoginOpen(false)} className="block w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-none mb-3 border border-slate-600 transition-colors">
+                                MIS EVENTOS
+                            </Link>
 
-                        <button className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-2.5 rounded-none shadow-lg shadow-emerald-900/20 transition-all transform hover:scale-[1.02] active:scale-95 font-[family-name:var(--font-orbitron)] tracking-widest border border-white/10">
-                            INICIAR SESIÓN
-                        </button>
+                            {user.role === 'Administrador' && (
+                                <>
+                                    <Link href="/manage-users" onClick={() => setIsLoginOpen(false)} className="block w-full bg-slate-800 hover:bg-slate-700 text-[#14E19D] font-bold py-2.5 rounded-none mb-3 border border-[#14E19D]/50 transition-colors">
+                                        GESTIÓN DE CUENTAS
+                                    </Link>
+                                </>
+                            )}
 
-                        <div className="text-center pt-2">
-                            <span className="text-gray-500 text-xs font-[family-name:var(--font-orbitron)]">¿No tienes cuenta? </span>
-                            <a href="#" className="text-[#14E19D] text-xs font-bold hover:underline font-[family-name:var(--font-orbitron)]">Regístrate aquí</a>
+                            <Link href="/my-investigations" onClick={() => setIsLoginOpen(false)} className="block w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-none mb-3 border border-slate-600 transition-colors">
+                                MIS INVESTIGACIONES
+                            </Link>
+
+                            <button onClick={handleLogout} className="w-full bg-[#BA1149] hover:bg-red-700 text-white font-bold py-2.5 rounded-none transition-colors border border-red-900">
+                                CERRAR SESIÓN
+                            </button>
                         </div>
-                    </div>
+                    ) : (
+                        <>
+                            <div className="text-center mb-6">
+                                <h3 className="text-xl font-bold text-white mb-1 font-[family-name:var(--font-orbitron)] tracking-wider">Bienvenido</h3>
+                                <p className="text-xs text-[#14E19D] uppercase tracking-widest font-[family-name:var(--font-orbitron)]">Acceso Plataforma</p>
+                            </div>
+
+                            <form onSubmit={handleLoginSubmit} className="space-y-4">
+                                <div>
+                                    <label className="block text-gray-400 text-xs font-bold mb-1 ml-1 font-[family-name:var(--font-orbitron)] tracking-widest">EMAIL</label>
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="w-full bg-slate-800/50 border border-slate-600 rounded-none px-4 py-2 text-white focus:outline-none focus:border-[#14E19D] focus:ring-1 focus:ring-[#14E19D] transition-all placeholder-gray-600 font-[family-name:var(--font-orbitron)] text-sm"
+                                        placeholder="usuario@quantum.edu"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-gray-400 text-xs font-bold mb-1 ml-1 font-[family-name:var(--font-orbitron)] tracking-widest">CONTRASEÑA</label>
+                                    <input
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="w-full bg-slate-800/50 border border-slate-600 rounded-none px-4 py-2 text-white focus:outline-none focus:border-[#14E19D] focus:ring-1 focus:ring-[#14E19D] transition-all placeholder-gray-600 font-[family-name:var(--font-orbitron)] text-sm"
+                                        placeholder="••••••••"
+                                        required
+                                    />
+                                </div>
+
+                                {loginError && (
+                                    <div className="text-red-500 text-xs text-center border border-red-500/30 bg-red-500/10 p-2">
+                                        {loginError}
+                                    </div>
+                                )}
+
+                                <div className="flex items-center justify-between text-xs text-gray-400 font-[family-name:var(--font-orbitron)]">
+                                    <label className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
+                                        <input type="checkbox" className="rounded-none bg-slate-800 border-slate-600 checked:bg-[#14E19D] checked:border-[#14E19D] focus:ring-0 transition-all" /> Recordarme
+                                    </label>
+                                    <a href="#" className="hover:text-[#14E19D] transition-colors">¿Olvidaste tu clave?</a>
+                                </div>
+
+                                <button type="submit" disabled={isLoggingIn} className={`w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-2.5 rounded-none shadow-lg shadow-emerald-900/20 transition-all transform hover:scale-[1.02] active:scale-95 font-[family-name:var(--font-orbitron)] tracking-widest border border-white/10 ${isLoggingIn ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                    {isLoggingIn ? 'INGRESANDO...' : 'INICIAR SESIÓN'}
+                                </button>
+                            </form>
+                        </>
+                    )}
                 </div>
 
 
@@ -168,9 +238,10 @@ const Navbar = () => {
                         {/* Login Trigger */}
                         <button
                             onClick={toggleLogin}
-                            className={`p-3 rounded-full transition-all duration-300 hover:scale-110 cursor-pointer ${isLoginOpen ? 'bg-[#14E19D] text-[#1D262F]' : 'bg-slate-800 hover:bg-slate-700'}`}
+                            className={`relative p-3 rounded-full transition-all duration-300 hover:scale-110 cursor-pointer ${isLoginOpen ? 'bg-[#14E19D] text-[#1D262F]' : (isAuthenticated ? 'bg-[#14E19D] text-[#1D262F]' : 'bg-slate-800 hover:bg-slate-700 text-white')}`}
                         >
                             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            {isAuthenticated && <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-emerald-300 shadow-[0_0_10px_#14E19D] rounded-full"></span>}
                         </button>
                     </div>
                 </div>
@@ -255,9 +326,10 @@ const Navbar = () => {
 
                                 <button
                                     onClick={toggleLogin}
-                                    className={`p-2.5 rounded-full transition-all duration-300 hover:scale-110 cursor-pointer ${isLoginOpen ? 'bg-[#1D272E] text-white' : 'bg-white/20 hover:bg-white/30'}`}
+                                    className={`p-2.5 rounded-full transition-all duration-300 hover:scale-110 cursor-pointer ${isLoginOpen ? 'bg-[#1D272E] text-white' : (isAuthenticated ? 'bg-[#14E19D] text-[#1D262F]' : 'bg-white/20 hover:bg-white/30')}`}
                                 >
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                    {isAuthenticated && <span className="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full border border-[#1D272E]"></span>}
                                 </button>
                             </div>
                         </div>

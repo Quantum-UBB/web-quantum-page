@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef } from 'react';
+import { createNews } from '@/services/dataService';
 
 const CreateNewsWizard = ({ onSuccess, onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -31,8 +32,8 @@ const CreateNewsWizard = ({ onSuccess, onClose }) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) { 
-        alert("El archivo es demasiado grande. Máximo 2MB.");
+        if (file.size > 10 * 1024 * 1024) { 
+        alert("El archivo es demasiado grande. Máximo 10MB.");
         return;
       }
       const reader = new FileReader();
@@ -81,6 +82,10 @@ const CreateNewsWizard = ({ onSuccess, onClose }) => {
     const fileArray = Array.from(files);
     
     fileArray.forEach(file => {
+        if (file.size > 10 * 1024 * 1024) {
+             alert("Una de las imágenes es demasiado grande. Máximo 10MB por imagen.");
+             return;
+        }
         const reader = new FileReader();
         reader.onloadend = () => {
             if (isCarousel) {
@@ -146,23 +151,21 @@ const CreateNewsWizard = ({ onSuccess, onClose }) => {
     if (currentStep > 1) setCurrentStep(prev => prev - 1);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (status = 'published') => {
     setLoading(true);
     await new Promise(resolve => setTimeout(resolve, 800));
 
     const finalContent = generateHtmlFromBlocks();
 
     const newArticle = {
-      id: Date.now(),
       ...formData,
       content: finalContent,
       isLocal: true,
-      // Keep main image separate for the card view
+      status // 'draft' or 'published'
     };
 
     try {
-      const existingNews = JSON.parse(localStorage.getItem('quantum_local_news') || '[]');
-      localStorage.setItem('quantum_local_news', JSON.stringify([newArticle, ...existingNews]));
+      await createNews(newArticle);
       if (onSuccess) onSuccess(newArticle);
     } catch (error) {
       console.error(error);
@@ -446,13 +449,22 @@ const CreateNewsWizard = ({ onSuccess, onClose }) => {
                 Siguiente
             </button>
         ) : (
-             <button
-                onClick={handleSubmit}
-                disabled={loading}
-                className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-400 hover:to-pink-500 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20"
-            >
-                {loading ? 'Publicando...' : 'Publicar Ahora'}
-            </button>
+             <div className="flex gap-4">
+                <button
+                    onClick={() => handleSubmit('draft')}
+                    disabled={loading}
+                    className="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-6 py-2 rounded-lg font-bold transition-all shadow-lg"
+                >
+                    Guardar como Borrador
+                </button>
+                <button
+                    onClick={() => handleSubmit('published')}
+                    disabled={loading}
+                    className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-400 hover:to-pink-500 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20"
+                >
+                    {loading ? 'Procesando...' : 'Publicar Ahora'}
+                </button>
+            </div>
         )}
       </div>
 

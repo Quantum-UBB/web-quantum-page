@@ -1,24 +1,27 @@
 import Link from 'next/link';
-import { Playfair_Display } from 'next/font/google';
+import { JetBrains_Mono } from 'next/font/google';
+import { useAuth } from '@/context/AuthContext';
 
 // Definición de fuentes
-const playfair = Playfair_Display({ subsets: ['latin'] });
+const jetbrains = JetBrains_Mono({ subsets: ['latin'] });
 
 // 10. Panel Industrial (Edición Serif - Temático)
 export const IndustrialPanelSerif = (props) => {
+    const { isAuthenticated, user } = useAuth();
+
     // Lógica de Color Estricta: Solo 2 estados
     const isEnCurso = props.status === 'En Curso';
-    const isAdmin = true; // Mock: Cambiar a lógica de auth real en el futuro
+    const isAdmin = isAuthenticated && (user?.role === 'Administrador' || user?.role === 'Moderador');
 
-    // RGB(186, 17, 73) -> #BA1149 (Rojo/Carmesí) para 'En Curso'
+    // Azul -> #3B82F6 para 'En Curso'
     // Esmeralda -> #14E19D para 'Finalizado' (u otros)
-    const mainColor = isEnCurso ? '#BA1149' : '#14E19D';
+    const mainColor = isEnCurso ? '#3B82F6' : '#14E19D';
 
-    // Fondo lateral: Rojo oscuro o Pizarra oscuro
-    const bgSideColor = isEnCurso ? '#3A0515' : '#0F172A';
+    // Fondo lateral: Azul oscuro o Pizarra oscuro
+    const bgSideColor = isEnCurso ? '#1E3A8A' : '#0F172A';
 
     return (
-        <div className={`bg-[#1E293B] rounded-lg overflow-hidden border border-slate-700 hover:border-slate-500 transition-all ${playfair.className} flex flex-col h-full shadow-lg hover:shadow-2xl`}>
+        <div className={`bg-[#1E293B] rounded-lg overflow-hidden border border-slate-700 hover:border-slate-500 transition-all ${jetbrains.className} flex flex-col h-full shadow-lg hover:shadow-2xl`}>
             <div className="flex flex-1">
                 {/* Barra Lateral con Estado Vertical */}
                 <div
@@ -49,13 +52,13 @@ export const IndustrialPanelSerif = (props) => {
                     </div>
 
                     <div className="flex-1">
-                        <p className="text-sm text-slate-400 mb-1 font-sans">{props.researcher}</p>
-                        <p className="text-xs text-slate-500 mb-4 font-sans">{props.lastUpdate}</p>
+                        <p className="text-sm text-slate-400 mb-1">{props.researcher}</p>
+                        <p className="text-xs text-slate-500 mb-4">{props.lastUpdate}</p>
 
                         {/* Etiquetas / Tags */}
                         <div className="flex flex-wrap gap-2 mb-4 min-h-[24px]">
                             {props.tags && props.tags.map(tag => (
-                                <span key={tag} className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700 font-sans">
+                                <span key={tag} className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
                                     {tag}
                                 </span>
                             ))}
@@ -63,15 +66,15 @@ export const IndustrialPanelSerif = (props) => {
                     </div>
 
                     {/* Botones de Acción */}
-                    <div className="mt-auto pt-4 border-t border-slate-700/50 flex items-center justify-between">
-                        <Link href={`/investigations/${props.id}`} className="inline-flex items-center gap-2 group/link">
+                    <div className="mt-auto pt-4 border-t border-slate-700/50 flex items-center justify-between gap-4">
+                        <Link href={`/investigations/${props.id}`} className="inline-flex items-center gap-2 group/link whitespace-nowrap flex-shrink-0">
                             <span
-                                className="text-sm font-bold border-b pb-0.5 transition-colors font-sans"
+                                className="text-sm font-bold border-b pb-0.5 transition-colors"
                                 style={{ color: mainColor, borderColor: mainColor }}
                             >
                                 Ver Detalles
                             </span>
-                            <svg className="w-4 h-4 transition-transform group-hover/link:translate-x-1" fill="none" stroke={mainColor} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            <svg className="w-4 h-4 transition-transform group-hover/link:translate-x-1 flex-shrink-0" fill="none" stroke={mainColor} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                         </Link>
 
                         {isAdmin && (
@@ -80,9 +83,9 @@ export const IndustrialPanelSerif = (props) => {
                                     e.preventDefault();
                                     props.onTogglePublicar && props.onTogglePublicar(props.id);
                                 }}
-                                className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded border border-slate-700 transition-all flex items-center gap-2 ${props.publicada
-                                        ? 'bg-[#BA1149] text-white border-[#BA1149] hover:bg-transparent hover:text-[#BA1149]'
-                                        : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                                className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded border transition-all flex items-center gap-2 ${props.publicada
+                                    ? 'bg-slate-600 text-white border-slate-500 hover:bg-slate-700 hover:border-slate-600'
+                                    : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700 hover:text-white'
                                     }`}
                                 title={props.publicada ? "Dejar de publicar esta investigación" : "Publicar esta investigación"}
                             >

@@ -1,3 +1,6 @@
+/**
+ * Entidad de dominio que representa un Evento.
+ */
 export class Event {
     constructor({
         id,

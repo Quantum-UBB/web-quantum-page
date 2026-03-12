@@ -1,5 +1,9 @@
 import { EntitySchema } from "typeorm";
 
+/**
+ * Esquema de base de datos para la entidad de Investigación.
+ * Define la estructura de la tabla 'investigations' y sus tipos de datos.
+ */
 export const InvestigationSchema = new EntitySchema({
     name: "Investigation",
     tableName: "investigations",

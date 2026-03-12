@@ -3,6 +3,14 @@
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 
+/**
+ * Panel lateral de navegación (Sidebar).
+ * Contiene enlaces rápidos a todas las secciones del sitio y redes sociales.
+ * 
+ * @param {Object} props - Propiedades del componente.
+ * @param {boolean} props.isOpen - Indica si el sidebar está visible.
+ * @param {Function} props.onClose - Función para cerrar el sidebar.
+ */
 const Sidebar = ({ isOpen, onClose }) => {
     const { isAuthenticated } = useAuth();
     return (

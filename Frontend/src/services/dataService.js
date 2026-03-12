@@ -148,6 +148,12 @@ export const getAreasData = async () => {
 
 const API_URL = 'http://localhost:5000/api';
 
+/**
+ * Obtiene y organiza las noticias para la página principal.
+ * Separa la noticia destacada de las recientes y el resto de la lista.
+ * 
+ * @returns {Promise<Object>} Objeto con {featured, recent, grid}.
+ */
 export const getNewsData = async () => {
     try {
         const response = await fetch(`${API_URL}/news`);
@@ -177,6 +183,11 @@ export const getAllNewsRaw = async () => {
     }
 };
 
+/**
+ * Obtiene la lista de eventos omitiendo los borradores.
+ * 
+ * @returns {Promise<Array>} Lista de eventos publicados.
+ */
 export const getEventsData = async () => {
     try {
         const response = await fetch(`${API_URL}/events`);
@@ -200,6 +211,12 @@ export const getAllEventsRaw = async () => {
     }
 };
 
+/**
+ * Obtiene un evento específico por su ID.
+ * 
+ * @param {number|string} id - ID del evento.
+ * @returns {Promise<Object|null>} El evento o null si hay error.
+ */
 export const getEventById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/events/${id}`);

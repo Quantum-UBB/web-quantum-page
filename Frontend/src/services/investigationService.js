@@ -159,6 +159,11 @@ const getAuthHeaders = () => {
     };
 };
 
+/**
+ * Obtiene la lista completa de investigaciones desde la API.
+ * 
+ * @returns {Promise<Array>} Lista de investigaciones o array vacío en caso de error.
+ */
 export const getInvestigations = async () => {
     try {
         const response = await fetch(`${API_URL}/investigations`, {
@@ -181,6 +186,12 @@ export const getInvestigations = async () => {
     }
 };
 
+/**
+ * Obtiene las investigaciones pertenecientes al usuario actual o a un investigador específico.
+ * 
+ * @param {string} researcherName - Nombre del investigador (opcional).
+ * @returns {Promise<Array>} Lista de investigaciones propias.
+ */
 export const getMyInvestigations = async (researcherName = '') => {
     try {
         // If no researcherName is provided, the backend will use the token's user.
@@ -199,6 +210,12 @@ export const getMyInvestigations = async (researcherName = '') => {
     }
 };
 
+/**
+ * Obtiene los detalles de una investigación específica por su ID.
+ * 
+ * @param {number|string} id - ID de la investigación.
+ * @returns {Promise<Object|null>} Objeto de investigación o null.
+ */
 export const getInvestigationById = async (id) => {
     try {
         const response = await fetch(`${API_URL}/investigations/${id}`, {
@@ -240,6 +257,12 @@ export const toggleInvestigationVisibility = async (id, publicada) => {
     }
 };
 
+/**
+ * Crea una nueva investigación enviando datos (incluyendo archivos PDF si aplica).
+ * 
+ * @param {Object|FormData} investigationData - Datos de la investigación.
+ * @returns {Promise<Object>} Respuesta de la API con la investigación creada.
+ */
 export const createInvestigation = async (investigationData) => {
     try {
         const isFormData = investigationData instanceof FormData;

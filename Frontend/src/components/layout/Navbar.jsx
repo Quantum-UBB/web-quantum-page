@@ -7,6 +7,11 @@ import { usePathname } from 'next/navigation';
 import Sidebar from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
 
+/**
+ * Componente de navegación principal (Navbar).
+ * Gestiona el estado del scroll, la apertura del sidebar, la búsqueda 
+ * y el dropdown de inicio de sesión/perfil.
+ */
 const Navbar = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);

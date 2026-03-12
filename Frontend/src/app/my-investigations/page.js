@@ -103,7 +103,9 @@ export default function MisInvestigacionesPage() {
                                         <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Título de la Investigación</th>
                                         <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Estado</th>
                                         <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Última Actualización</th>
-                                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Acciones</th>
+                                        {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
+                                            <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Acciones</th>
+                                        )}
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-700/50">
@@ -132,20 +134,22 @@ export default function MisInvestigacionesPage() {
                                             <td className="px-6 py-5 text-center text-slate-400 text-sm">
                                                 {inv.lastUpdate}
                                             </td>
-                                            <td className="px-6 py-5">
-                                                <div className="flex items-center justify-end gap-3">
+                                            {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
+                                                <td className="px-6 py-5">
+                                                    <div className="flex items-center justify-end gap-3">
 
-                                                    <button
-                                                        onClick={() => handleTogglePublicar(inv.id, inv.publicada)}
-                                                        className={`px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border ${inv.publicada
-                                                            ? 'bg-slate-600 text-white border-slate-500 hover:bg-slate-700 hover:border-slate-600'
-                                                            : 'bg-transparent border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white'
-                                                            }`}
-                                                    >
-                                                        {inv.publicada ? 'Ocultar' : 'Publicar'}
-                                                    </button>
-                                                </div>
-                                            </td>
+                                                        <button
+                                                            onClick={() => handleTogglePublicar(inv.id, inv.publicada)}
+                                                            className={`px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border ${inv.publicada
+                                                                ? 'bg-slate-600 text-white border-slate-500 hover:bg-slate-700 hover:border-slate-600'
+                                                                : 'bg-transparent border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white'
+                                                                }`}
+                                                        >
+                                                            {inv.publicada ? 'Ocultar' : 'Publicar'}
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            )}
                                         </tr>
                                     ))}
                                 </tbody>

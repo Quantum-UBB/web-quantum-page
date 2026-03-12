@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 
 const AuthContext = createContext();
 
+/**
+ * Proveedor de Autenticación (AuthProvider).
+ * Gestiona el estado global del usuario, el token JWT y las funciones de login/logout.
+ * Persiste la sesión en localStorage.
+ */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -12,22 +17,54 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // Verificar si hay token almacenado al iniciar
-    const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+    const initializeAuth = async () => {
+      const storedToken = localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
 
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (err) {
-        console.error("Error al parsear el usuario:", err);
-        logout();
+      if (storedToken) {
+        try {
+          // Validar el token con el backend
+          const response = await fetch("http://localhost:5000/api/users/me", {
+            headers: {
+              "Authorization": `Bearer ${storedToken}`,
+            },
+          });
+
+          if (response.ok) {
+            const userData = await response.json();
+            setToken(storedToken);
+            setUser(userData);
+            // Actualizar el usuario en localStorage por si hubo cambios en el rol/datos
+            localStorage.setItem("user", JSON.stringify(userData));
+          } else {
+            // Token inválido o expirado
+            console.warn("Sesión expirada o inválida, cerrando sesión...");
+            logout();
+          }
+        } catch (err) {
+          console.error("Error de conexión al validar sesión:", err);
+          // Si el backend no responde, mantenemos lo que hay en localStorage 
+          // pero marcamos como no autenticado si prefieres mayor seguridad.
+          // Por ahora, dejamos que el usuario intente usar lo que tiene.
+          if (storedUser) {
+            setUser(JSON.parse(storedUser));
+            setToken(storedToken);
+          }
+        }
       }
-    }
-    setLoading(false);
+      setLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
+  /**
+   * Realiza el inicio de sesión contra la API.
+   * 
+   * @param {string} email - Correo del usuario.
+   * @param {string} password - Contraseña.
+   * @returns {Promise<Object>} Resultado de la operación {success, message}.
+   */
   const login = async (email, password) => {
     try {
       const response = await fetch("http://localhost:5000/api/users/login", {
@@ -61,6 +98,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  /**
+   * Cierra la sesión del usuario, eliminando el token y redirigiendo a inicio.
+   */
   const logout = () => {
     setToken(null);
     setUser(null);

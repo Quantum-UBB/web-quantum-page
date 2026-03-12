@@ -1,5 +1,17 @@
 import Link from 'next/link';
 
+/**
+ * Tarjeta de investigación (estilo Industrial/Académico).
+ * Muestra un resumen de la investigación con colores dinámicos según el estado.
+ * 
+ * @param {Object} props - Propiedades del componente.
+ * @param {string} props.title - Título de la investigación.
+ * @param {string} props.status - Estado (ej: 'En Curso', 'Finalizado').
+ * @param {string} props.researcher - Nombre del investigador principal.
+ * @param {string} props.lastUpdate - Fecha de la última actualización.
+ * @param {Array} props.tags - Lista de etiquetas/temas.
+ * @param {number|string} props.id - ID único para navegación.
+ */
 const InvestigationCard = ({ title, status, researcher, lastUpdate, tags = [], id }) => {
     // Lógica de Color Estricta: Solo 2 estados
     const isEnCurso = status === 'En Curso';

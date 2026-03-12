@@ -1,6 +1,15 @@
 import * as repository from '../../infrastructure/persistence/repositories/TypeORMInvestigationRepository.js';
 import { Roles } from '../../domain/entities/User.js';
 
+/**
+ * Caso de uso: Obtener una investigación por su ID.
+ * Verifica los permisos de acceso (Privada vs Pública vs Propietario).
+ * 
+ * @param {Object} requesterUser - Usuario que solicita la investigación.
+ * @param {number|string} id - ID de la investigación.
+ * @returns {Promise<Object|null>} La investigación encontrada o null.
+ * @throws {Error} Si la investigación es privada y el usuario no tiene acceso.
+ */
 export const execute = async (requesterUser, id) => {
     const investigation = await repository.getById(id);
 

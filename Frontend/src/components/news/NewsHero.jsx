@@ -11,7 +11,7 @@ const NewsHero = ({ article }) => {
   if (!article) return null;
 
   return (
-    <Link href={`/news/${article.id}`} className="block group">
+    <Link href={article.type === 'event' ? `/news/event/${article.id}` : `/news/${article.id}`} className="block group">
       <div className="relative w-full h-[400px] md:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
         <Image
           src={article.image}

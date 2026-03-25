@@ -2,14 +2,16 @@
 import { useState } from 'react';
 import { createEvent } from '@/services/dataService';
 import { useRef } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 const CreateEventWizard = ({ onSuccess, onClose }) => {
+  const { token, user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     title: '',
     host: '',
     type: 'Conferencia', // Default type
-    description: '', // Short description
+    abstract: '', // Short description
     fullDescription: '', // Long description
     date: new Date().toISOString().slice(0, 16), // YYYY-MM-DDTHH:MM
     endDate: '',
@@ -61,14 +63,13 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
     await new Promise(resolve => setTimeout(resolve, 800));
 
     const newEvent = {
-      id: Date.now(),
       ...formData,
       isLocal: true,
       status: eventStatus // 'draft' or 'scheduled'
     };
 
     try {
-      await createEvent(newEvent);
+      await createEvent(newEvent, token);
       
       if (onSuccess) onSuccess(newEvent);
     } catch (error) {
@@ -217,8 +218,8 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
                 <div>
                     <label className="block text-sm font-medium text-gray-400 mb-1">Resumen Corto (Para tarjetas)</label>
                     <textarea
-                        name="description"
-                        value={formData.description}
+                        name="abstract"
+                        value={formData.abstract}
                         onChange={handleChange}
                         rows="3"
                         className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-purple-500/50 outline-none transition-all"
@@ -329,7 +330,7 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
                      <div className="p-4">
                         <div className="text-xs font-bold text-cyan-700 uppercase tracking-widest mb-1">{formData.type}</div>
                         <h4 className="text-lg font-bold text-gray-900 mb-2 leading-tight">{formData.title}</h4>
-                        <p className="text-sm text-gray-500 line-clamp-2">{formData.description}</p>
+                        <p className="text-sm text-gray-500 line-clamp-2">{formData.abstract}</p>
                      </div>
                      <div className="bg-gray-50 px-4 py-2 border-t border-gray-100 flex items-center gap-2">
                         {formData.hostImage && <img src={formData.hostImage} className="w-6 h-6 rounded-full object-cover" />}
@@ -376,22 +377,36 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
             </button>
         ) : (
             <div className="flex gap-4">
-                <button
-                    onClick={() => handleSubmit('draft')}
-                    disabled={loading}
-                    className="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-6 py-2 rounded-lg font-bold transition-all shadow-lg"
-                >
-                    Guardar como Borrador
-                </button>
-                <button
-                    onClick={() => handleSubmit('scheduled')}
-                    disabled={loading}
-                    className={`bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20 hover:scale-105 ${
-                        loading ? 'opacity-70 cursor-wait' : ''
-                    }`}
-                >
-                    {loading ? 'Creando...' : 'Publicar Evento'}
-                </button>
+                {user?.role === 'Administrador' || user?.role === 'Moderador' ? (
+                    <>
+                        <button
+                            onClick={() => handleSubmit('draft')}
+                            disabled={loading}
+                            className="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-6 py-2 rounded-lg font-bold transition-all shadow-lg"
+                        >
+                            Guardar como Borrador
+                        </button>
+                        <button
+                            onClick={() => handleSubmit('scheduled')}
+                            disabled={loading}
+                            className={`bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20 hover:scale-105 ${
+                                loading ? 'opacity-70 cursor-wait' : ''
+                            }`}
+                        >
+                            {loading ? 'Creando...' : 'Publicar Evento'}
+                        </button>
+                    </>
+                ) : (
+                    <button
+                        onClick={() => handleSubmit('draft')}
+                        disabled={loading}
+                        className={`bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20 hover:scale-105 ${
+                            loading ? 'opacity-70 cursor-wait' : ''
+                        }`}
+                    >
+                        {loading ? 'Creando...' : 'Crear Evento'}
+                    </button>
+                )}
             </div>
         )}
       </div>

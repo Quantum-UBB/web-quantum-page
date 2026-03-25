@@ -3,19 +3,33 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getAllNewsRaw, updateNewsStatus, deleteNews } from '@/services/dataService';
+import { useAuth } from '@/context/AuthContext';
 
 export default function MyNewsPage() {
+    const { token, user } = useAuth();
     const [myNews, setMyNews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [filterMine, setFilterMine] = useState(false);
 
     useEffect(() => {
         const loadData = async () => {
-            const savedNews = await getAllNewsRaw();
-            setMyNews(savedNews);
+            const savedNews = await getAllNewsRaw(token);
+            // Si es 'Miembro Activo', en esta vista solo le mostramos sus propias noticias.
+            let displayNews = savedNews;
+            if (user?.role === 'Miembro Activo') {
+                displayNews = savedNews.filter(n => n.author === user.username);
+            }
+            // Si es admin/mod, ve todo lo que devuelva el backend
+            
+            setMyNews(displayNews);
             setIsLoading(false);
         };
-        loadData();
-    }, []);
+        if (token) {
+             loadData();
+        } else {
+             setIsLoading(false); // Guest / sin sesión
+        }
+    }, [token, user]);
 
     const handleTogglePublish = async (id) => {
         const itemToUpdate = myNews.find(n => n.id === id);
@@ -24,7 +38,7 @@ export default function MyNewsPage() {
         const newStatus = itemToUpdate.status === 'published' ? 'draft' : 'published';
         
         try {
-            await updateNewsStatus(id, newStatus);
+            await updateNewsStatus(id, newStatus, token);
             setMyNews(prev => prev.map(news => 
                 news.id === id ? { ...news, status: newStatus } : news
             ));
@@ -36,7 +50,7 @@ export default function MyNewsPage() {
     const handleDelete = async (id) => {
         if(confirm("¿Estás seguro de eliminar esta noticia?")) {
              try {
-                 await deleteNews(id);
+                 await deleteNews(id, token);
                  setMyNews(prev => prev.filter(news => news.id !== id));
              } catch (error) {
                  console.error("Failed to delete", error);
@@ -47,6 +61,10 @@ export default function MyNewsPage() {
     if (isLoading) {
         return <div className="min-h-screen pt-56 bg-[#1D272E] text-white text-center">Cargando tus noticias...</div>;
     }
+
+    const displayedNews = filterMine && user?.role === 'Administrador' 
+        ? myNews.filter(n => n.author === user.username) 
+        : myNews;
 
     return (
         <main className="min-h-screen pb-20 relative bg-[#1D272E] -mt-[190px] md:-mt-[300px] z-10">
@@ -59,10 +77,10 @@ export default function MyNewsPage() {
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div>
-                        <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight">
-                            MIS <span className="text-cyan-400">NOTICIAS</span>
+                        <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight uppercase">
+                            {user?.role === 'Administrador' ? '' : 'MIS '}<span className="text-cyan-400">NOTICIAS</span>
                         </h1>
-                        <p className="text-slate-400">Gestiona tus noticias guardadas y publicadas.</p>
+                        <p className="text-slate-400">Gestiona {user?.role === 'Administrador' ? 'las noticias' : 'tus noticias'} guardadas y publicadas.</p>
                     </div>
 
                     <div className="flex gap-4">
@@ -84,6 +102,20 @@ export default function MyNewsPage() {
                     </div>
                 </div>
 
+                {user?.role === 'Administrador' && (
+                    <div className="mb-6 flex justify-end">
+                        <label className="flex items-center gap-3 text-gray-300 font-semibold cursor-pointer hover:text-white transition-colors bg-gray-800/50 px-4 py-2 rounded-lg border border-gray-700">
+                            <input 
+                                type="checkbox" 
+                                checked={filterMine} 
+                                onChange={(e) => setFilterMine(e.target.checked)}
+                                className="w-4 h-4 accent-cyan-500 bg-gray-900 border-gray-600 rounded focus:ring-cyan-600 focus:ring-2"
+                            />
+                            Ver solo las noticias creadas por mí
+                        </label>
+                    </div>
+                )}
+
                 {/* News List / Table */}
                 <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden">
                     <div className="overflow-x-auto">
@@ -97,13 +129,16 @@ export default function MyNewsPage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-800/50">
-                                {myNews.map((newsItem) => (
+                                {displayedNews.map((newsItem) => (
                                     <tr key={newsItem.id} className="hover:bg-gray-800/50 transition-colors group">
                                         <td className="px-6 py-5">
                                             <div className="flex flex-col">
                                                 <span className="text-white font-semibold text-lg">{newsItem.title || 'Sin Título'}</span>
-                                                <div className="flex gap-2 mt-1">
+                                                <div className="flex gap-2 mt-1 items-center">
                                                     <span className="text-[10px] text-gray-500">{newsItem.tag || 'General'}</span>
+                                                    {newsItem.status === 'draft' && (
+                                                        <span className="text-[10px] text-yellow-500/70 italic bg-yellow-500/10 px-2 py-0.5 rounded">No publicado</span>
+                                                    )}
                                                 </div>
                                             </div>
                                         </td>
@@ -120,12 +155,19 @@ export default function MyNewsPage() {
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className="flex items-center justify-end gap-3">
+                                                 <Link
+                                                    href={`/news/${newsItem.id}`}
+                                                    className="px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border bg-transparent border-gray-500/50 text-gray-300 hover:bg-gray-700 hover:text-white"
+                                                >
+                                                    Visualizar
+                                                </Link>
                                                  <button
                                                     onClick={() => handleDelete(newsItem.id)}
                                                     className="px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border bg-transparent border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white"
                                                 >
                                                     Eliminar
                                                 </button>
+                                                {user?.role === 'Administrador' || user?.role === 'Moderador' ? (
                                                 <button
                                                     onClick={() => handleTogglePublish(newsItem.id)}
                                                     className={`px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border ${newsItem.status === 'published'
@@ -135,6 +177,7 @@ export default function MyNewsPage() {
                                                 >
                                                     {newsItem.status === 'published' ? 'Pasar a Borrador' : 'Publicar'}
                                                 </button>
+                                                ) : null}
                                             </div>
                                         </td>
                                     </tr>
@@ -144,7 +187,7 @@ export default function MyNewsPage() {
                     </div>
                 </div>
 
-                {myNews.length === 0 && (
+                {displayedNews.length === 0 && (
                     <div className="text-center py-20 bg-gray-900/20 rounded-xl border border-dashed border-gray-800 mt-8">
                         <svg className="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />

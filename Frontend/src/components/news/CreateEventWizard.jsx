@@ -2,8 +2,10 @@
 import { useState } from 'react';
 import { createEvent } from '@/services/dataService';
 import { useRef } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 const CreateEventWizard = ({ onSuccess, onClose }) => {
+  const { token, user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     title: '',
@@ -67,7 +69,7 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
     };
 
     try {
-      await createEvent(newEvent);
+      await createEvent(newEvent, token);
       
       if (onSuccess) onSuccess(newEvent);
     } catch (error) {
@@ -375,22 +377,36 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
             </button>
         ) : (
             <div className="flex gap-4">
-                <button
-                    onClick={() => handleSubmit('draft')}
-                    disabled={loading}
-                    className="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-6 py-2 rounded-lg font-bold transition-all shadow-lg"
-                >
-                    Guardar como Borrador
-                </button>
-                <button
-                    onClick={() => handleSubmit('scheduled')}
-                    disabled={loading}
-                    className={`bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20 hover:scale-105 ${
-                        loading ? 'opacity-70 cursor-wait' : ''
-                    }`}
-                >
-                    {loading ? 'Creando...' : 'Publicar Evento'}
-                </button>
+                {user?.role === 'Administrador' || user?.role === 'Moderador' ? (
+                    <>
+                        <button
+                            onClick={() => handleSubmit('draft')}
+                            disabled={loading}
+                            className="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-6 py-2 rounded-lg font-bold transition-all shadow-lg"
+                        >
+                            Guardar como Borrador
+                        </button>
+                        <button
+                            onClick={() => handleSubmit('scheduled')}
+                            disabled={loading}
+                            className={`bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20 hover:scale-105 ${
+                                loading ? 'opacity-70 cursor-wait' : ''
+                            }`}
+                        >
+                            {loading ? 'Creando...' : 'Publicar Evento'}
+                        </button>
+                    </>
+                ) : (
+                    <button
+                        onClick={() => handleSubmit('draft')}
+                        disabled={loading}
+                        className={`bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20 hover:scale-105 ${
+                            loading ? 'opacity-70 cursor-wait' : ''
+                        }`}
+                    >
+                        {loading ? 'Creando...' : 'Crear Evento'}
+                    </button>
+                )}
             </div>
         )}
       </div>

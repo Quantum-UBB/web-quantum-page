@@ -166,9 +166,12 @@ export const getNewsData = async () => {
     }
 };
 
-export const getAllNewsRaw = async () => {
+export const getAllNewsRaw = async (token = null) => {
     try {
-        const response = await fetch(`${API_URL}/news`);
+        const headers = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const response = await fetch(`${API_URL}/news`, { headers });
         if (!response.ok) throw new Error('Network response was not ok');
         return await response.json();
     } catch (error) {
@@ -189,9 +192,12 @@ export const getEventsData = async () => {
     }
 };
 
-export const getAllEventsRaw = async () => {
+export const getAllEventsRaw = async (token = null) => {
     try {
-        const response = await fetch(`${API_URL}/events`);
+        const headers = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const response = await fetch(`${API_URL}/events`, { headers });
         if (!response.ok) throw new Error('Network response was not ok');
         return await response.json();
     } catch (error) {
@@ -211,54 +217,78 @@ export const getEventById = async (id) => {
     }
 };
 
-export const createNews = async (data) => {
+export const createNews = async (data, token = null) => {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
     const response = await fetch(`${API_URL}/news`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Network response was not ok');
     return await response.json();
 };
 
-export const updateNewsStatus = async (id, status) => {
+export const updateNewsStatus = async (id, status, token = null) => {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
     const response = await fetch(`${API_URL}/news/${id}/status`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ status })
     });
     if (!response.ok) throw new Error('Network response was not ok');
     return await response.json();
 };
 
-export const deleteNews = async (id) => {
-    const response = await fetch(`${API_URL}/news/${id}`, { method: 'DELETE' });
+export const deleteNews = async (id, token = null) => {
+    const headers = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const response = await fetch(`${API_URL}/news/${id}`, { 
+        method: 'DELETE',
+        headers 
+    });
     if (!response.ok) throw new Error('Network response was not ok');
     return true;
 };
 
-export const createEvent = async (data) => {
+export const createEvent = async (data, token = null) => {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
     const response = await fetch(`${API_URL}/events`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Network response was not ok');
     return await response.json();
 };
 
-export const updateEventStatus = async (id, status) => {
+export const updateEventStatus = async (id, status, token = null) => {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
     const response = await fetch(`${API_URL}/events/${id}/status`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ status })
     });
     if (!response.ok) throw new Error('Network response was not ok');
     return await response.json();
 };
 
-export const deleteEvent = async (id) => {
-    const response = await fetch(`${API_URL}/events/${id}`, { method: 'DELETE' });
+export const deleteEvent = async (id, token = null) => {
+    const headers = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const response = await fetch(`${API_URL}/events/${id}`, { 
+        method: 'DELETE',
+        headers
+    });
     if (!response.ok) throw new Error('Network response was not ok');
     return true;
 };

@@ -1,8 +1,10 @@
 "use client";
 import { useState, useRef } from 'react';
 import { createNews } from '@/services/dataService';
+import { useAuth } from '@/context/AuthContext';
 
 const CreateNewsWizard = ({ onSuccess, onClose }) => {
+  const { token, user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     title: '',
@@ -165,7 +167,7 @@ const CreateNewsWizard = ({ onSuccess, onClose }) => {
     };
 
     try {
-      await createNews(newArticle);
+      await createNews(newArticle, token);
       if (onSuccess) onSuccess(newArticle);
     } catch (error) {
       console.error(error);
@@ -450,20 +452,32 @@ const CreateNewsWizard = ({ onSuccess, onClose }) => {
             </button>
         ) : (
              <div className="flex gap-4">
-                <button
-                    onClick={() => handleSubmit('draft')}
-                    disabled={loading}
-                    className="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-6 py-2 rounded-lg font-bold transition-all shadow-lg"
-                >
-                    Guardar como Borrador
-                </button>
-                <button
-                    onClick={() => handleSubmit('published')}
-                    disabled={loading}
-                    className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-400 hover:to-pink-500 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20"
-                >
-                    {loading ? 'Procesando...' : 'Publicar Ahora'}
-                </button>
+                {user?.role === 'Administrador' || user?.role === 'Moderador' ? (
+                    <>
+                        <button
+                            onClick={() => handleSubmit('draft')}
+                            disabled={loading}
+                            className="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-6 py-2 rounded-lg font-bold transition-all shadow-lg"
+                        >
+                            Guardar como Borrador
+                        </button>
+                        <button
+                            onClick={() => handleSubmit('published')}
+                            disabled={loading}
+                            className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-400 hover:to-pink-500 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20"
+                        >
+                            {loading ? 'Procesando...' : 'Publicar Ahora'}
+                        </button>
+                    </>
+                ) : (
+                    <button
+                        onClick={() => handleSubmit('draft')}
+                        disabled={loading}
+                        className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-400 hover:to-pink-500 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20"
+                    >
+                        {loading ? 'Procesando...' : 'Crear Noticia'}
+                    </button>
+                )}
             </div>
         )}
       </div>

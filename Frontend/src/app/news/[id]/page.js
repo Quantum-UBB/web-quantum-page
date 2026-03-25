@@ -3,11 +3,15 @@
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getNewsData } from '@/services/dataService';
+import { getNewsData, deleteNews, getAllNewsRaw } from '@/services/dataService';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function NewsDetailPage({ params }) {
   // Unwrap params using React.use()
   const { id } = use(params);
+  const router = useRouter();
+  const { user, token } = useAuth();
   
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,7 +34,20 @@ export default function NewsDetailPage({ params }) {
         ].filter(Boolean); // Remove null/undefined
 
         // 4. Find valid article (flexible ID comparison)
-        const found = allNews.find(item => String(item.id) === String(id));
+        let found = allNews.find(item => String(item.id) === String(id));
+
+        // 5. Fallback a buscar en todos los raw (incluyendo drafts) si existe un token
+        if (!found && token) {
+            const allRaw = await getAllNewsRaw(token);
+            const rawFound = allRaw.find(item => String(item.id) === String(id));
+            if (rawFound) {
+                // Permitir visualizar si es admin/mod, o si es el usuario creador (Miembro Activo viendo su propio borrador)
+                if (user?.role === 'Administrador' || user?.role === 'Moderador' || rawFound.author === user.username) {
+                    found = rawFound;
+                }
+            }
+        }
+
         setArticle(found);
 
       } catch (error) {
@@ -41,7 +58,7 @@ export default function NewsDetailPage({ params }) {
     };
 
     fetchArticle();
-  }, [id]);
+  }, [id, token, user]);
 
   if (loading) {
     return (
@@ -63,6 +80,18 @@ export default function NewsDetailPage({ params }) {
     );
   }
 
+  const handleDelete = async () => {
+        if(confirm("¿Estás seguro de que quieres eliminar esta noticia permanentemente?")) {
+            try {
+                await deleteNews(article.id, token);
+                alert("Noticia eliminada con éxito");
+                router.push("/news");
+            } catch (error) {
+                console.error("Error eliminando noticia:", error);
+                alert("Hubo un error al eliminar la noticia.");
+            }
+        }
+  };
 
   return (
     <div className="min-h-screen bg-[#1D272E]/95 backdrop-blur-sm text-gray-100 font-sans selection:bg-cyan-500/30 pt-50 pb-20">
@@ -70,7 +99,7 @@ export default function NewsDetailPage({ params }) {
       <main className="max-w-4xl mx-auto px-6">
         
         {/* Navigation */}
-        <div className="mb-2">
+        <div className="mb-2 flex justify-between items-center">
              <Link 
                 href="/news" 
                 className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors"
@@ -78,6 +107,16 @@ export default function NewsDetailPage({ params }) {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 Volver a Noticias
             </Link>
+
+            {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
+                <button 
+                    onClick={handleDelete}
+                    className="text-red-500 hover:text-red-400 bg-red-500/10 hover:bg-red-500/20 px-4 py-2 rounded border border-red-500/30 flex items-center gap-2 text-sm font-bold transition-all"
+                >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    Eliminar Noticia
+                </button>
+            )}
         </div>
 
         {/* Article Header (Title & Meta) */}

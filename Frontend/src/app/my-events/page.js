@@ -3,19 +3,31 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getAllEventsRaw, updateEventStatus, deleteEvent } from '@/services/dataService';
+import { useAuth } from '@/context/AuthContext';
 
 export default function MyEventsPage() {
+    const { token, user } = useAuth();
     const [myEvents, setMyEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [filterMine, setFilterMine] = useState(false);
 
     useEffect(() => {
         const loadData = async () => {
-            const savedEvents = await getAllEventsRaw();
-            setMyEvents(savedEvents);
+            const savedEvents = await getAllEventsRaw(token);
+            let displayEvents = savedEvents;
+            if (user?.role === 'Miembro Activo') {
+                displayEvents = savedEvents.filter(e => e.host === user.username);
+            }
+            
+            setMyEvents(displayEvents);
             setIsLoading(false);
         };
-        loadData();
-    }, []);
+        if (token) {
+             loadData();
+        } else {
+             setIsLoading(false);
+        }
+    }, [token, user]);
 
     const handleTogglePublish = async (id) => {
         const itemToUpdate = myEvents.find(ev => ev.id === id);
@@ -24,7 +36,7 @@ export default function MyEventsPage() {
         const newStatus = itemToUpdate.status === 'draft' ? 'scheduled' : 'draft';
         
         try {
-            await updateEventStatus(id, newStatus);
+            await updateEventStatus(id, newStatus, token);
             setMyEvents(prev => prev.map(ev => 
                 ev.id === id ? { ...ev, status: newStatus } : ev
             ));
@@ -36,7 +48,7 @@ export default function MyEventsPage() {
     const handleDelete = async (id) => {
         if(confirm("¿Estás seguro de eliminar este evento?")) {
              try {
-                 await deleteEvent(id);
+                 await deleteEvent(id, token);
                  setMyEvents(prev => prev.filter(ev => ev.id !== id));
              } catch (error) {
                  console.error("Failed to delete", error);
@@ -47,6 +59,10 @@ export default function MyEventsPage() {
     if (isLoading) {
         return <div className="min-h-screen pt-56 bg-[#1D272E] text-white text-center">Cargando tus eventos...</div>;
     }
+
+    const displayedEvents = filterMine && user?.role === 'Administrador'
+        ? myEvents.filter(e => e.host === user.username)
+        : myEvents;
 
     return (
         <main className="min-h-screen pb-20 relative bg-[#1D272E] -mt-[190px] md:-mt-[300px] z-10">
@@ -59,10 +75,10 @@ export default function MyEventsPage() {
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div>
-                        <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight">
-                            MIS <span className="text-purple-400">EVENTOS</span>
+                        <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight uppercase">
+                            {user?.role === 'Administrador' ? '' : 'MIS '}<span className="text-purple-400">EVENTOS</span>
                         </h1>
-                        <p className="text-slate-400">Gestiona tus eventos guardados y publicados.</p>
+                        <p className="text-slate-400">Gestiona {user?.role === 'Administrador' ? 'los eventos' : 'tus eventos'} guardados y publicados.</p>
                     </div>
 
                     <div className="flex gap-4">
@@ -84,6 +100,20 @@ export default function MyEventsPage() {
                     </div>
                 </div>
 
+                {user?.role === 'Administrador' && (
+                    <div className="mb-6 flex justify-end">
+                        <label className="flex items-center gap-3 text-gray-300 font-semibold cursor-pointer hover:text-white transition-colors bg-gray-800/50 px-4 py-2 rounded-lg border border-gray-700">
+                            <input 
+                                type="checkbox" 
+                                checked={filterMine} 
+                                onChange={(e) => setFilterMine(e.target.checked)}
+                                className="w-4 h-4 accent-purple-500 bg-gray-900 border-gray-600 rounded focus:ring-purple-600 focus:ring-2"
+                            />
+                            Ver solo los eventos creados por mí
+                        </label>
+                    </div>
+                )}
+
                 {/* Events List / Table */}
                 <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden">
                     <div className="overflow-x-auto">
@@ -97,13 +127,16 @@ export default function MyEventsPage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-800/50">
-                                {myEvents.map((ev) => (
+                                {displayedEvents.map((ev) => (
                                     <tr key={ev.id} className="hover:bg-gray-800/50 transition-colors group">
                                         <td className="px-6 py-5">
                                             <div className="flex flex-col">
                                                 <span className="text-white font-semibold text-lg">{ev.title || 'Sin Título'}</span>
-                                                <div className="flex gap-2 mt-1">
+                                                <div className="flex gap-2 mt-1 items-center">
                                                     <span className="text-[10px] text-gray-500">{ev.type || 'General'} • {ev.host || 'Anónimo'}</span>
+                                                    {ev.status === 'draft' && (
+                                                        <span className="text-[10px] text-yellow-500/70 italic bg-yellow-500/10 px-2 py-0.5 rounded">No publicado</span>
+                                                    )}
                                                 </div>
                                             </div>
                                         </td>
@@ -120,12 +153,19 @@ export default function MyEventsPage() {
                                         </td>
                                         <td className="px-6 py-5">
                                             <div className="flex items-center justify-end gap-3">
+                                                 <Link
+                                                    href={`/news/event/${ev.id}`}
+                                                    className="px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border bg-transparent border-gray-500/50 text-gray-300 hover:bg-gray-700 hover:text-white"
+                                                >
+                                                    Visualizar
+                                                </Link>
                                                  <button
                                                     onClick={() => handleDelete(ev.id)}
                                                     className="px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border bg-transparent border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white"
                                                 >
                                                     Eliminar
                                                 </button>
+                                                {user?.role === 'Administrador' || user?.role === 'Moderador' ? (
                                                 <button
                                                     onClick={() => handleTogglePublish(ev.id)}
                                                     className={`px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border ${ev.status !== 'draft'
@@ -135,6 +175,7 @@ export default function MyEventsPage() {
                                                 >
                                                     {ev.status !== 'draft' ? 'Pasar a Borrador' : 'Publicar'}
                                                 </button>
+                                                ) : null}
                                             </div>
                                         </td>
                                     </tr>
@@ -144,7 +185,7 @@ export default function MyEventsPage() {
                     </div>
                 </div>
 
-                {myEvents.length === 0 && (
+                {displayedEvents.length === 0 && (
                     <div className="text-center py-20 bg-gray-900/20 rounded-xl border border-dashed border-gray-800 mt-8">
                         <svg className="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />

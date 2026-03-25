@@ -19,7 +19,7 @@ const NewsCard = ({ article, onPin }) => {
             </button>
         )}
 
-    <Link href={`/news/${article.id}`} className="flex flex-col gap-4 cursor-pointer h-full">
+    <Link href={article.type === 'event' ? `/news/event/${article.id}` : `/news/${article.id}`} className="flex flex-col gap-4 cursor-pointer h-full">
         <div className="relative w-full h-48 rounded-xl overflow-hidden mb-2">
             <Image
                 src={article.image}

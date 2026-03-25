@@ -116,11 +116,11 @@ const Navbar = () => {
                             <p className="text-xs text-[#14E19D] uppercase tracking-widest font-[family-name:var(--font-orbitron)] mb-6">Rol: {user.role}</p>
 
                             <Link href="/my-news" onClick={() => setIsLoginOpen(false)} className="block w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-none mb-3 border border-slate-600 transition-colors">
-                                MIS NOTICIAS
+                                {user.role === 'Administrador' ? 'NOTICIAS' : 'MIS NOTICIAS'}
                             </Link>
 
                             <Link href="/my-events" onClick={() => setIsLoginOpen(false)} className="block w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-none mb-3 border border-slate-600 transition-colors">
-                                MIS EVENTOS
+                                {user.role === 'Administrador' ? 'EVENTOS' : 'MIS EVENTOS'}
                             </Link>
 
                             {user.role === 'Administrador' && (

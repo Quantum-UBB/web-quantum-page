@@ -10,7 +10,10 @@ import FutureEventsSection from '@/components/news/FutureEventsSection';
 
   // ... (imports)
 
+import { useAuth } from '@/context/AuthContext';
+
 export default function NewsPage() {
+  const { user } = useAuth();
   const [data, setData] = useState(null);
   const [currentFeatured, setCurrentFeatured] = useState(null); // State for the main pinned article
   const [secondaryFeatured, setSecondaryFeatured] = useState(null); // State for the second pinned article
@@ -125,12 +128,21 @@ export default function NewsPage() {
                   Todos los Artículos
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {allNewsList.map((newsItem, index) => (
-                      <NewsCard 
-                          key={`${newsItem.id}-${index}`} 
-                          article={newsItem} 
-                          onPin={handlePin}
-                      />
+                  {allNewsList.map((item, index) => (
+                      item.type === 'event' ? (
+                          <EventCard 
+                              key={`event-${item.id}-${index}`} 
+                              event={item}
+                              type="secondary"
+                              onPin={(user?.role === 'Administrador' || user?.role === 'Moderador') ? handlePin : null}
+                          />
+                      ) : (
+                          <NewsCard 
+                              key={`news-${item.id}-${index}`} 
+                              article={item} 
+                              onPin={(user?.role === 'Administrador' || user?.role === 'Moderador') ? handlePin : null}
+                          />
+                      )
                   ))}
               </div>
               {allNewsList.length === 0 && (

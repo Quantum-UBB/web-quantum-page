@@ -1,22 +1,37 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { getEventById } from '@/services/dataService';
+import { getEventById, deleteEvent, getAllEventsRaw } from '@/services/dataService';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function EventDetailPage() {
     const params = useParams();
+    const router = useRouter();
+    const { user, token } = useAuth();
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (params.id) {
-            getEventById(params.id).then(data => {
-                setEvent(data);
+            getEventById(params.id).then(async data => {
+                let ev = data; // backend might return null parameter if hidden
+
+                if (!ev && token) {
+                    const allEv = await getAllEventsRaw(token);
+                    const rawEv = allEv.find(e => String(e.id) === String(params.id));
+                    if (rawEv) {
+                        if (user?.role === 'Administrador' || user?.role === 'Moderador' || rawEv.host === user.username) {
+                            ev = rawEv;
+                        }
+                    }
+                }
+
+                setEvent(ev);
                 setLoading(false);
             });
         }
-    }, [params.id]);
+    }, [params.id, token, user]);
 
     if (loading) {
         return (
@@ -48,6 +63,19 @@ export default function EventDetailPage() {
 
     const handleAuthRequired = () => {
         alert("Debes poseer una cuenta para realizar esta acción.");
+    };
+
+    const handleDelete = async () => {
+        if(confirm("¿Estás seguro de que quieres eliminar este evento permanentemente?")) {
+            try {
+                await deleteEvent(event.id, token);
+                alert("Evento eliminado con éxito");
+                router.push("/news");
+            } catch (error) {
+                console.error("Error eliminando evento:", error);
+                alert("Hubo un error al eliminar el evento.");
+            }
+        }
     };
 
     return (
@@ -189,6 +217,16 @@ export default function EventDetailPage() {
                                 Añadir a Calendario
                             </button>
                             
+                            {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
+                                <button 
+                                    onClick={handleDelete}
+                                    className="w-full bg-red-600/10 hover:bg-red-600 hover:text-white text-red-600 border border-red-600/30 font-bold py-3 px-4 rounded-lg transition-colors mb-4 flex items-center justify-center gap-2"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    Eliminar Evento
+                                </button>
+                            )}
+
                             <p className="text-xs text-gray-400 text-center">
                                 Se enviará un recordatorio 15 min antes.
                             </p>

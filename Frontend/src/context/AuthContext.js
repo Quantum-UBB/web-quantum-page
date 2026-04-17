@@ -28,6 +28,7 @@ export const AuthProvider = ({ children }) => {
           const response = await fetch(`${API_URL}/users/me`, {
             headers: {
               "Authorization": `Bearer ${storedToken}`,
+              "ngrok-skip-browser-warning": "69420"
             },
           });
 
@@ -73,6 +74,7 @@ export const AuthProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "69420"
         },
         body: JSON.stringify({ email, password }),
       });

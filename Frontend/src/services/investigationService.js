@@ -150,11 +150,11 @@ const investigations = [
 // Base URL for the API
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-// Helper function to get auth headers
 const getAuthHeaders = () => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     return {
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': '69420',
         ...(token ? { 'Authorization': `Bearer ${token}` } : {})
     };
 };

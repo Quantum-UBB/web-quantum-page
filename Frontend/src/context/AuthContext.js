@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { loginUser, validateSession } from "../services/authService";
 
 const AuthContext = createContext();
 
@@ -23,35 +24,17 @@ export const AuthProvider = ({ children }) => {
 
       if (storedToken) {
         try {
-          // Validar el token con el backend
-          const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-          const response = await fetch(`${API_URL}/users/me`, {
-            headers: {
-              "Authorization": `Bearer ${storedToken}`,
-              "ngrok-skip-browser-warning": "69420"
-            },
-          });
-
-          if (response.ok) {
-            const userData = await response.json();
-            setToken(storedToken);
-            setUser(userData);
-            // Actualizar el usuario en localStorage por si hubo cambios en el rol/datos
-            localStorage.setItem("user", JSON.stringify(userData));
-          } else {
-            // Token inválido o expirado
-            console.warn("Sesión expirada o inválida, cerrando sesión...");
-            logout();
-          }
+          // Validar el token con el backend usando el servicio
+          const userData = await validateSession();
+          
+          setToken(storedToken);
+          setUser(userData);
+          // Actualizar el usuario en localStorage por si hubo cambios en el rol/datos
+          localStorage.setItem("user", JSON.stringify(userData));
         } catch (err) {
           console.error("Error de conexión al validar sesión:", err);
-          // Si el backend no responde, mantenemos lo que hay en localStorage 
-          // pero marcamos como no autenticado si prefieres mayor seguridad.
-          // Por ahora, dejamos que el usuario intente usar lo que tiene.
-          if (storedUser) {
-            setUser(JSON.parse(storedUser));
-            setToken(storedToken);
-          }
+          // Si el backend no responde o el token es inválido
+          logout();
         }
       }
       setLoading(false);
@@ -61,7 +44,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   /**
-   * Realiza el inicio de sesión contra la API.
+   * Realiza el inicio de sesión usando el servicio de autenticación.
    * 
    * @param {string} email - Correo del usuario.
    * @param {string} password - Contraseña.
@@ -69,22 +52,7 @@ export const AuthProvider = ({ children }) => {
    */
   const login = async (email, password) => {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-      const response = await fetch(`${API_URL}/users/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "69420"
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Error al iniciar sesión");
-      }
-
-      const data = await response.json();
+      const data = await loginUser(email, password);
       const { token, user: userData } = data;
 
       // Guardar en estado global

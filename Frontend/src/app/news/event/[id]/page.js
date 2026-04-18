@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { getEventById, deleteEvent, getAllEventsRaw } from '@/services/dataService';
+import { getEventById, deleteEvent, getAllEventsRaw } from '@/services/eventService';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';

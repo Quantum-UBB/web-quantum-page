@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef } from 'react';
-import { createNews } from '@/services/dataService';
+import { createNews } from '@/services/newsService';
 import { useAuth } from '@/context/AuthContext';
 
 const CreateNewsWizard = ({ onSuccess, onClose }) => {

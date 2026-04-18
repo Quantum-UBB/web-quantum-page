@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { createEvent } from '@/services/dataService';
+import { createEvent } from '@/services/eventService';
 import { useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 

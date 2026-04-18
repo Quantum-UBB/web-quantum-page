@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getAllNewsRaw, updateNewsStatus, deleteNews } from '@/services/dataService';
+import { getAllNewsRaw, updateNewsStatus, deleteNews } from '@/services/newsService';
 import { useAuth } from '@/context/AuthContext';
 
 export default function MyNewsPage() {

@@ -3,7 +3,7 @@
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getNewsData, deleteNews, getAllNewsRaw } from '@/services/dataService';
+import { getNewsData, deleteNews, getAllNewsRaw } from '@/services/newsService';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
-import { registerUser } from '../../services/dataService';
+import { registerUser } from '@/services/authService';
 
 export default function CreateUserPage() {
     const router = useRouter();

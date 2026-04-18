@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getAllEventsRaw, updateEventStatus, deleteEvent } from '@/services/dataService';
+import { getAllEventsRaw, updateEventStatus, deleteEvent } from '@/services/eventService';
 import { useAuth } from '@/context/AuthContext';
 
 export default function MyEventsPage() {

@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getNewsData, getEventsData } from '@/services/dataService';
+import { getNewsData } from '@/services/newsService';
+import { getEventsData } from '@/services/eventService';
 import NewsHero from '@/components/news/NewsHero';
 import RecentNewsList from '@/components/news/RecentNewsList';
 import NewsCard from '@/components/news/NewsCard';
@@ -10,7 +11,10 @@ import FutureEventsSection from '@/components/news/FutureEventsSection';
 
   // ... (imports)
 
+import { useAuth } from '@/context/AuthContext';
+
 export default function NewsPage() {
+  const { user } = useAuth();
   const [data, setData] = useState(null);
   const [currentFeatured, setCurrentFeatured] = useState(null); // State for the main pinned article
   const [secondaryFeatured, setSecondaryFeatured] = useState(null); // State for the second pinned article
@@ -25,19 +29,13 @@ export default function NewsPage() {
         getEventsData()
       ]);
       
-      // Merge local events
-      const savedEvents = JSON.parse(localStorage.getItem('quantum_local_events') || '[]');
-      const allEvents = [...savedEvents, ...eventsData];
-      
       setData(apiData);
       setCurrentFeatured(apiData.featured); // Initialize featured
       
-      // Initialize secondary featured (first item from grid/local/recent that isn't the main one)
-      // Since grid is loaded here, let's pick the first one from grid as default secondary
       const initialSecondary = (apiData.grid && apiData.grid.length > 0) ? apiData.grid[0] : null;
       setSecondaryFeatured(initialSecondary);
 
-      setEvents(allEvents); 
+      setEvents(eventsData);  
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -45,16 +43,8 @@ export default function NewsPage() {
     }
   };
 
-  const loadLocalData = () => {
-    const savedNews = localStorage.getItem('quantum_local_news');
-    if (savedNews) {
-      setLocalNews(JSON.parse(savedNews));
-    }
-  };
-
   useEffect(() => {
     fetchData();
-    loadLocalData();
   }, []);
   
   if (loading) {
@@ -72,8 +62,7 @@ export default function NewsPage() {
   const allNewsList = [
       ...(data?.featured ? [data.featured] : []),
       ...(data?.recent || []),
-      ...(data?.grid || []),
-      ...localNews
+      ...(data?.grid || [])
   ];
 
   const handlePin = (article) => {
@@ -106,22 +95,7 @@ export default function NewsPage() {
                   <p className="text-gray-400 text-lg">Explora los eventos que moldean el futuro.</p>
               </div>
               
-              <div className="flex gap-3">
-                  <Link 
-                      href="/news/event/create"
-                      className="bg-gray-800 hover:bg-gray-700 text-purple-400 border border-purple-500/30 px-5 py-2 rounded-lg font-medium transition-all hover:shadow-[0_0_15px_rgba(168,85,247,0.2)] flex items-center gap-2"
-                  >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                      Crear Evento
-                  </Link>
-                  <Link 
-                      href="/news/create"
-                      className="bg-gray-800 hover:bg-gray-700 text-cyan-400 border border-cyan-500/30 px-5 py-2 rounded-lg font-medium transition-all hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] flex items-center gap-2"
-                  >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                      Crear Noticia
-                  </Link>
-              </div>
+              {/* Creation buttons were moved to private user sections */}
           </div>
 
           {/* Top Section: Hero + Sidebar */}
@@ -142,7 +116,7 @@ export default function NewsPage() {
                   <EventsWidget events={events} />
                   
                   {/* Combinamos noticias locales y recientes para la sidebar también, o solo las recientes + locales nuevas */}
-                  <RecentNewsList news={[...localNews, ...(data?.recent || [])]} />
+                  <RecentNewsList news={allNewsList} />
               </div>
           </div>
 
@@ -155,12 +129,21 @@ export default function NewsPage() {
                   Todos los Artículos
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {allNewsList.map((newsItem, index) => (
-                      <NewsCard 
-                          key={`${newsItem.id}-${index}`} 
-                          article={newsItem} 
-                          onPin={handlePin}
-                      />
+                  {allNewsList.map((item, index) => (
+                      item.type === 'event' ? (
+                          <EventCard 
+                              key={`event-${item.id}-${index}`} 
+                              event={item}
+                              type="secondary"
+                              onPin={(user?.role === 'Administrador' || user?.role === 'Moderador') ? handlePin : null}
+                          />
+                      ) : (
+                          <NewsCard 
+                              key={`news-${item.id}-${index}`} 
+                              article={item} 
+                              onPin={(user?.role === 'Administrador' || user?.role === 'Moderador') ? handlePin : null}
+                          />
+                      )
                   ))}
               </div>
               {allNewsList.length === 0 && (

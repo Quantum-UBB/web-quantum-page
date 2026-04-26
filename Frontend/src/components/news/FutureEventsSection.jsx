@@ -4,10 +4,9 @@ import Image from 'next/image';
 
 const FutureEventsSection = ({ events }) => {
     
-    const futureEvents = useMemo(() => {
+    const allEventsDisplay = useMemo(() => {
         if (!events) return [];
-        const now = new Date();
-        return events.filter(e => new Date(e.date) >= now).sort((a,b) => new Date(a.date) - new Date(b.date));
+        return [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
     }, [events]);
 
     const handleRegistration = (e) => {
@@ -16,14 +15,14 @@ const FutureEventsSection = ({ events }) => {
         alert("Debes poseer una cuenta para realizar esta acción.");
     };
 
-    if (futureEvents.length === 0) return null;
+    if (allEventsDisplay.length === 0) return null;
 
     return (
         <div className="relative w-screen left-[calc(-50vw+50%)] bg-slate-100/90 backdrop-blur-sm text-gray-900 py-20 mb-20 shadow-xl border-y border-gray-200 will-change-transform">
             <div className="max-w-7xl mx-auto px-6">
                 
                 <h2 className="text-3xl font-bold text-gray-900 mb-10 border-l-4 border-cyan-600 pl-4">
-                    Próximos Eventos
+                    Nuestros Eventos
                 </h2>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -57,7 +56,7 @@ const FutureEventsSection = ({ events }) => {
 
                     {/* Right Grid (Event Cards) */}
                     <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {futureEvents.map(event => (
+                        {allEventsDisplay.map(event => (
                             <Link key={event.id} href={`/news/event/${event.id}`} className="block h-full"> 
                                 <div className="group cursor-pointer flex flex-col h-full bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 overflow-hidden">
                                     <div className="relative aspect-video overflow-hidden bg-gray-200">

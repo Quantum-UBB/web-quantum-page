@@ -1,5 +1,9 @@
 import { EntitySchema } from "typeorm";
 
+/**
+ * Esquema de base de datos para la entidad de Usuario.
+ * Define la estructura de la tabla 'users' para TypeORM.
+ */
 export const UserSchema = new EntitySchema({
     name: "User",
     tableName: "users",

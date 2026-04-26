@@ -17,7 +17,10 @@ export const authMiddleware = (req, res, next) => {
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
-            return res.status(403).json({ error: "Token inválido o expirado" });
+            // Si el token es inválido o expiró, lo tratamos como invitado en lugar de fallar con 403
+            // Esto permite que el usuario vea contenido público incluso si su sesión local es antigua
+            req.user = { id: 0, role: 'Invitado', username: 'Anónimo' };
+            return next();
         }
         req.user = user;
         next();

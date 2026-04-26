@@ -1,13 +1,17 @@
 "use client";
-import { useState, useRef } from 'react';
+import { useState } from 'react';
+import { createEvent } from '@/services/eventService';
+import { useRef } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 const CreateEventWizard = ({ onSuccess, onClose }) => {
+  const { token, user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     title: '',
     host: '',
     type: 'Conferencia', // Default type
-    description: '', // Short description
+    abstract: '', // Short description
     fullDescription: '', // Long description
     date: new Date().toISOString().slice(0, 16), // YYYY-MM-DDTHH:MM
     endDate: '',
@@ -33,8 +37,8 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
   const handleFileChange = (e, field) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 1.5 * 1024 * 1024) { // 1.5MB limit
-        alert("El archivo es demasiado grande. Por favor sube una imagen menor a 1.5MB.");
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        alert("El archivo es demasiado grande. Por favor sube una imagen menor a 10MB.");
         return;
       }
       const reader = new FileReader();
@@ -53,21 +57,19 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
     if (currentStep > 1) setCurrentStep(prev => prev - 1);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (eventStatus = 'scheduled') => {
     setLoading(true);
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 800));
 
     const newEvent = {
-      id: Date.now(),
       ...formData,
       isLocal: true,
-      status: 'upcoming' // Default status
+      status: eventStatus // 'draft' or 'scheduled'
     };
 
     try {
-      const existingEvents = JSON.parse(localStorage.getItem('quantum_local_events') || '[]');
-      localStorage.setItem('quantum_local_events', JSON.stringify([newEvent, ...existingEvents]));
+      await createEvent(newEvent, token);
       
       if (onSuccess) onSuccess(newEvent);
     } catch (error) {
@@ -216,8 +218,8 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
                 <div>
                     <label className="block text-sm font-medium text-gray-400 mb-1">Resumen Corto (Para tarjetas)</label>
                     <textarea
-                        name="description"
-                        value={formData.description}
+                        name="abstract"
+                        value={formData.abstract}
                         onChange={handleChange}
                         rows="3"
                         className="w-full bg-gray-800/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-purple-500/50 outline-none transition-all"
@@ -328,7 +330,7 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
                      <div className="p-4">
                         <div className="text-xs font-bold text-cyan-700 uppercase tracking-widest mb-1">{formData.type}</div>
                         <h4 className="text-lg font-bold text-gray-900 mb-2 leading-tight">{formData.title}</h4>
-                        <p className="text-sm text-gray-500 line-clamp-2">{formData.description}</p>
+                        <p className="text-sm text-gray-500 line-clamp-2">{formData.abstract}</p>
                      </div>
                      <div className="bg-gray-50 px-4 py-2 border-t border-gray-100 flex items-center gap-2">
                         {formData.hostImage && <img src={formData.hostImage} className="w-6 h-6 rounded-full object-cover" />}
@@ -374,15 +376,38 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
                 Siguiente
             </button>
         ) : (
-            <button
-                onClick={handleSubmit}
-                disabled={loading}
-                className={`bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20 hover:scale-105 ${
-                    loading ? 'opacity-70 cursor-wait' : ''
-                }`}
-            >
-                {loading ? 'Creando...' : 'Publicar Evento'}
-            </button>
+            <div className="flex gap-4">
+                {user?.role === 'Administrador' || user?.role === 'Moderador' ? (
+                    <>
+                        <button
+                            onClick={() => handleSubmit('draft')}
+                            disabled={loading}
+                            className="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-6 py-2 rounded-lg font-bold transition-all shadow-lg"
+                        >
+                            Guardar como Borrador
+                        </button>
+                        <button
+                            onClick={() => handleSubmit('scheduled')}
+                            disabled={loading}
+                            className={`bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20 hover:scale-105 ${
+                                loading ? 'opacity-70 cursor-wait' : ''
+                            }`}
+                        >
+                            {loading ? 'Creando...' : 'Publicar Evento'}
+                        </button>
+                    </>
+                ) : (
+                    <button
+                        onClick={() => handleSubmit('draft')}
+                        disabled={loading}
+                        className={`bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20 hover:scale-105 ${
+                            loading ? 'opacity-70 cursor-wait' : ''
+                        }`}
+                    >
+                        {loading ? 'Creando...' : 'Crear Evento'}
+                    </button>
+                )}
+            </div>
         )}
       </div>
 

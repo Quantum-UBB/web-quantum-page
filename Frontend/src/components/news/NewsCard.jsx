@@ -1,6 +1,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
+/**
+ * Tarjeta de noticia individual.
+ * Muestra la imagen, título, descripción corta y autor de una noticia.
+ * 
+ * @param {Object} props - Propiedades del componente.
+ * @param {Object} props.article - Objeto con los datos de la noticia.
+ * @param {Function} props.onPin - Función opcional para destacar la noticia (Admin).
+ */
 const NewsCard = ({ article, onPin }) => {
   return (
     <div className="relative group block">
@@ -19,7 +27,7 @@ const NewsCard = ({ article, onPin }) => {
             </button>
         )}
 
-    <Link href={`/news/${article.id}`} className="flex flex-col gap-4 cursor-pointer h-full">
+    <Link href={article.type === 'event' ? `/news/event/${article.id}` : `/news/${article.id}`} className="flex flex-col gap-4 cursor-pointer h-full">
         <div className="relative w-full h-48 rounded-xl overflow-hidden mb-2">
             <Image
                 src={article.image}

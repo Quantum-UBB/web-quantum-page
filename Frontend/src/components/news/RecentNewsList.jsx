@@ -23,7 +23,7 @@ const RecentNewsList = ({ news }) => {
       
       <div className="flex flex-col gap-4">
         {visibleNews.map((item) => (
-          <Link href={`/news/${item.id}`} key={item.id} className="flex gap-4 group cursor-pointer p-2 rounded-xl hover:bg-white/5 transition-colors duration-300">
+          <Link href={item.type === 'event' ? `/news/event/${item.id}` : `/news/${item.id}`} key={item.id} className="flex gap-4 group cursor-pointer p-2 rounded-xl hover:bg-white/5 transition-colors duration-300">
             <div className="relative w-24 h-20 md:w-32 md:h-24 flex-shrink-0 overflow-hidden rounded-lg">
               <Image
                 src={item.image}

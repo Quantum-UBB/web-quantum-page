@@ -18,12 +18,21 @@ const ALL_PAGES = [
     { label: 'Investigaciones', href: '/investigations', description: 'Repositorio de investigaciones académicas', requiredRole: null },
     { label: 'Noticias y Eventos', href: '/news', description: 'Últimas noticias y próximos eventos', requiredRole: null },
     { label: 'Mis Investigaciones', href: '/my-investigations', description: 'Gestiona tus proyectos de investigación', requiredRole: 'authenticated' },
-    // Agrega aquí más rutas protegidas a futuro:
-    // { label: 'Gestionar Cuentas', href: '/admin/users', description: 'Administrar usuarios del sistema', requiredRole: 'admin' },
-    // { label: 'Mis Noticias', href: '/my-news', description: 'Gestiona tus publicaciones', requiredRole: 'moderator' },
+    { label: 'Mis Noticias', href: '/my-news', description: 'Gestiona tus publicaciones y noticias', requiredRole: 'moderator' },
+    { label: 'Mis Eventos', href: '/my-events', description: 'Gestiona tus eventos organizados', requiredRole: 'moderator' },
+    { label: 'Gestionar Usuarios', href: '/manage-users', description: 'Administrar roles y accesos de usuarios', requiredRole: 'admin' },
+    { label: 'Crear Usuario', href: '/create-user', description: 'Registrar nuevos miembros del equipo', requiredRole: 'admin' },
 ];
 
-const ROLE_HIERARCHY = { admin: 3, moderator: 2, authenticated: 1, null: 0 };
+const ROLE_HIERARCHY = {
+    'admin': 3,
+    'administrador': 3,
+    'moderator': 2,
+    'moderador': 2,
+    'authenticated': 1,
+    'miembro activo': 1,
+    'null': 0
+};
 
 /**
  * Filtra las páginas según el estado de autenticación y rol del usuario.
@@ -66,15 +75,25 @@ export default function SearchBox({ placeholder = 'Buscar...', inputClassName = 
     // Ensure portal works only client-side
     useEffect(() => { setMounted(true); }, []);
 
-    // Close on click outside
+    // Close on click outside or on scroll/wheel
     useEffect(() => {
+        const handleClose = () => setIsOpen(false);
+        
         const handleClickOutside = (e) => {
             if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-                setIsOpen(false);
+                handleClose();
             }
         };
+
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        window.addEventListener('scroll', handleClose, { passive: true });
+        window.addEventListener('wheel', handleClose, { passive: true });
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            window.removeEventListener('scroll', handleClose);
+            window.removeEventListener('wheel', handleClose);
+        };
     }, []);
 
     // Position dropdown under the input (needed because of portal)

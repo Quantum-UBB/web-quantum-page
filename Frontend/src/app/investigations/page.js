@@ -114,35 +114,35 @@ export default function InvestigacionesPage() {
             <div className="fixed inset-0 z-0 bg-[#0F172A]">
             </div>
 
-            <main className="min-h-screen pb-20 relative z-10 -mt-[190px] md:-mt-[250px] pt-32 xl:pt-40 max-w-[1150px] mx-auto px-6 lg:px-12">
+            <main className="min-h-screen pb-20 relative z-10 -mt-[140px] md:-mt-[250px] pt-32 xl:pt-40 max-w-[1150px] mx-auto px-6 lg:px-12">
                 {/* 1. HERO SECTION - Minimal & Professional */}
                 <div className="mb-16 text-center">
 
-                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 font-[family-name:var(--font-orbitron)] tracking-tighter uppercase leading-[1.1]">
+                    <h1 className="text-3xl md:text-7xl font-bold text-white mb-6 font-[family-name:var(--font-orbitron)] tracking-tighter uppercase leading-[1.1]">
                         REPOSITORIO DE <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#14E19D] to-emerald-400">INVESTIGACIONES</span>
                     </h1>
 
                     {/* Dynamic Stats Row */}
-                    <div className="flex items-center justify-center gap-12 mb-16">
+                    <div className="flex items-center justify-center gap-4 md:gap-12 mb-16">
                         <div className="flex flex-col items-center">
-                            <span className="text-4xl font-bold text-white mb-2 font-mono">
+                            <span className="text-2xl md:text-4xl font-bold text-white mb-2 font-mono">
                                 <AnimatedCounter value={allInvestigations.length} />
                             </span>
-                            <span className="text-[10px] text-slate-300 uppercase tracking-[0.2em] font-bold">Estudios Totales</span>
+                            <span className="text-[8px] md:text-[10px] text-slate-300 uppercase tracking-[0.1em] md:tracking-[0.2em] font-bold">Estudios Totales</span>
                         </div>
                         <div className="w-px h-10 bg-slate-800"></div>
                         <div className="flex flex-col items-center">
-                            <span className="text-4xl font-bold text-[#3B82F6] mb-2 font-mono">
+                            <span className="text-2xl md:text-4xl font-bold text-[#3B82F6] mb-2 font-mono">
                                 <AnimatedCounter value={allInvestigations.filter(inv => inv.status === 'En Curso').length} />
                             </span>
-                            <span className="text-[10px] text-slate-300 uppercase tracking-[0.2em] font-bold">En Curso</span>
+                            <span className="text-[8px] md:text-[10px] text-slate-300 uppercase tracking-[0.1em] md:tracking-[0.2em] font-bold">En Curso</span>
                         </div>
                         <div className="w-px h-10 bg-slate-800"></div>
                         <div className="flex flex-col items-center">
-                            <span className="text-4xl font-bold text-[#14E19D] mb-2 font-mono">
+                            <span className="text-2xl md:text-4xl font-bold text-[#14E19D] mb-2 font-mono">
                                 <AnimatedCounter value={allInvestigations.filter(inv => inv.status === 'Finalizado').length} />
                             </span>
-                            <span className="text-[10px] text-slate-300 uppercase tracking-[0.2em] font-bold">Finalizados</span>
+                            <span className="text-[8px] md:text-[10px] text-slate-300 uppercase tracking-[0.1em] md:tracking-[0.2em] font-bold">Finalizados</span>
                         </div>
                     </div>
 

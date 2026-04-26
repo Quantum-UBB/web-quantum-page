@@ -12,9 +12,12 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    // Verificar si hay token almacenado al iniciar
-    const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+    // Verificar si hay token almacenado al iniciar.
+    // localStorage = "Recordarme" activo. sessionStorage = sesión temporal.
+    const storedToken =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    const storedUser =
+      localStorage.getItem("user") || sessionStorage.getItem("user");
 
     if (storedToken && storedUser) {
       setToken(storedToken);
@@ -28,9 +31,17 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
+  /**
+   * Realiza el login contra el backend.
+   * @param {string} email
+   * @param {string} password
+   * @param {boolean} rememberMe - Si true, persiste en localStorage (no expira al cerrar navegador).
+   *                               Si false, guarda en sessionStorage (se borra al cerrar la pestaña).
+   */
+  const login = async (email, password, rememberMe = false) => {
     try {
-      const response = await fetch("http://localhost:5000/api/users/login", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const response = await fetch(`${API_URL}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,9 +61,10 @@ export const AuthProvider = ({ children }) => {
       setToken(token);
       setUser(userData);
 
-      // Guardar en localStorage para persistencia
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(userData));
+      // Guardar según preferencia del usuario
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem("token", token);
+      storage.setItem("user", JSON.stringify(userData));
 
       return { success: true };
     } catch (error) {
@@ -64,8 +76,11 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setToken(null);
     setUser(null);
+    // Limpiar ambos storages al cerrar sesión
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
     router.push("/");
   };
 

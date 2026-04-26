@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getLandingData } from "../services/dataService";
+import LoadingScreen from '../components/common/LoadingScreen';
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -23,7 +24,7 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if (!data) return <div className="min-h-screen bg-black" />;
+  if (!data) return <LoadingScreen message="Iniciando sistema" />;
 
   return (
     <div className="flex flex-col min-h-screen relative">
@@ -64,14 +65,14 @@ export default function Home() {
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
-              href="/news"
+              href="/about_us"
               className="px-8 py-4 rounded-full bg-white text-black font-bold hover:bg-gray-200 transition-all transform hover:scale-105 shadow-xl"
             >
-              {data.hero.cta}
+              ¿Quiénes Somos?
             </Link>
-            <button className="px-8 py-4 rounded-full border border-white/30 bg-white/5 hover:bg-white/10 transition-all text-white font-medium backdrop-blur-sm">
-              Ver Documentación
-            </button>
+            <Link href="/areas_of_interest" className="px-8 py-4 rounded-full border border-white/30 bg-white/5 hover:bg-white/10 transition-all text-white font-medium backdrop-blur-sm">
+              Áreas de Interés
+            </Link>
           </div>
         </div>
       </section>

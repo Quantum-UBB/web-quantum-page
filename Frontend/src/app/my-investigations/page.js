@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getMyInvestigations, toggleInvestigationVisibility } from '@/services/investigationService';
 import { useAuth } from '@/context/AuthContext';
+import LoadingScreen from '@/components/common/LoadingScreen';
 
 export default function MisInvestigacionesPage() {
     const { user, isAuthenticated, loading: authLoading } = useAuth();
@@ -54,7 +55,7 @@ export default function MisInvestigacionesPage() {
     };
 
     if (authLoading || (isLoading && isAuthenticated)) {
-        return <div className="min-h-screen pt-56 bg-slate-900 text-white text-center">Cargando tus investigaciones...</div>;
+        return <LoadingScreen message="Cargando tus investigaciones" />;
     }
 
     if (!isAuthenticated) {

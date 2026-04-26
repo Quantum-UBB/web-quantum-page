@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Sidebar from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
+import SearchBox from '../common/SearchBox';
 
 const Navbar = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -43,6 +44,7 @@ const Navbar = () => {
     const { user, login, logout, isAuthenticated } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
     const [loginError, setLoginError] = useState('');
     const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -62,7 +64,7 @@ const Navbar = () => {
         setLoginError('');
         setIsLoggingIn(true);
 
-        const result = await login(email, password);
+        const result = await login(email, password, rememberMe);
 
         if (result.success) {
             setIsLoginOpen(false);
@@ -157,7 +159,12 @@ const Navbar = () => {
 
                                 <div className="flex items-center justify-between text-xs text-gray-400 font-[family-name:var(--font-orbitron)]">
                                     <label className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
-                                        <input type="checkbox" className="rounded-none bg-slate-800 border-slate-600 checked:bg-[#14E19D] checked:border-[#14E19D] focus:ring-0 transition-all" /> Recordarme
+                                        <input
+                                            type="checkbox"
+                                            checked={rememberMe}
+                                            onChange={(e) => setRememberMe(e.target.checked)}
+                                            className="rounded-none bg-slate-800 border-slate-600 checked:bg-[#14E19D] checked:border-[#14E19D] focus:ring-0 transition-all"
+                                        /> Recordarme
                                     </label>
                                     <a href="#" className="hover:text-[#14E19D] transition-colors">¿Olvidaste tu clave?</a>
                                 </div>
@@ -202,12 +209,11 @@ const Navbar = () => {
                     {/* Right: Icons (Top Bar) */}
                     <div className="flex items-center gap-4 text-white relative">
                         {/* SEARCH INPUT - EXPANDING */}
-                        <div className={`overflow-hidden transition-[width,opacity] duration-300 ease-in-out ${isSearchOpen ? 'w-64 opacity-100 mr-2' : 'w-0 opacity-0'
+                        <div className={`overflow-hidden transition-[width,opacity] duration-300 ease-in-out ${isSearchOpen ? 'w-72 opacity-100 mr-2' : 'w-0 opacity-0'
                             }`}>
-                            <input
-                                type="text"
+                            <SearchBox
                                 placeholder="Buscar en Quantum..."
-                                className="w-full bg-white/10 border border-white/20 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-white/50 focus:bg-white/20 placeholder-gray-400 font-[family-name:var(--font-orbitron)] tracking-wider"
+                                inputClassName="w-full bg-white/10 border border-white/20 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-white/50 focus:bg-white/20 placeholder-gray-400 font-[family-name:var(--font-orbitron)] tracking-wider"
                             />
                         </div>
 
@@ -294,10 +300,9 @@ const Navbar = () => {
                             <div className="flex items-center gap-3 text-white">
                                 {/* Search Input Container */}
                                 <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isSearchOpen ? 'w-40 md:w-64 opacity-100 mr-1' : 'w-0 opacity-0'}`}>
-                                    <input
-                                        type="text"
+                                    <SearchBox
                                         placeholder="Buscar..."
-                                        className="w-full bg-black/20 border border-white/20 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-white/50 focus:bg-black/30 placeholder-white/50 font-[family-name:var(--font-orbitron)]"
+                                        inputClassName="w-full bg-black/20 border border-white/20 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-white/50 focus:bg-black/30 placeholder-white/50 font-[family-name:var(--font-orbitron)]"
                                     />
                                 </div>
 

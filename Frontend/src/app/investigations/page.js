@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { IndustrialPanelSerif } from '@/components/investigations/CardVariants';
 import { getInvestigations, toggleInvestigationVisibility } from '@/services/investigationService';
 import InvestigationFilters from '@/components/investigations/InvestigationFilters';
+import LoadingScreen from '@/components/common/LoadingScreen';
 
 const AnimatedCounter = ({ value, duration = 1000 }) => {
     const [count, setCount] = useState(0);
@@ -100,7 +101,7 @@ export default function InvestigacionesPage() {
 
 
     if (isLoading) {
-        return <div className="min-h-screen pt-56 bg-slate-900 text-white text-center">Cargando investigaciones...</div>;
+        return <LoadingScreen message="Cargando investigaciones" />;
     }
 
     if (error) {

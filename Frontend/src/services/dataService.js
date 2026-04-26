@@ -103,7 +103,7 @@ export const getAreasData = async () => {
 
     return {
         hero: {
-            title: "Explora Nuestros Universos",
+            title: "Explora Nuestras Áreas",
             subtitle: "Desde la fotónica hasta el control avanzado. Especialízate en las tecnologías que impulsan la infraestructura física del mañana.",
         },
         areas: [

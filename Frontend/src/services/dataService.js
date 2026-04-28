@@ -146,7 +146,7 @@ export const getAreasData = async () => {
     };
 };
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 export const getNewsData = async () => {
     try {
@@ -155,14 +155,25 @@ export const getNewsData = async () => {
         const newsList = await response.json();
         
         const publishedNews = newsList.filter(n => n.status === 'published');
+        // Identificar noticias fijadas y no fijadas
+        const pinned = publishedNews.filter(n => n.isPinned);
+        const unpinned = publishedNews.filter(n => !n.isPinned);
+        
+        // El destacado principal es el primer fijado, o el más nuevo si no hay
+        const featured = pinned.length > 0 ? pinned[0] : (unpinned.length > 0 ? unpinned[0] : null);
+        
+        // Removemos el featured del pool de unpinned (por si se uso como fallback)
+        const pureUnpinned = unpinned.filter(n => n.id !== featured?.id);
+
         return {
-            featured: publishedNews.length > 0 ? publishedNews[0] : null,
-            recent: publishedNews.slice(1, 4),
-            grid: publishedNews.slice(4)
+            pinned,
+            featured,
+            recent: pureUnpinned.slice(0, 3),
+            grid: pureUnpinned.slice(3)
         };
     } catch (error) {
         console.error("Error fetching news from API:", error);
-        return { featured: null, recent: [], grid: [] };
+        return { featured: null, recent: [], grid: [], pinned: [] };
     }
 };
 
@@ -243,6 +254,19 @@ export const updateNewsStatus = async (id, status, token = null) => {
     return await response.json();
 };
 
+export const updateNews = async (id, data, token = null) => {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const response = await fetch(`${API_URL}/news/${id}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error('Network response was not ok');
+    return await response.json();
+};
+
 export const deleteNews = async (id, token = null) => {
     const headers = {};
     if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -253,6 +277,18 @@ export const deleteNews = async (id, token = null) => {
     });
     if (!response.ok) throw new Error('Network response was not ok');
     return true;
+};
+
+export const toggleNewsPin = async (id, token = null) => {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const response = await fetch(`${API_URL}/news/${id}/pin`, {
+        method: 'PATCH',
+        headers
+    });
+    if (!response.ok) throw new Error('Network response was not ok');
+    return await response.json();
 };
 
 export const createEvent = async (data, token = null) => {
@@ -281,6 +317,19 @@ export const updateEventStatus = async (id, status, token = null) => {
     return await response.json();
 };
 
+export const updateEvent = async (id, data, token = null) => {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const response = await fetch(`${API_URL}/events/${id}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error('Network response was not ok');
+    return await response.json();
+};
+
 export const deleteEvent = async (id, token = null) => {
     const headers = {};
     if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -291,6 +340,18 @@ export const deleteEvent = async (id, token = null) => {
     });
     if (!response.ok) throw new Error('Network response was not ok');
     return true;
+};
+
+export const toggleEventPin = async (id, token = null) => {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const response = await fetch(`${API_URL}/events/${id}/pin`, {
+        method: 'PATCH',
+        headers
+    });
+    if (!response.ok) throw new Error('Network response was not ok');
+    return await response.json();
 };
 
 export const registerUser = async (userData, token) => {

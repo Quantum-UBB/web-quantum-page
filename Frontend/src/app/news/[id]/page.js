@@ -17,6 +17,7 @@ export default function NewsDetailPage({ params }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchArticle = async () => {
       try {
         // 1. Fetch static data
@@ -94,7 +95,7 @@ export default function NewsDetailPage({ params }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#1D272E]/95 backdrop-blur-sm text-gray-100 font-sans selection:bg-cyan-500/30 pt-50 pb-20">
+    <div className="min-h-screen bg-[#1D272E]/95 backdrop-blur-sm text-gray-100 font-sans selection:bg-cyan-500/30 pb-20 pt-24 md:pt-32 -mt-[190px] md:-mt-[300px] relative z-10">
       
       <main className="max-w-4xl mx-auto px-6">
         
@@ -108,7 +109,7 @@ export default function NewsDetailPage({ params }) {
                 Volver a Noticias
             </Link>
 
-            {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
+            {(user?.role === 'Administrador' || user?.role === 'Moderador') && article.status === 'draft' && (
                 <button 
                     onClick={handleDelete}
                     className="text-red-500 hover:text-red-400 bg-red-500/10 hover:bg-red-500/20 px-4 py-2 rounded border border-red-500/30 flex items-center gap-2 text-sm font-bold transition-all"

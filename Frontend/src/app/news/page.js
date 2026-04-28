@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getNewsData, getEventsData } from '@/services/dataService';
+import { getNewsData, getEventsData, toggleNewsPin, toggleEventPin } from '@/services/dataService';
 import NewsHero from '@/components/news/NewsHero';
 import RecentNewsList from '@/components/news/RecentNewsList';
 import NewsCard from '@/components/news/NewsCard';
@@ -13,7 +13,7 @@ import FutureEventsSection from '@/components/news/FutureEventsSection';
 import { useAuth } from '@/context/AuthContext';
 
 export default function NewsPage() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [data, setData] = useState(null);
   const [currentFeatured, setCurrentFeatured] = useState(null); // State for the main pinned article
   const [secondaryFeatured, setSecondaryFeatured] = useState(null); // State for the second pinned article
@@ -29,12 +29,23 @@ export default function NewsPage() {
       ]);
       
       setData(apiData);
-      setCurrentFeatured(apiData.featured); // Initialize featured
+      setEvents(eventsData);
       
-      const initialSecondary = (apiData.grid && apiData.grid.length > 0) ? apiData.grid[0] : null;
-      setSecondaryFeatured(initialSecondary);
+      // Juntar todos los fijados (solo se permiten fijar noticias, no eventos)
+      const pinnedNews = apiData.pinned || [];
+      
+      const allPinned = [...pinnedNews].sort((a,b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
-      setEvents(eventsData);  
+      const first = allPinned.length > 0 ? allPinned[0] : apiData.featured;
+      let second = null;
+      if (allPinned.length > 1) {
+          second = allPinned[1];
+      } else {
+          second = (apiData.grid && apiData.grid.length > 0) ? apiData.grid[0] : null;
+      }
+
+      setCurrentFeatured(first);
+      setSecondaryFeatured(second);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -43,6 +54,7 @@ export default function NewsPage() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetchData();
   }, []);
   
@@ -64,16 +76,14 @@ export default function NewsPage() {
       ...(data?.grid || [])
   ];
 
-  const handlePin = (article) => {
-      // Prevent pinning the same article as main
-      if (currentFeatured?.id === article.id) return;
-      
-      // If pinning the secondary article, they effectively swap places
-      // If pinning a new article, the old main moves to secondary
-      setSecondaryFeatured(currentFeatured);
-      setCurrentFeatured(article);
-      
-      // Optional: Scroll to top? window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handlePin = async (article) => {
+      try {
+          await toggleNewsPin(article.id, token);
+          await fetchData();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (error) {
+          console.error("Error al fijar:", error);
+      }
   };
 
   return (
@@ -134,7 +144,6 @@ export default function NewsPage() {
                               key={`event-${item.id}-${index}`} 
                               event={item}
                               type="secondary"
-                              onPin={(user?.role === 'Administrador' || user?.role === 'Moderador') ? handlePin : null}
                           />
                       ) : (
                           <NewsCard 

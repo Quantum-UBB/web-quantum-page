@@ -64,6 +64,10 @@ export const EventSchema = new EntitySchema({
             type: "boolean",
             default: false
         },
+        isPinned: {
+            type: "boolean",
+            default: false
+        },
         createdAt: {
             type: "timestamp",
             createDate: true,

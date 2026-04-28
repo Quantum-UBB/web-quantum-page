@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getAllNewsRaw, updateNewsStatus, deleteNews } from '@/services/dataService';
 import { useAuth } from '@/context/AuthContext';
+import CreateNewsWizard from '@/components/news/CreateNewsWizard';
 
 export default function MyNewsPage() {
     const { token, user } = useAuth();
     const [myNews, setMyNews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [filterMine, setFilterMine] = useState(false);
+    const [editingNews, setEditingNews] = useState(null);
 
     useEffect(() => {
         const loadData = async () => {
@@ -62,7 +64,7 @@ export default function MyNewsPage() {
         return <div className="min-h-screen pt-56 bg-[#1D272E] text-white text-center">Cargando tus noticias...</div>;
     }
 
-    const displayedNews = filterMine && user?.role === 'Administrador' 
+    const displayedNews = filterMine && (user?.role === 'Administrador' || user?.role === 'Moderador')
         ? myNews.filter(n => n.author === user.username) 
         : myNews;
 
@@ -78,9 +80,9 @@ export default function MyNewsPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div>
                         <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight uppercase">
-                            {user?.role === 'Administrador' ? '' : 'MIS '}<span className="text-cyan-400">NOTICIAS</span>
+                            {user?.role === 'Administrador' || user?.role === 'Moderador' ? '' : 'MIS '}<span className="text-cyan-400">NOTICIAS</span>
                         </h1>
-                        <p className="text-slate-400">Gestiona {user?.role === 'Administrador' ? 'las noticias' : 'tus noticias'} guardadas y publicadas.</p>
+                        <p className="text-slate-400">Gestiona {user?.role === 'Administrador' || user?.role === 'Moderador' ? 'las noticias' : 'tus noticias'} guardadas y publicadas.</p>
                     </div>
 
                     <div className="flex gap-4">
@@ -102,7 +104,7 @@ export default function MyNewsPage() {
                     </div>
                 </div>
 
-                {user?.role === 'Administrador' && (
+                {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
                     <div className="mb-6 flex justify-end">
                         <label className="flex items-center gap-3 text-gray-300 font-semibold cursor-pointer hover:text-white transition-colors bg-gray-800/50 px-4 py-2 rounded-lg border border-gray-700">
                             <input 
@@ -161,12 +163,22 @@ export default function MyNewsPage() {
                                                 >
                                                     Visualizar
                                                 </Link>
-                                                 <button
-                                                    onClick={() => handleDelete(newsItem.id)}
-                                                    className="px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border bg-transparent border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white"
-                                                >
-                                                    Eliminar
-                                                </button>
+                                                {newsItem.status === 'draft' && (
+                                                    <button
+                                                        onClick={() => handleDelete(newsItem.id)}
+                                                        className="px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border bg-transparent border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white"
+                                                    >
+                                                        Eliminar
+                                                    </button>
+                                                )}
+                                                {newsItem.status === 'draft' && (
+                                                    <button
+                                                        onClick={() => setEditingNews(newsItem)}
+                                                        className="px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border bg-transparent border-purple-500/50 text-purple-400 hover:bg-purple-500 hover:text-white"
+                                                    >
+                                                        Editar
+                                                    </button>
+                                                )}
                                                 {user?.role === 'Administrador' || user?.role === 'Moderador' ? (
                                                 <button
                                                     onClick={() => handleTogglePublish(newsItem.id)}
@@ -198,6 +210,20 @@ export default function MyNewsPage() {
                     </div>
                 )}
             </div>
+
+            {editingNews && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                    <CreateNewsWizard
+                        isEditMode={true}
+                        initialData={editingNews}
+                        onClose={() => setEditingNews(null)}
+                        onSuccess={(updatedNews) => {
+                            setMyNews(prev => prev.map(n => n.id === updatedNews.id ? updatedNews : n));
+                            setEditingNews(null);
+                        }}
+                    />
+                </div>
+            )}
         </main>
     );
 }

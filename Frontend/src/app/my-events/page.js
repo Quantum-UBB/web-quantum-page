@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getAllEventsRaw, updateEventStatus, deleteEvent } from '@/services/dataService';
 import { useAuth } from '@/context/AuthContext';
+import CreateEventWizard from '@/components/news/CreateEventWizard';
 
 export default function MyEventsPage() {
     const { token, user } = useAuth();
     const [myEvents, setMyEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [filterMine, setFilterMine] = useState(false);
+    const [editingEvent, setEditingEvent] = useState(null);
 
     useEffect(() => {
         const loadData = async () => {
@@ -60,7 +62,7 @@ export default function MyEventsPage() {
         return <div className="min-h-screen pt-56 bg-[#1D272E] text-white text-center">Cargando tus eventos...</div>;
     }
 
-    const displayedEvents = filterMine && user?.role === 'Administrador'
+    const displayedEvents = filterMine && (user?.role === 'Administrador' || user?.role === 'Moderador')
         ? myEvents.filter(e => e.host === user.username)
         : myEvents;
 
@@ -76,9 +78,9 @@ export default function MyEventsPage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div>
                         <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight uppercase">
-                            {user?.role === 'Administrador' ? '' : 'MIS '}<span className="text-purple-400">EVENTOS</span>
+                            {user?.role === 'Administrador' || user?.role === 'Moderador' ? '' : 'MIS '}<span className="text-purple-400">EVENTOS</span>
                         </h1>
-                        <p className="text-slate-400">Gestiona {user?.role === 'Administrador' ? 'los eventos' : 'tus eventos'} guardados y publicados.</p>
+                        <p className="text-slate-400">Gestiona {user?.role === 'Administrador' || user?.role === 'Moderador' ? 'los eventos' : 'tus eventos'} guardados y publicados.</p>
                     </div>
 
                     <div className="flex gap-4">
@@ -100,7 +102,7 @@ export default function MyEventsPage() {
                     </div>
                 </div>
 
-                {user?.role === 'Administrador' && (
+                {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
                     <div className="mb-6 flex justify-end">
                         <label className="flex items-center gap-3 text-gray-300 font-semibold cursor-pointer hover:text-white transition-colors bg-gray-800/50 px-4 py-2 rounded-lg border border-gray-700">
                             <input 
@@ -159,12 +161,22 @@ export default function MyEventsPage() {
                                                 >
                                                     Visualizar
                                                 </Link>
-                                                 <button
-                                                    onClick={() => handleDelete(ev.id)}
-                                                    className="px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border bg-transparent border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white"
-                                                >
-                                                    Eliminar
-                                                </button>
+                                                {ev.status === 'draft' && (
+                                                    <button
+                                                        onClick={() => handleDelete(ev.id)}
+                                                        className="px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border bg-transparent border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white"
+                                                    >
+                                                        Eliminar
+                                                    </button>
+                                                )}
+                                                {ev.status === 'draft' && (
+                                                    <button
+                                                        onClick={() => setEditingEvent(ev)}
+                                                        className="px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border bg-transparent border-cyan-500/50 text-cyan-400 hover:bg-cyan-500 hover:text-white"
+                                                    >
+                                                        Editar
+                                                    </button>
+                                                )}
                                                 {user?.role === 'Administrador' || user?.role === 'Moderador' ? (
                                                 <button
                                                     onClick={() => handleTogglePublish(ev.id)}
@@ -196,6 +208,20 @@ export default function MyEventsPage() {
                     </div>
                 )}
             </div>
+
+            {editingEvent && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                    <CreateEventWizard
+                        isEditMode={true}
+                        initialData={editingEvent}
+                        onClose={() => setEditingEvent(null)}
+                        onSuccess={(updatedEvent) => {
+                            setMyEvents(prev => prev.map(e => e.id === updatedEvent.id ? updatedEvent : e));
+                            setEditingEvent(null);
+                        }}
+                    />
+                </div>
+            )}
         </main>
     );
 }

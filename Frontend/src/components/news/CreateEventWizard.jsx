@@ -1,24 +1,24 @@
 "use client";
 import { useState } from 'react';
-import { createEvent } from '@/services/dataService';
+import { createEvent, updateEvent } from '@/services/dataService';
 import { useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 
-const CreateEventWizard = ({ onSuccess, onClose }) => {
+const CreateEventWizard = ({ onSuccess, onClose, isEditMode = false, initialData = null }) => {
   const { token, user } = useAuth();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(isEditMode ? 0 : 1);
   const [formData, setFormData] = useState({
-    title: '',
-    host: '',
-    type: 'Conferencia', // Default type
-    abstract: '', // Short description
-    fullDescription: '', // Long description
-    date: new Date().toISOString().slice(0, 16), // YYYY-MM-DDTHH:MM
-    endDate: '',
-    location: '',
-    locationUrl: '',
-    image: '',
-    hostImage: '',
+    title: initialData?.title || '',
+    host: initialData?.host || '',
+    type: initialData?.type || 'Conferencia', // Default type
+    abstract: initialData?.abstract || '', // Short description
+    fullDescription: initialData?.fullDescription || '', // Long description
+    date: initialData?.date ? new Date(initialData.date).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16), // YYYY-MM-DDTHH:MM
+    endDate: initialData?.endDate ? new Date(initialData.endDate).toISOString().slice(0, 16) : '',
+    location: initialData?.location || '',
+    locationUrl: initialData?.locationUrl || '',
+    image: initialData?.image || '',
+    hostImage: initialData?.hostImage || '',
     hostImagePreview: '' // Helper for preview
   });
   const [loading, setLoading] = useState(false);
@@ -62,16 +62,21 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 800));
 
-    const newEvent = {
-      ...formData,
+    const { hostImagePreview, ...cleanFormData } = formData;
+    const payload = {
+      ...cleanFormData,
       isLocal: true,
       status: eventStatus // 'draft' or 'scheduled'
     };
 
     try {
-      await createEvent(newEvent, token);
-      
-      if (onSuccess) onSuccess(newEvent);
+      if (isEditMode) {
+          const updated = await updateEvent(initialData.id, payload, token);
+          if (onSuccess) onSuccess(updated);
+      } else {
+          const newEvent = await createEvent(payload, token);
+          if (onSuccess) onSuccess(newEvent);
+      }
     } catch (error) {
       console.error("Error saving event:", error);
       alert("Error al guardar el evento (posiblemente las imágenes son muy pesadas).");
@@ -100,16 +105,42 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-gray-800 h-1">
-        <div 
-            className="bg-gradient-to-r from-purple-500 to-pink-600 h-1 transition-all duration-300 ease-out"
-            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-        ></div>
-      </div>
+      {currentStep > 0 && (
+          <div className="w-full bg-gray-800 h-1">
+            <div 
+                className="bg-gradient-to-r from-purple-500 to-pink-600 h-1 transition-all duration-300 ease-out"
+                style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+            ></div>
+          </div>
+      )}
 
       {/* Scrollable Content Area */}
       <div className="p-8 overflow-y-auto custom-scrollbar flex-1">
         
+        {/* Step 0: Edit Confirmation & Preview */}
+        {currentStep === 0 && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-right-4 flex flex-col items-center">
+                 <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4 text-purple-200 w-full text-center mb-2 shadow-lg">
+                     <h3 className="text-xl font-bold mb-2">Modo Edición</h3>
+                    <p>Estás a punto de editar un evento en borrador. ¿Estás seguro de querer continuar?</p>
+                </div>
+                
+                <article className="max-w-2xl mx-auto opacity-80 scale-95 border border-gray-700 rounded-xl p-6 pointer-events-none bg-gray-800/30 w-full">
+                     <div className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-1">{formData.type}</div>
+                     <h1 className="text-2xl font-bold text-white mb-2">{formData.title || 'Sin Título'}</h1>
+                     <p className="text-gray-400 text-sm mb-4">{formData.abstract || 'Sin resumen'}</p>
+                     {formData.image && (
+                         <img src={formData.image} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
+                     )}
+                </article>
+                
+                <div className="flex gap-4 mt-8 w-full justify-center">
+                    <button onClick={onClose} className="px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors border border-gray-700">Cancelar</button>
+                    <button onClick={() => setCurrentStep(1)} className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg font-bold shadow-lg shadow-purple-500/20">Continuar Edición</button>
+                </div>
+            </div>
+        )}
+
         {/* Step 1: Basic Info */}
         {currentStep === 1 && (
             <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -355,61 +386,63 @@ const CreateEventWizard = ({ onSuccess, onClose }) => {
       </div>
 
       {/* Footer / Controls */}
-      <div className="p-6 border-t border-gray-800 bg-gray-900/50 flex justify-between items-center">
-        <button
-            onClick={handleBack}
-            disabled={currentStep === 1 || loading}
-            className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                currentStep === 1 
-                ? 'text-gray-600 cursor-not-allowed' 
-                : 'text-gray-300 hover:text-white hover:bg-gray-800'
-            }`}
-        >
-            Atrás
-        </button>
-
-        {currentStep < totalSteps ? (
+      {currentStep > 0 && (
+          <div className="p-6 border-t border-gray-800 bg-gray-900/50 flex justify-between items-center">
             <button
-                onClick={handleNext}
-                className="bg-gray-800 hover:bg-gray-700 text-purple-400 border border-purple-500/30 px-8 py-2 rounded-lg font-medium transition-all hover:shadow-[0_0_15px_rgba(168,85,247,0.2)]"
+                onClick={handleBack}
+                disabled={currentStep === 1 || loading}
+                className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                    currentStep === 1 
+                    ? 'text-gray-600 cursor-not-allowed' 
+                    : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                }`}
             >
-                Siguiente
+                Atrás
             </button>
-        ) : (
-            <div className="flex gap-4">
-                {user?.role === 'Administrador' || user?.role === 'Moderador' ? (
-                    <>
+
+            {currentStep < totalSteps ? (
+                <button
+                    onClick={handleNext}
+                    className="bg-gray-800 hover:bg-gray-700 text-purple-400 border border-purple-500/30 px-8 py-2 rounded-lg font-medium transition-all hover:shadow-[0_0_15px_rgba(168,85,247,0.2)]"
+                >
+                    Siguiente
+                </button>
+            ) : (
+                <div className="flex gap-4">
+                    {user?.role === 'Administrador' || user?.role === 'Moderador' ? (
+                        <>
+                            <button
+                                onClick={() => handleSubmit('draft')}
+                                disabled={loading}
+                                className="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-6 py-2 rounded-lg font-bold transition-all shadow-lg"
+                            >
+                                Guardar como Borrador
+                            </button>
+                            <button
+                                onClick={() => handleSubmit('scheduled')}
+                                disabled={loading}
+                                className={`bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20 hover:scale-105 ${
+                                    loading ? 'opacity-70 cursor-wait' : ''
+                                }`}
+                            >
+                                {loading ? 'Creando...' : (isEditMode ? 'Publicar Cambios' : 'Publicar Evento')}
+                            </button>
+                        </>
+                    ) : (
                         <button
                             onClick={() => handleSubmit('draft')}
-                            disabled={loading}
-                            className="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-6 py-2 rounded-lg font-bold transition-all shadow-lg"
-                        >
-                            Guardar como Borrador
-                        </button>
-                        <button
-                            onClick={() => handleSubmit('scheduled')}
                             disabled={loading}
                             className={`bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20 hover:scale-105 ${
                                 loading ? 'opacity-70 cursor-wait' : ''
                             }`}
                         >
-                            {loading ? 'Creando...' : 'Publicar Evento'}
+                            {loading ? 'Creando...' : (isEditMode ? 'Guardar Cambios' : 'Crear Evento')}
                         </button>
-                    </>
-                ) : (
-                    <button
-                        onClick={() => handleSubmit('draft')}
-                        disabled={loading}
-                        className={`bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20 hover:scale-105 ${
-                            loading ? 'opacity-70 cursor-wait' : ''
-                        }`}
-                    >
-                        {loading ? 'Creando...' : 'Crear Evento'}
-                    </button>
-                )}
-            </div>
-        )}
-      </div>
+                    )}
+                </div>
+            )}
+          </div>
+      )}
 
     </div>
   );

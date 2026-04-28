@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { getMissionVisionData } from "../../services/dataService";
 
 export default async function MissionVision() {
@@ -8,23 +7,13 @@ export default async function MissionVision() {
   return (
     <div className="flex flex-col min-h-screen relative">
 
-      {/* 
-         GLOBAL BACKGROUND 
-      */}
-      <div className="fixed inset-0 z-[-1]">
-        <Image
-          src="/home.jpg"
-          alt="Quantum Background"
-          fill
-          className="object-cover"
-          priority
-        />
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black/80"></div>
+      {/* SOLID DARK BACKGROUND */}
+      <div className="fixed inset-0 z-[-1] bg-[#0F172A]">
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 to-[#0F172A]" />
       </div>
 
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden flex items-center pt-48 pb-10 lg:pt-64 lg:pb-16 text-center">
+      <section className="relative overflow-hidden flex items-center pt-28 pb-10 lg:pt-36 lg:pb-16 text-center">
         <div className="container mx-auto px-4 relative z-20">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight text-white drop-shadow-lg font-[family-name:var(--font-orbitron)]">
             {data.hero.title}

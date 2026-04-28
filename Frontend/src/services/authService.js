@@ -1,7 +1,9 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 const getAuthHeaders = () => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const token = typeof window !== 'undefined' 
+        ? (localStorage.getItem('token') || sessionStorage.getItem('token')) 
+        : null;
     return {
         'Content-Type': 'application/json',
         'ngrok-skip-browser-warning': '69420',

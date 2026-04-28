@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getMyInvestigations, toggleInvestigationVisibility } from '@/services/investigationService';
 import { useAuth } from '@/context/AuthContext';
+import LoadingScreen from '@/components/common/LoadingScreen';
 
 export default function MisInvestigacionesPage() {
     const { user, isAuthenticated, loading: authLoading } = useAuth();
@@ -54,7 +55,7 @@ export default function MisInvestigacionesPage() {
     };
 
     if (authLoading || (isLoading && isAuthenticated)) {
-        return <div className="min-h-screen pt-56 bg-slate-900 text-white text-center">Cargando tus investigaciones...</div>;
+        return <LoadingScreen message="Cargando tus investigaciones" />;
     }
 
     if (!isAuthenticated) {
@@ -164,7 +165,9 @@ export default function MisInvestigacionesPage() {
                             </svg>
                             <h3 className="text-xl font-bold text-white mb-2">No tienes investigaciones todavía</h3>
                             <p className="text-slate-500 mb-8">Comienza subiendo tu primer proyecto de investigación académica.</p>
-                            <button className="text-[#14E19D] font-bold hover:underline">Subir mi primera investigación</button>
+                            <Link href="/my-investigations/create" className="text-[#14E19D] font-bold hover:underline">
+                                Subir mi primera investigación
+                            </Link>
                         </div>
                     )}
                 </div>

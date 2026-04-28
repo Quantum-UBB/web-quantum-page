@@ -35,12 +35,12 @@ const Sidebar = ({ isOpen, onClose }) => {
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
 
-                    <div className="flex items-center gap-3 mb-6">
+                    <Link href="/profile" onClick={onClose} className="flex items-center gap-3 mb-6 hover:opacity-80 transition-opacity">
                         <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white">
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         </div>
                         <span className="font-bold text-lg text-white">Perfil</span>
-                    </div>
+                    </Link>
 
                     {/* Search Bar with autocomplete */}
                     <div className="relative mb-6">

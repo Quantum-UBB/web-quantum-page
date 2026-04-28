@@ -15,6 +15,7 @@ export default function ManageUsersPage() {
     const [actionLoading, setActionLoading] = useState(null); // track user ID being updated
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [viewUser, setViewUser] = useState(null); // track user being viewed
 
     // Protect route: Only admins can see this
     useEffect(() => {
@@ -140,7 +141,13 @@ export default function ManageUsersPage() {
                                                 {u.role}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right">
+                                        <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
+                                            <button
+                                                onClick={() => setViewUser(u)}
+                                                className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-all border font-[family-name:var(--font-orbitron)] bg-slate-800 border-slate-600 text-white hover:bg-slate-700"
+                                            >
+                                                VER PERFIL
+                                            </button>
                                              {(u.role === 'Miembro Activo' || u.role === 'Invitado' || u.role === 'Moderador') && (
                                                 <button
                                                     onClick={() => handleToggleModerator(u)}
@@ -170,6 +177,56 @@ export default function ManageUsersPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Modal de Ver Perfil */}
+            {viewUser && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                    <div className="bg-[#1D272E] border border-[#14E19D]/50 shadow-[0_0_30px_rgba(20,225,157,0.15)] max-w-lg w-full p-8 relative">
+                        <button 
+                            onClick={() => setViewUser(null)}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-white"
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+
+                        <h2 className="text-2xl font-bold text-white mb-6 font-[family-name:var(--font-orbitron)] uppercase tracking-widest border-b border-gray-800 pb-4">
+                            PERFIL DE USUARIO
+                        </h2>
+
+                        <div className="flex items-center gap-6 mb-8">
+                            <div className="w-20 h-20 rounded-full bg-slate-700 flex items-center justify-center border-2 border-[#14E19D]">
+                                <svg className="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-bold text-white mb-1">{viewUser.username}</h3>
+                                <span className={`inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-wider border font-[family-name:var(--font-orbitron)] ${
+                                    viewUser.role === 'Administrador' ? 'bg-purple-900/30 text-purple-400 border-purple-500/50' :
+                                    viewUser.role === 'Moderador' ? 'bg-cyan-900/30 text-cyan-400 border-cyan-500/50' :
+                                    viewUser.role === 'Invitado' ? 'bg-gray-800 text-gray-400 border-gray-600' :
+                                    'bg-[#14E19D]/10 text-[#14E19D] border-[#14E19D]/30'
+                                }`}>
+                                    {viewUser.role}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-gray-500 text-xs font-bold uppercase tracking-widest mb-1 font-[family-name:var(--font-orbitron)]">Email</label>
+                                <div className="text-white bg-slate-800/50 border border-slate-700 px-4 py-3 text-sm">
+                                    {viewUser.email}
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-gray-500 text-xs font-bold uppercase tracking-widest mb-1 font-[family-name:var(--font-orbitron)]">Fecha de Registro</label>
+                                <div className="text-white bg-slate-800/50 border border-slate-700 px-4 py-3 text-sm">
+                                    {viewUser.createdAt ? new Date(viewUser.createdAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Fecha no disponible'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }

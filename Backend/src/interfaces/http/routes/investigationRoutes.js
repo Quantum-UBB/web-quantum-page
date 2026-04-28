@@ -13,6 +13,8 @@ router.get('/tags', controller.getTags);
 router.get('/my/:researcher', controller.getMy);
 router.get('/:id', controller.getById);
 router.post('/', upload.single('pdf'), controller.create);
+router.put('/:id', upload.single('pdf'), controller.update);
 router.patch('/:id/visibility', controller.toggleVisibility);
+router.delete('/:id', controller.remove);
 
 export default router;

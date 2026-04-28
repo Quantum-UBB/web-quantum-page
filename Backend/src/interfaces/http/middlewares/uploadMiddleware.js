@@ -21,15 +21,21 @@ const storage = multer.diskStorage({
 
 // Check file type
 const fileFilter = (req, file, cb) => {
-    // Solo permitir PDFs y DOCX
-    const allowedTypes = /pdf|doc|docx/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
+    const allowedExtensions = ['.pdf', '.doc', '.docx'];
+    const allowedMimeTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
 
-    if (extname && mimetype) {
+    const extension = path.extname(file.originalname).toLowerCase();
+    const isExtensionAllowed = allowedExtensions.includes(extension);
+    const isMimeTypeAllowed = allowedMimeTypes.includes(file.mimetype);
+
+    if (isExtensionAllowed && isMimeTypeAllowed) {
         return cb(null, true);
     } else {
-        cb(new Error('Solo se permiten archivos PDF o DOCX'));
+        cb(new Error('Formato no válido. Solo se permiten archivos PDF (.pdf) o Word (.doc, .docx).'));
     }
 };
 

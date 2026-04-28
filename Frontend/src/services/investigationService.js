@@ -150,8 +150,10 @@ const investigations = [
 // Base URL for the API
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-const getAuthHeaders = () => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+const getAuthHeaders = (overrideToken = null) => {
+    const token = overrideToken || (typeof window !== 'undefined' 
+        ? (localStorage.getItem('token') || sessionStorage.getItem('token')) 
+        : null);
     return {
         'Content-Type': 'application/json',
         'ngrok-skip-browser-warning': '69420',
@@ -164,10 +166,10 @@ const getAuthHeaders = () => {
  * 
  * @returns {Promise<Array>} Lista de investigaciones o array vacío en caso de error.
  */
-export const getInvestigations = async () => {
+export const getInvestigations = async (token = null) => {
     try {
         const response = await fetch(`${API_URL}/investigations`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders(token)
         });
 
         if (response.status === 401 || response.status === 403) {
@@ -192,7 +194,7 @@ export const getInvestigations = async () => {
  * @param {string} researcherName - Nombre del investigador (opcional).
  * @returns {Promise<Array>} Lista de investigaciones propias.
  */
-export const getMyInvestigations = async (researcherName = '') => {
+export const getMyInvestigations = async (researcherName = '', token = null) => {
     try {
         // If no researcherName is provided, the backend will use the token's user.
         const url = researcherName
@@ -200,7 +202,7 @@ export const getMyInvestigations = async (researcherName = '') => {
             : `${API_URL}/investigations/my/current`; // Note: Backend route is /my/:researcher, passing 'current' or anything will trigger it, but backend expects researcher param or defaults to user.username. It's safer to just call `/my/me` and verify backend handles it, but since backend checks `req.params.researcher || req.user.username`, we can pass a dummy string or adapt the route. Let's assume the backend handles `/my/me`.
 
         const response = await fetch(`${API_URL}/investigations/my/me`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders(token)
         });
         if (!response.ok) throw new Error('Error fetching my investigations');
         return await response.json();
@@ -216,10 +218,10 @@ export const getMyInvestigations = async (researcherName = '') => {
  * @param {number|string} id - ID de la investigación.
  * @returns {Promise<Object|null>} Objeto de investigación o null.
  */
-export const getInvestigationById = async (id) => {
+export const getInvestigationById = async (id, token = null) => {
     try {
         const response = await fetch(`${API_URL}/investigations/${id}`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders(token)
         });
         if (!response.ok) throw new Error('Error fetching investigation');
         return await response.json();
@@ -229,10 +231,10 @@ export const getInvestigationById = async (id) => {
     }
 };
 
-export const getInvestigationTags = async () => {
+export const getInvestigationTags = async (token = null) => {
     try {
         const response = await fetch(`${API_URL}/investigations/tags`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders(token)
         });
         if (!response.ok) throw new Error('Error fetching tags');
         return await response.json();
@@ -242,11 +244,11 @@ export const getInvestigationTags = async () => {
     }
 };
 
-export const toggleInvestigationVisibility = async (id, publicada) => {
+export const toggleInvestigationVisibility = async (id, publicada, token = null) => {
     try {
         const response = await fetch(`${API_URL}/investigations/${id}/visibility`, {
             method: 'PATCH',
-            headers: getAuthHeaders(),
+            headers: getAuthHeaders(token),
             body: JSON.stringify({ publicada })
         });
         if (!response.ok) throw new Error('Error toggling visibility');
@@ -263,10 +265,10 @@ export const toggleInvestigationVisibility = async (id, publicada) => {
  * @param {Object|FormData} investigationData - Datos de la investigación.
  * @returns {Promise<Object>} Respuesta de la API con la investigación creada.
  */
-export const createInvestigation = async (investigationData) => {
+export const createInvestigation = async (investigationData, token = null) => {
     try {
         const isFormData = investigationData instanceof FormData;
-        const headers = getAuthHeaders();
+        const headers = getAuthHeaders(token);
         if (isFormData) {
             delete headers['Content-Type']; // Permite al navegador calcular el Content-Type multipart con su boundary
         }
@@ -283,3 +285,54 @@ export const createInvestigation = async (investigationData) => {
         throw error;
     }
 };
+
+/**
+ * Actualiza una investigación existente.
+ * 
+ * @param {number|string} id - ID de la investigación.
+ * @param {Object|FormData} investigationData - Datos actualizados.
+ * @param {string} token - Token de autenticación.
+ * @returns {Promise<Object>} Investigación actualizada.
+ */
+export const updateInvestigation = async (id, investigationData, token = null) => {
+    try {
+        const isFormData = investigationData instanceof FormData;
+        const headers = getAuthHeaders(token);
+        if (isFormData) {
+            delete headers['Content-Type'];
+        }
+
+        const response = await fetch(`${API_URL}/investigations/${id}`, {
+            method: 'PUT',
+            headers: headers,
+            body: isFormData ? investigationData : JSON.stringify(investigationData)
+        });
+        if (!response.ok) throw new Error('Error updating investigation');
+        return await response.json();
+    } catch (error) {
+        console.error('updateInvestigation error:', error);
+        throw error;
+    }
+};
+
+/**
+ * Elimina una investigación.
+ * 
+ * @param {number|string} id - ID de la investigación.
+ * @param {string} token - Token de autenticación.
+ * @returns {Promise<boolean>} True si se eliminó correctamente.
+ */
+export const deleteInvestigation = async (id, token = null) => {
+    try {
+        const response = await fetch(`${API_URL}/investigations/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders(token)
+        });
+        if (!response.ok) throw new Error('Error deleting investigation');
+        return true;
+    } catch (error) {
+        console.error('deleteInvestigation error:', error);
+        throw error;
+    }
+};
+

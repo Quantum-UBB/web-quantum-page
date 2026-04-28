@@ -37,15 +37,25 @@ export const create = async (data) => {
     return await repository.save(newsItem);
 };
 
-/**
- * Actualiza el estado de una noticia (ej: de borrador a publicado).
- * 
- * @param {number|string} id - ID de la noticia.
- * @param {string} status - El nuevo estado.
- * @returns {Promise<Object>} Noticia actualizada.
- */
+export const update = async (id, data) => {
+    await repository.update(id, data);
+    return await getById(id);
+};
+
 export const updateStatus = async (id, status) => {
     await repository.update(id, { status });
+    return await getById(id);
+};
+
+export const getPinnedNews = async () => {
+    return await repository.find({
+        where: { isPinned: true },
+        order: { updatedAt: "ASC" }
+    });
+};
+
+export const updatePinStatus = async (id, isPinned) => {
+    await repository.update(id, { isPinned });
     return await getById(id);
 };
 

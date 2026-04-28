@@ -13,6 +13,7 @@ export default function EventDetailPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         if (params.id) {
             getEventById(params.id).then(async data => {
                 let ev = data; // backend might return null parameter if hidden
@@ -79,7 +80,7 @@ export default function EventDetailPage() {
     };
 
     return (
-        <div className="bg-gray-50 min-h-screen font-sans text-gray-800 pb-20 pt-32 md:pt-48">
+        <div className="bg-gray-50 min-h-screen font-sans text-gray-800 pb-20 pt-24 md:pt-32 -mt-[190px] md:-mt-[300px] relative z-10">
             
             {/* Top RSVP Bar (Blue Alert) - Only for Upcoming Events */}
             {isUpcoming && (
@@ -217,7 +218,7 @@ export default function EventDetailPage() {
                                 Añadir a Calendario
                             </button>
                             
-                            {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
+                            {(user?.role === 'Administrador' || user?.role === 'Moderador') && event.status === 'draft' && (
                                 <button 
                                     onClick={handleDelete}
                                     className="w-full bg-red-600/10 hover:bg-red-600 hover:text-white text-red-600 border border-red-600/30 font-bold py-3 px-4 rounded-lg transition-colors mb-4 flex items-center justify-center gap-2"

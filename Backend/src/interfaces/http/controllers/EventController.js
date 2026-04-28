@@ -2,6 +2,7 @@ import * as CreateEvent from '../../../application/use-cases/events/CreateEvent.
 import * as GetAllEvents from '../../../application/use-cases/events/GetAllEvents.js';
 import * as GetEventById from '../../../application/use-cases/events/GetEventById.js';
 import * as UpdateEventStatus from '../../../application/use-cases/events/UpdateEventStatus.js';
+import * as UpdateEventPin from '../../../application/use-cases/events/UpdateEventPin.js';
 import * as DeleteEvent from '../../../application/use-cases/events/DeleteEvent.js';
 
 export const getAll = async (req, res) => {
@@ -81,6 +82,47 @@ export const create = async (req, res) => {
     }
 };
 
+import * as UpdateEvent from '../../../application/use-cases/events/UpdateEvent.js';
+
+export const update = async (req, res) => {
+    try {
+        if (!req.user || req.user.role === 'Invitado') {
+            return res.status(403).json({ message: 'No autorizado para editar eventos' });
+        }
+        
+        const { id } = req.params;
+        
+        const existingEvent = await GetEventById.execute(id);
+        if (!existingEvent) {
+            return res.status(404).json({ message: 'Evento no encontrado' });
+        }
+        
+        if (req.user.role === 'Miembro Activo' && existingEvent.host !== req.user.username) {
+            return res.status(403).json({ message: 'No puedes editar eventos que no organizaste' });
+        }
+
+        if (existingEvent.status !== 'draft') {
+            return res.status(400).json({ message: 'Solo se pueden editar eventos en estado borrador' });
+        }
+        
+        let status = req.body.status || 'draft';
+        if (req.user.role !== 'Administrador' && req.user.role !== 'Moderador') {
+            status = 'draft';
+        }
+
+        const updatedData = {
+            ...req.body,
+            status
+        };
+
+        const updatedItem = await UpdateEvent.execute(id, updatedData);
+        res.status(200).json(updatedItem);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 export const updateStatus = async (req, res) => {
     try {
         const userRole = req.user?.role || 'Invitado';
@@ -101,6 +143,21 @@ export const remove = async (req, res) => {
     try {
         await DeleteEvent.execute(req.params.id);
         res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const togglePin = async (req, res) => {
+    try {
+        const userRole = req.user?.role || 'Invitado';
+        if (userRole !== 'Administrador' && userRole !== 'Moderador') {
+            return res.status(403).json({ message: 'Permisos insuficientes para fijar eventos' });
+        }
+
+        const { id } = req.params;
+        const updated = await UpdateEventPin.execute(id);
+        res.status(200).json(updated);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

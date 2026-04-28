@@ -39,6 +39,10 @@ export const NewsSchema = new EntitySchema({
             type: "text",
             nullable: true
         },
+        rawBlocks: {
+            type: "json",
+            nullable: true
+        },
         secondaryImages: {
             type: "simple-array",
             nullable: true
@@ -48,6 +52,10 @@ export const NewsSchema = new EntitySchema({
             default: "draft"
         },
         isLocal: {
+            type: "boolean",
+            default: false
+        },
+        isPinned: {
             type: "boolean",
             default: false
         },

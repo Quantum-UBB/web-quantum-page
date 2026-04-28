@@ -2,6 +2,7 @@ import * as CreateNews from '../../../application/use-cases/news/CreateNews.js';
 import * as GetAllNews from '../../../application/use-cases/news/GetAllNews.js';
 import * as GetNewsById from '../../../application/use-cases/news/GetNewsById.js';
 import * as UpdateNewsStatus from '../../../application/use-cases/news/UpdateNewsStatus.js';
+import * as UpdateNewsPin from '../../../application/use-cases/news/UpdateNewsPin.js';
 import * as DeleteNews from '../../../application/use-cases/news/DeleteNews.js';
 
 export const getAll = async (req, res) => {
@@ -74,6 +75,48 @@ export const create = async (req, res) => {
     }
 };
 
+import * as UpdateNews from '../../../application/use-cases/news/UpdateNews.js';
+
+export const update = async (req, res) => {
+    try {
+        if (!req.user || req.user.role === 'Invitado') {
+            return res.status(403).json({ message: 'No autorizado para editar noticias' });
+        }
+        
+        const { id } = req.params;
+        
+        // Admins and Mods can edit anything, but active members can only edit their own
+        const existingNews = await GetNewsById.execute(id);
+        if (!existingNews) {
+            return res.status(404).json({ message: 'Noticia no encontrada' });
+        }
+        
+        if (req.user.role === 'Miembro Activo' && existingNews.author !== req.user.username) {
+            return res.status(403).json({ message: 'No puedes editar noticias que no te pertenecen' });
+        }
+
+        if (existingNews.status !== 'draft') {
+            return res.status(400).json({ message: 'Solo se pueden editar noticias en estado borrador' });
+        }
+        
+        let status = req.body.status || 'draft';
+        if (req.user.role !== 'Administrador' && req.user.role !== 'Moderador') {
+            status = 'draft';
+        }
+        
+        const updatedData = {
+            ...req.body,
+            status
+        };
+        
+        const updatedItem = await UpdateNews.execute(id, updatedData);
+        res.status(200).json(updatedItem);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 export const updateStatus = async (req, res) => {
     try {
         const userRole = req.user?.role || 'Invitado';
@@ -94,6 +137,21 @@ export const remove = async (req, res) => {
     try {
         await DeleteNews.execute(req.params.id);
         res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const togglePin = async (req, res) => {
+    try {
+        const userRole = req.user?.role || 'Invitado';
+        if (userRole !== 'Administrador' && userRole !== 'Moderador') {
+            return res.status(403).json({ message: 'Permisos insuficientes para fijar noticias' });
+        }
+
+        const { id } = req.params;
+        const updated = await UpdateNewsPin.execute(id);
+        res.status(200).json(updated);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

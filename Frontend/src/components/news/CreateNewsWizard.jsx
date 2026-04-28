@@ -1,25 +1,37 @@
 "use client";
 import { useState, useRef } from 'react';
-import { createNews } from '@/services/newsService';
+import { createNews, updateNews } from '@/services/dataService';
 import { useAuth } from '@/context/AuthContext';
 
-const CreateNewsWizard = ({ onSuccess, onClose }) => {
+const CreateNewsWizard = ({ onSuccess, onClose, isEditMode = false, initialData = null }) => {
   const { token, user } = useAuth();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(isEditMode ? 0 : 1);
   const [formData, setFormData] = useState({
-    title: '',
-    author: '',
-    tag: '',
-    description: '',
-    content: '', // Will be generated from blocks
-    image: '',
-    date: new Date().toISOString().split('T')[0]
+    title: initialData?.title || '',
+    author: initialData?.author || '',
+    tag: initialData?.tag || '',
+    description: initialData?.description || '',
+    content: initialData?.content || '',
+    image: initialData?.image || '',
+    date: initialData?.date || new Date().toISOString().split('T')[0]
   });
   
   // Block Editor State
-  const [blocks, setBlocks] = useState([
-    { id: '1', type: 'text', content: '' } // Start with one text block
-  ]);
+  const [blocks, setBlocks] = useState(() => {
+    if (isEditMode && initialData) {
+        if (initialData.rawBlocks) {
+            try {
+                return typeof initialData.rawBlocks === 'string' ? JSON.parse(initialData.rawBlocks) : initialData.rawBlocks;
+            } catch (e) {
+                console.error("Error parsing rawBlocks:", e);
+                return [{ id: '1', type: 'text', content: initialData.content || '' }];
+            }
+        }
+        // Fallback if no raw blocks exist
+        return [{ id: '1', type: 'text', content: initialData.content || '' }];
+    }
+    return [{ id: '1', type: 'text', content: '' }];
+  });
 
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
@@ -159,16 +171,22 @@ const CreateNewsWizard = ({ onSuccess, onClose }) => {
 
     const finalContent = generateHtmlFromBlocks();
 
-    const newArticle = {
+    const payload = {
       ...formData,
       content: finalContent,
+      rawBlocks: JSON.stringify(blocks),
       isLocal: true,
       status // 'draft' or 'published'
     };
 
     try {
-      await createNews(newArticle, token);
-      if (onSuccess) onSuccess(newArticle);
+      if (isEditMode) {
+          const updatedItem = await updateNews(initialData.id, payload, token);
+          if (onSuccess) onSuccess(updatedItem);
+      } else {
+          const newItem = await createNews(payload, token);
+          if (onSuccess) onSuccess(newItem);
+      }
     } catch (error) {
       console.error(error);
       alert("Error al guardar. Posiblemente las imágenes son muy pesadas (Límite de LocalStorage).");
@@ -197,16 +215,41 @@ const CreateNewsWizard = ({ onSuccess, onClose }) => {
       </div>
 
       {/* Progress */}
-      <div className="w-full bg-gray-800 h-1">
-        <div 
-            className="bg-gradient-to-r from-cyan-500 to-blue-600 h-1 transition-all duration-300"
-            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-        ></div>
-      </div>
+      {currentStep > 0 && (
+          <div className="w-full bg-gray-800 h-1">
+            <div 
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 h-1 transition-all duration-300"
+                style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+            ></div>
+          </div>
+      )}
 
       {/* Content */}
       <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
         
+        {/* STEP 0: Edit Confirmation & Preview */}
+        {currentStep === 0 && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-right-4 flex flex-col items-center">
+                 <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-4 text-cyan-200 w-full text-center mb-2 shadow-lg">
+                     <h3 className="text-xl font-bold mb-2">Modo Edición</h3>
+                    <p>Estás a punto de editar una noticia en borrador. ¿Estás seguro de querer continuar?</p>
+                </div>
+                
+                <article className="max-w-2xl mx-auto opacity-80 scale-95 border border-gray-700 rounded-xl p-6 pointer-events-none bg-gray-800/30">
+                     <h1 className="text-2xl font-bold text-white mb-2">{formData.title || 'Sin Título'}</h1>
+                     <p className="text-gray-400 text-sm mb-4">{formData.description || 'Sin resumen'}</p>
+                     {formData.image && (
+                         <img src={formData.image} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
+                     )}
+                </article>
+                
+                <div className="flex gap-4 mt-8 w-full justify-center">
+                    <button onClick={onClose} className="px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors border border-gray-700">Cancelar</button>
+                    <button onClick={() => setCurrentStep(1)} className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg font-bold shadow-lg shadow-cyan-500/20">Continuar Edición</button>
+                </div>
+            </div>
+        )}
+
         {/* STEP 1: Basic Info */}
         {currentStep === 1 && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
@@ -437,50 +480,52 @@ const CreateNewsWizard = ({ onSuccess, onClose }) => {
       </div>
 
       {/* Footer */}
-      <div className="p-6 border-t border-gray-800 bg-gray-900/50 flex justify-between">
-        <button
-            onClick={handleBack}
-            disabled={currentStep === 1}
-            className={`px-6 py-2 rounded-lg font-medium transition-all ${currentStep === 1 ? 'opacity-0 pointer-events-none' : 'text-gray-400 hover:text-white'}`}
-        >
-            Atrás
-        </button>
-
-        {currentStep < totalSteps ? (
-            <button onClick={handleNext} className="bg-cyan-600 hover:bg-cyan-500 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-cyan-500/20">
-                Siguiente
+      {currentStep > 0 && (
+          <div className="p-6 border-t border-gray-800 bg-gray-900/50 flex justify-between">
+            <button
+                onClick={handleBack}
+                disabled={currentStep === 1}
+                className={`px-6 py-2 rounded-lg font-medium transition-all ${currentStep === 1 ? 'opacity-0 pointer-events-none' : 'text-gray-400 hover:text-white'}`}
+            >
+                Atrás
             </button>
-        ) : (
-             <div className="flex gap-4">
-                {user?.role === 'Administrador' || user?.role === 'Moderador' ? (
-                    <>
+
+            {currentStep < totalSteps ? (
+                <button onClick={handleNext} className="bg-cyan-600 hover:bg-cyan-500 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-cyan-500/20">
+                    Siguiente
+                </button>
+            ) : (
+                 <div className="flex gap-4">
+                    {user?.role === 'Administrador' || user?.role === 'Moderador' ? (
+                        <>
+                            <button
+                                onClick={() => handleSubmit('draft')}
+                                disabled={loading}
+                                className="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-6 py-2 rounded-lg font-bold transition-all shadow-lg"
+                            >
+                                Guardar como Borrador
+                            </button>
+                            <button
+                                onClick={() => handleSubmit('published')}
+                                disabled={loading}
+                                className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-400 hover:to-pink-500 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20"
+                            >
+                                {loading ? 'Procesando...' : (isEditMode ? 'Publicar Cambios' : 'Publicar Ahora')}
+                            </button>
+                        </>
+                    ) : (
                         <button
                             onClick={() => handleSubmit('draft')}
                             disabled={loading}
-                            className="bg-gray-800 hover:bg-gray-700 text-white border border-gray-700 px-6 py-2 rounded-lg font-bold transition-all shadow-lg"
-                        >
-                            Guardar como Borrador
-                        </button>
-                        <button
-                            onClick={() => handleSubmit('published')}
-                            disabled={loading}
                             className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-400 hover:to-pink-500 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20"
                         >
-                            {loading ? 'Procesando...' : 'Publicar Ahora'}
+                            {loading ? 'Procesando...' : (isEditMode ? 'Guardar Cambios' : 'Crear Noticia')}
                         </button>
-                    </>
-                ) : (
-                    <button
-                        onClick={() => handleSubmit('draft')}
-                        disabled={loading}
-                        className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-400 hover:to-pink-500 text-white px-8 py-2 rounded-lg font-bold transition-all shadow-lg shadow-purple-500/20"
-                    >
-                        {loading ? 'Procesando...' : 'Crear Noticia'}
-                    </button>
-                )}
-            </div>
-        )}
-      </div>
+                    )}
+                </div>
+            )}
+          </div>
+      )}
 
     </div>
   );

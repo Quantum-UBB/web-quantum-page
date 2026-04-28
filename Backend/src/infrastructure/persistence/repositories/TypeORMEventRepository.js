@@ -31,24 +31,28 @@ export const create = async (data) => {
     return await repository.save(eventItem);
 };
 
-/**
- * Actualiza el estado de un evento (ej: draft, published).
- * 
- * @param {number|string} id - ID del evento.
- * @param {string} status - Nuevo estado.
- * @returns {Promise<Object>} Evento actualizado.
- */
+export const update = async (id, data) => {
+    await repository.update(id, data);
+    return await getById(id);
+};
+
 export const updateStatus = async (id, status) => {
     await repository.update(id, { status });
     return await getById(id);
 };
 
-/**
- * Elimina un evento permanentemente.
- * 
- * @param {number|string} id - ID del evento a eliminar.
- * @returns {Promise<boolean>} True si se eliminó.
- */
+export const getPinnedEvents = async () => {
+    return await repository.find({
+        where: { isPinned: true },
+        order: { updatedAt: "ASC" }
+    });
+};
+
+export const updatePinStatus = async (id, isPinned) => {
+    await repository.update(id, { isPinned });
+    return await getById(id);
+};
+
 export const deleteById = async (id) => {
     await repository.delete(id);
     return true;

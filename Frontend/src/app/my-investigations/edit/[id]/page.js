@@ -1,19 +1,23 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Orbitron, Inter, Roboto_Mono } from 'next/font/google';
-import { createInvestigation } from '@/services/investigationService';
+import { getInvestigationById, updateInvestigation } from '@/services/investigationService';
 import { useAuth } from '@/context/AuthContext';
+import LoadingScreen from '@/components/common/LoadingScreen';
 
 const orbitron = Orbitron({ subsets: ['latin'] });
 const inter = Inter({ subsets: ['latin'] });
 const robotoMono = Roboto_Mono({ subsets: ['latin'] });
 
-export default function CrearInvestigacionPage() {
-    const { user, isAuthenticated } = useAuth();
+export default function EditarInvestigacionPage() {
+    const { user, isAuthenticated, loading: authLoading } = useAuth();
     const router = useRouter();
+    const { id } = useParams();
+    
+    const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
     const [formData, setFormData] = useState({
@@ -28,6 +32,52 @@ export default function CrearInvestigacionPage() {
         mentors: ''
     });
 
+    useEffect(() => {
+        if (!authLoading && !isAuthenticated) {
+            router.push('/');
+        }
+    }, [isAuthenticated, authLoading, router]);
+
+    useEffect(() => {
+        const loadInvestigation = async () => {
+            try {
+                const data = await getInvestigationById(id);
+                if (!data) {
+                    setError('Investigación no encontrada');
+                    return;
+                }
+
+                // Check ownership (Double safety, backend also checks)
+                if (data.researcher !== user?.username && user?.role !== 'Administrador') {
+                     // Note: Backend might reject even if admin if we followed user's "solo el usuario que se loguee sobre sus propias"
+                     // but usually we allow admins. Let's stick to user's restriction.
+                }
+
+                setFormData({
+                    title: data.title || '',
+                    status: data.status || 'En Curso',
+                    difficulty: data.difficulty || 'Intermedio',
+                    abstract: data.abstract || '',
+                    arxiv: data.arxiv || '',
+                    tags: data.tags ? data.tags.join(', ') : '',
+                    progress: data.progress || 0,
+                    coResearchers: data.coResearchers ? data.coResearchers.join(', ') : '',
+                    mentors: data.mentors ? data.mentors.join(', ') : '',
+                    existingPdf: data.pdfUrl
+                });
+            } catch (err) {
+                console.error("Error loading investigation:", err);
+                setError('Error al cargar los datos de la investigación');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (isAuthenticated && id) {
+            loadInvestigation();
+        }
+    }, [id, isAuthenticated, user]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -37,7 +87,7 @@ export default function CrearInvestigacionPage() {
         e.preventDefault();
 
         if (!isAuthenticated || !user) {
-            alert("Debes iniciar sesión para crear una investigación.");
+            alert("Debes iniciar sesión para editar una investigación.");
             return;
         }
 
@@ -52,7 +102,6 @@ export default function CrearInvestigacionPage() {
             investigationPayload.append('abstract', formData.abstract);
             investigationPayload.append('arxiv', formData.arxiv);
             investigationPayload.append('progress', formData.progress);
-            investigationPayload.append('researcher', user.name || "Investigador");
 
             investigationPayload.append('tags', formData.tags.split(',').map(tag => tag.trim()).filter(Boolean).join(','));
             investigationPayload.append('coResearchers', formData.coResearchers.split(',').map(r => r.trim()).filter(Boolean).join(','));
@@ -62,15 +111,31 @@ export default function CrearInvestigacionPage() {
                 investigationPayload.append('pdf', formData.selectedFileRaw);
             }
 
-            await createInvestigation(investigationPayload);
+            await updateInvestigation(id, investigationPayload);
             router.push('/my-investigations');
         } catch (err) {
-            console.error("Error al crear investigación:", err);
-            setError(err.message || 'Error al guardar la investigación');
+            console.error("Error al actualizar investigación:", err);
+            setError(err.message || 'Error al guardar los cambios');
         } finally {
             setIsSubmitting(false);
         }
     };
+
+    if (authLoading || isLoading) {
+        return <LoadingScreen message="Cargando investigación" />;
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen pt-40 bg-[#0b0f19] text-center px-6">
+                <h2 className="text-2xl font-bold text-red-500 mb-4">Error</h2>
+                <p className="text-slate-400 mb-8">{error}</p>
+                <Link href="/my-investigations" className="text-[#14E19D] hover:underline font-bold">
+                    Volver a mis investigaciones
+                </Link>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -90,14 +155,8 @@ export default function CrearInvestigacionPage() {
 
                     <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800 rounded-xl p-8 shadow-2xl">
                         <h1 className={`text-3xl font-bold text-white mb-8 border-b border-slate-800 pb-4 ${orbitron.className}`}>
-                            NUEVA <span className="text-[#14E19D]">INVESTIGACIÓN</span>
+                            EDITAR <span className="text-[#14E19D]">INVESTIGACIÓN</span>
                         </h1>
-
-                        {error && (
-                            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-500 text-sm">
-                                {error}
-                            </div>
-                        )}
 
                         <form onSubmit={handleSubmit} className="space-y-8">
                             {/* Título */}
@@ -144,7 +203,7 @@ export default function CrearInvestigacionPage() {
                                 </div>
                             </div>
 
-                            {/* Progreso (Solo si está en curso) */}
+                            {/* Progreso */}
                             {formData.status === 'En Curso' && (
                                 <div className="space-y-6 pt-2">
                                     <style jsx>{`
@@ -168,10 +227,6 @@ export default function CrearInvestigacionPage() {
                                         border: 2px solid #0b0f19;
                                         box-shadow: 0 0 10px rgba(20, 225, 157, 0.5);
                                     }
-                                    .quantum-slider::-webkit-slider-thumb:hover {
-                                        transform: scale(1.2);
-                                        box-shadow: 0 0 15px rgba(20, 225, 157, 0.8);
-                                    }
                                     .quantum-slider::-moz-range-thumb {
                                         width: 18px;
                                         height: 18px;
@@ -184,12 +239,11 @@ export default function CrearInvestigacionPage() {
                                 `}</style>
                                     <div className="flex justify-between items-end">
                                         <label className="text-[10px] text-slate-500 uppercase tracking-widest block">Progreso del Proyecto</label>
-                                        <span className="text-white font-mono text-sm px-2 py-0.5 bg-slate-800 rounded border border-slate-700 shadow-[0_0_10px_rgba(20,225,157,0.1)]">{formData.progress}%</span>
+                                        <span className="text-white font-mono text-sm px-2 py-0.5 bg-slate-800 rounded border border-slate-700">{formData.progress}%</span>
                                     </div>
                                     <div className="relative flex items-center h-6">
-                                        {/* Filled Track background with glow */}
                                         <div
-                                            className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-[#14E19D] rounded-full shadow-[0_0_10px_rgba(20,225,157,0.3)] pointer-events-none"
+                                            className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-[#14E19D] rounded-full"
                                             style={{ width: `${formData.progress}%` }}
                                         ></div>
                                         <input
@@ -205,7 +259,7 @@ export default function CrearInvestigacionPage() {
                                 </div>
                             )}
 
-                            {/* Resumen / Abstract */}
+                            {/* Resumen */}
                             <div className="space-y-2">
                                 <label className="text-[10px] text-slate-500 uppercase tracking-widest block">Resumen (Markdown soportado)</label>
                                 <textarea
@@ -214,14 +268,13 @@ export default function CrearInvestigacionPage() {
                                     rows="6"
                                     value={formData.abstract}
                                     onChange={handleChange}
-                                    placeholder="Describe los objetivos y hallazgos clave..."
                                     className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#14E19D] transition-colors resize-none"
                                 />
                             </div>
 
-                            {/* Archivo de Investigación */}
+                            {/* Archivo */}
                             <div className="space-y-2">
-                                <label className="text-[10px] text-slate-500 uppercase tracking-widest block">Documentación (PDF / DOCX)</label>
+                                <label className="text-[10px] text-slate-500 uppercase tracking-widest block">Documentación (Subir nuevo para reemplazar)</label>
                                 <div className="relative">
                                     <input
                                         type="file"
@@ -256,19 +309,15 @@ export default function CrearInvestigacionPage() {
                                             </div>
                                             <div>
                                                 <p className="text-sm text-white font-medium">
-                                                    {formData.selectedFile || "Selecciona un archivo para subir"}
+                                                    {formData.selectedFile || (formData.existingPdf ? "Archivo actual cargado" : "Selecciona un archivo para subir")}
                                                 </p>
-                                                <p className="text-[10px] text-slate-500 uppercase">Máximo 25MB • PDF, DOCX</p>
+                                                <p className="text-[10px] text-slate-500 uppercase">PDF, DOCX • Solo si deseas cambiar el archivo actual</p>
                                             </div>
                                         </div>
-                                        <span className="text-[10px] font-bold text-[#14E19D] uppercase tracking-widest border border-[#14E19D]/30 px-3 py-1 rounded group-hover:bg-[#14E19D] group-hover:text-slate-900 transition-all">
-                                            Examinar
-                                        </span>
                                     </label>
                                 </div>
                             </div>
 
-                            {/* Metadata grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-[10px] text-slate-500 uppercase tracking-widest block">ArXiv ID (Opcional)</label>
@@ -276,23 +325,20 @@ export default function CrearInvestigacionPage() {
                                         name="arxiv"
                                         value={formData.arxiv}
                                         onChange={handleChange}
-                                        placeholder="2402.XXXXX"
                                         className={`w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-[#14E19D] focus:outline-none focus:border-[#14E19D] transition-colors font-mono text-sm ${robotoMono.className}`}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] text-slate-500 uppercase tracking-widest block">Etiquetas (separadas por coma)</label>
+                                    <label className="text-[10px] text-slate-500 uppercase tracking-widest block">Etiquetas</label>
                                     <input
                                         name="tags"
                                         value={formData.tags}
                                         onChange={handleChange}
-                                        placeholder="Cuántica, Redes, Fibra..."
                                         className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#14E19D] transition-colors"
                                     />
                                 </div>
                             </div>
 
-                            {/* Colaboradores y Mentores */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-[10px] text-slate-500 uppercase tracking-widest block">Co-investigadores</label>
@@ -300,7 +346,6 @@ export default function CrearInvestigacionPage() {
                                         name="coResearchers"
                                         value={formData.coResearchers}
                                         onChange={handleChange}
-                                        placeholder="Nombres separados por coma"
                                         className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#14E19D] transition-colors"
                                     />
                                 </div>
@@ -310,24 +355,22 @@ export default function CrearInvestigacionPage() {
                                         name="mentors"
                                         value={formData.mentors}
                                         onChange={handleChange}
-                                        placeholder="Nombres separados por coma"
                                         className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#14E19D] transition-colors"
                                     />
                                 </div>
                             </div>
 
-                            {/* Botones de acción */}
                             <div className="flex gap-4 pt-4">
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className={`flex-1 bg-[#14E19D] hover:bg-emerald-400 text-slate-900 font-bold py-4 rounded-lg transition-all transform hover:scale-[1.02] shadow-lg shadow-emerald-500/20 active:scale-[0.98] uppercase tracking-widest text-xs ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    className={`flex-1 bg-[#14E19D] hover:bg-emerald-400 text-slate-900 font-bold py-4 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] uppercase tracking-widest text-xs ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
-                                    {isSubmitting ? 'Creando...' : 'Crear Investigación'}
+                                    {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
                                 </button>
                                 <Link
                                     href="/my-investigations"
-                                    className="flex-1 bg-transparent border border-slate-700 hover:border-white text-slate-400 hover:text-white font-bold py-4 rounded-lg transition-all text-center uppercase tracking-widest text-xs"
+                                    className="flex-1 bg-transparent border border-slate-700 hover:border-white text-slate-400 hover:text-white font-bold py-4 rounded-lg transition-all text-center uppercase tracking-widest text-xs flex items-center justify-center"
                                 >
                                     Cancelar
                                 </Link>

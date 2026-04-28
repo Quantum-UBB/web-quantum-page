@@ -285,3 +285,54 @@ export const createInvestigation = async (investigationData, token = null) => {
         throw error;
     }
 };
+
+/**
+ * Actualiza una investigación existente.
+ * 
+ * @param {number|string} id - ID de la investigación.
+ * @param {Object|FormData} investigationData - Datos actualizados.
+ * @param {string} token - Token de autenticación.
+ * @returns {Promise<Object>} Investigación actualizada.
+ */
+export const updateInvestigation = async (id, investigationData, token = null) => {
+    try {
+        const isFormData = investigationData instanceof FormData;
+        const headers = getAuthHeaders(token);
+        if (isFormData) {
+            delete headers['Content-Type'];
+        }
+
+        const response = await fetch(`${API_URL}/investigations/${id}`, {
+            method: 'PUT',
+            headers: headers,
+            body: isFormData ? investigationData : JSON.stringify(investigationData)
+        });
+        if (!response.ok) throw new Error('Error updating investigation');
+        return await response.json();
+    } catch (error) {
+        console.error('updateInvestigation error:', error);
+        throw error;
+    }
+};
+
+/**
+ * Elimina una investigación.
+ * 
+ * @param {number|string} id - ID de la investigación.
+ * @param {string} token - Token de autenticación.
+ * @returns {Promise<boolean>} True si se eliminó correctamente.
+ */
+export const deleteInvestigation = async (id, token = null) => {
+    try {
+        const response = await fetch(`${API_URL}/investigations/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders(token)
+        });
+        if (!response.ok) throw new Error('Error deleting investigation');
+        return true;
+    } catch (error) {
+        console.error('deleteInvestigation error:', error);
+        throw error;
+    }
+};
+

@@ -72,3 +72,26 @@ export const updateVisibility = async (id, publicada) => {
     await repository.update(id, { publicada });
     return await getById(id);
 };
+
+/**
+ * Actualiza los datos de una investigación.
+ * 
+ * @param {number|string} id - ID de la investigación.
+ * @param {Object} data - Datos a actualizar.
+ * @returns {Promise<Object>} Investigación actualizada.
+ */
+export const update = async (id, data) => {
+    await repository.update(id, data);
+    return await getById(id);
+};
+
+/**
+ * Elimina una investigación de la base de datos.
+ * 
+ * @param {number|string} id - ID de la investigación.
+ * @returns {Promise<boolean>} Retorna true si fue exitoso.
+ */
+export const remove = async (id) => {
+    const result = await repository.delete(id);
+    return result.affected > 0;
+};

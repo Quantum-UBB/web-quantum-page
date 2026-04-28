@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { getMyInvestigations, toggleInvestigationVisibility } from '@/services/investigationService';
+import { getMyInvestigations, toggleInvestigationVisibility, deleteInvestigation } from '@/services/investigationService';
 import { useAuth } from '@/context/AuthContext';
 import LoadingScreen from '@/components/common/LoadingScreen';
 
@@ -51,6 +51,20 @@ export default function MisInvestigacionesPage() {
         } catch (err) {
             console.error("Error toggling visibility:", err);
             alert("Hubo un error al cambiar la visibilidad de la investigación.");
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm("¿Estás seguro de que deseas eliminar esta investigación? Esta acción no se puede deshacer.")) {
+            return;
+        }
+
+        try {
+            await deleteInvestigation(id);
+            setMyInvestigations(prev => prev.filter(inv => inv.id !== id));
+        } catch (err) {
+            console.error("Error deleting investigation:", err);
+            alert("Hubo un error al intentar eliminar la investigación.");
         }
     };
 
@@ -104,9 +118,7 @@ export default function MisInvestigacionesPage() {
                                         <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Título de la Investigación</th>
                                         <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Estado</th>
                                         <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Última Actualización</th>
-                                        {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
-                                            <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Acciones</th>
-                                        )}
+                                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-700/50">
@@ -135,22 +147,35 @@ export default function MisInvestigacionesPage() {
                                             <td className="px-6 py-5 text-center text-slate-400 text-sm">
                                                 {inv.lastUpdate}
                                             </td>
-                                            {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
-                                                <td className="px-6 py-5">
-                                                    <div className="flex items-center justify-end gap-3">
-
+                                            <td className="px-6 py-5">
+                                                <div className="flex items-center justify-end gap-3">
+                                                    <Link
+                                                        href={`/my-investigations/edit/${inv.id}`}
+                                                        className="px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest border border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white transition-all"
+                                                    >
+                                                        Editar
+                                                    </Link>
+                                                    
+                                                    {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
                                                         <button
                                                             onClick={() => handleTogglePublicar(inv.id, inv.publicada)}
-                                                            className={`px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border ${inv.publicada
+                                                            className={`px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest transition-all border ${inv.publicada
                                                                 ? 'bg-slate-600 text-white border-slate-500 hover:bg-slate-700 hover:border-slate-600'
                                                                 : 'bg-transparent border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white'
                                                                 }`}
                                                         >
                                                             {inv.publicada ? 'Ocultar' : 'Publicar'}
                                                         </button>
-                                                    </div>
-                                                </td>
-                                            )}
+                                                    )}
+
+                                                    <button
+                                                        onClick={() => handleDelete(inv.id)}
+                                                        className="px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest border border-red-900/50 text-red-500/70 hover:bg-red-500 hover:text-white transition-all"
+                                                    >
+                                                        Eliminar
+                                                    </button>
+                                                </div>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>

@@ -4,6 +4,8 @@ import * as GetInvestigationById from '../../../application/use-cases/GetInvesti
 import * as GetMyInvestigations from '../../../application/use-cases/GetMyInvestigations.js';
 import * as GetUniqueTags from '../../../application/use-cases/GetUniqueTags.js';
 import * as CreateInvestigation from '../../../application/use-cases/CreateInvestigation.js';
+import * as UpdateInvestigation from '../../../application/use-cases/UpdateInvestigation.js';
+import * as DeleteInvestigation from '../../../application/use-cases/DeleteInvestigation.js';
 
 export const getAll = async (req, res) => {
     try {
@@ -71,3 +73,30 @@ export const toggleVisibility = async (req, res) => {
         res.status(403).json({ error: error.message });
     }
 };
+
+export const update = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const payload = { ...req.body };
+        
+        if (req.file) {
+            payload.pdfUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+        }
+
+        const updated = await UpdateInvestigation.execute(req.user, id, payload);
+        res.status(200).json(updated);
+    } catch (error) {
+        res.status(403).json({ error: error.message });
+    }
+};
+
+export const remove = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await DeleteInvestigation.execute(req.user, id);
+        res.status(204).send();
+    } catch (error) {
+        res.status(403).json({ error: error.message });
+    }
+};
+

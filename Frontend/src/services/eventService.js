@@ -1,7 +1,9 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-const getAuthHeaders = () => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+const getAuthHeaders = (overrideToken = null) => {
+    const token = overrideToken || (typeof window !== 'undefined' 
+        ? (localStorage.getItem('token') || sessionStorage.getItem('token')) 
+        : null);
     return {
         'Content-Type': 'application/json',
         'ngrok-skip-browser-warning': '69420',
@@ -14,10 +16,10 @@ const getAuthHeaders = () => {
  * 
  * @returns {Promise<Array>} Lista de eventos publicados.
  */
-export const getEventsData = async () => {
+export const getEventsData = async (token = null) => {
     try {
         const response = await fetch(`${API_URL}/events`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders(token)
         });
         if (!response.ok) throw new Error('Network response was not ok');
         const allEvents = await response.json();
@@ -28,10 +30,10 @@ export const getEventsData = async () => {
     }
 };
 
-export const getAllEventsRaw = async () => {
+export const getAllEventsRaw = async (token = null) => {
     try {
         const response = await fetch(`${API_URL}/events`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders(token)
         });
         if (!response.ok) throw new Error('Network response was not ok');
         return await response.json();
@@ -47,10 +49,10 @@ export const getAllEventsRaw = async () => {
  * @param {number|string} id - ID del evento.
  * @returns {Promise<Object|null>} El evento o null si hay error.
  */
-export const getEventById = async (id) => {
+export const getEventById = async (id, token = null) => {
     try {
         const response = await fetch(`${API_URL}/events/${id}`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders(token)
         });
         if (!response.ok) throw new Error('Network response was not ok');
         return await response.json();
@@ -60,30 +62,30 @@ export const getEventById = async (id) => {
     }
 };
 
-export const createEvent = async (data) => {
+export const createEvent = async (data, token = null) => {
     const response = await fetch(`${API_URL}/events`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: getAuthHeaders(token),
         body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Network response was not ok');
     return await response.json();
 };
 
-export const updateEventStatus = async (id, status) => {
+export const updateEventStatus = async (id, status, token = null) => {
     const response = await fetch(`${API_URL}/events/${id}/status`, {
         method: 'PATCH',
-        headers: getAuthHeaders(),
+        headers: getAuthHeaders(token),
         body: JSON.stringify({ status })
     });
     if (!response.ok) throw new Error('Network response was not ok');
     return await response.json();
 };
 
-export const deleteEvent = async (id) => {
+export const deleteEvent = async (id, token = null) => {
     const response = await fetch(`${API_URL}/events/${id}`, { 
         method: 'DELETE',
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(token)
     });
     if (!response.ok) throw new Error('Network response was not ok');
     return true;

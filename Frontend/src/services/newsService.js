@@ -1,7 +1,9 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-const getAuthHeaders = () => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+const getAuthHeaders = (overrideToken = null) => {
+    const token = overrideToken || (typeof window !== 'undefined' 
+        ? (localStorage.getItem('token') || sessionStorage.getItem('token')) 
+        : null);
     return {
         'Content-Type': 'application/json',
         'ngrok-skip-browser-warning': '69420',
@@ -15,10 +17,10 @@ const getAuthHeaders = () => {
  * 
  * @returns {Promise<Object>} Objeto con {featured, recent, grid}.
  */
-export const getNewsData = async () => {
+export const getNewsData = async (token = null) => {
     try {
         const response = await fetch(`${API_URL}/news`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders(token)
         });
         if (!response.ok) throw new Error('Network response was not ok');
         const newsList = await response.json();
@@ -35,10 +37,10 @@ export const getNewsData = async () => {
     }
 };
 
-export const getAllNewsRaw = async () => {
+export const getAllNewsRaw = async (token = null) => {
     try {
         const response = await fetch(`${API_URL}/news`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders(token)
         });
         if (!response.ok) throw new Error('Network response was not ok');
         return await response.json();
@@ -48,30 +50,30 @@ export const getAllNewsRaw = async () => {
     }
 };
 
-export const createNews = async (data) => {
+export const createNews = async (data, token = null) => {
     const response = await fetch(`${API_URL}/news`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: getAuthHeaders(token),
         body: JSON.stringify(data)
     });
     if (!response.ok) throw new Error('Network response was not ok');
     return await response.json();
 };
 
-export const updateNewsStatus = async (id, status) => {
+export const updateNewsStatus = async (id, status, token = null) => {
     const response = await fetch(`${API_URL}/news/${id}/status`, {
         method: 'PATCH',
-        headers: getAuthHeaders(),
+        headers: getAuthHeaders(token),
         body: JSON.stringify({ status })
     });
     if (!response.ok) throw new Error('Network response was not ok');
     return await response.json();
 };
 
-export const deleteNews = async (id) => {
+export const deleteNews = async (id, token = null) => {
     const response = await fetch(`${API_URL}/news/${id}`, { 
         method: 'DELETE',
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(token)
     });
     if (!response.ok) throw new Error('Network response was not ok');
     return true;

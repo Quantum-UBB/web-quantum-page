@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Quantum Web - Frontend
 
-## Getting Started
+Esta es la aplicación cliente del proyecto Quantum, construida con **Next.js** y **React**. Proporciona una interfaz moderna y dinámica para la visualización de datos científicos.
 
-First, run the development server:
+## Características
+
+- **Visualización de Investigaciones**: Repositorio interactivo con filtros avanzados.
+- **Gestión de Perfil**: Panel de control para que investigadores gestionen sus propios estudios.
+- **Noticias y Eventos**: Sección dedicada a la comunicación del grupo de investigación.
+- **Diseño Premium**: Interfaz oscura con acentos esmeralda, optimizada para legibilidad.
+
+## Tecnologías
+
+- **Next.js 15**: Framework de React con soporte para Server Components.
+- **Tailwind CSS**: Estilizado mediante utilidades CSS modernas.
+- **Context API**: Gestión de estado global para la autenticación.
+
+## Estructura de Carpetas
+
+- `src/app`: Rutas y páginas de la aplicación (App Router).
+- `src/components`: Componentes reutilizables divididos por categorías (layout, investigations, news).
+- `src/context`: Proveedores de estado global (AuthContext).
+- `src/services`: Funciones de comunicación con la API del Backend.
+- `public`: Activos estáticos como imágenes y fuentes.
+
+## Desarrollo
+
+Para iniciar el servidor de desarrollo:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el resultado.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Documentación de Código
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El código utiliza **JSDoc** para documentar componentes y funciones. Puedes leer los comentarios directamente en los archivos `.jsx` y `.js` para entender el flujo de datos y las propiedades requeridas.

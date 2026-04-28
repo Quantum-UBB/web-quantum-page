@@ -1,5 +1,6 @@
-// Este servicio simula una llamada a una API o Base de Datos
-// En el futuro, aquí harías: fetch('https://api.tu-backend.com/data')
+// Este servicio maneja datos estáticos o de configuración del sitio
+// Las llamadas a API de Entidades (Noticias, Eventos, Investigaciones, Usuarios) 
+// se han movido a sus respectivos archivos en /services/ para mejor organización.
 
 export const getLandingData = async () => {
     // Simulamos un retardo de red pequeño (opcional)
@@ -103,7 +104,7 @@ export const getAreasData = async () => {
 
     return {
         hero: {
-            title: "Explora Nuestros Universos",
+            title: "Explora Nuestras Áreas",
             subtitle: "Desde la fotónica hasta el control avanzado. Especialízate en las tecnologías que impulsan la infraestructura física del mañana.",
         },
         areas: [

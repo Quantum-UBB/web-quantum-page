@@ -1,5 +1,8 @@
 import { EntitySchema } from "typeorm";
 
+/**
+ * Esquema de base de datos para la entidad de Noticias.
+ */
 export const NewsSchema = new EntitySchema({
     name: "News",
     tableName: "news",

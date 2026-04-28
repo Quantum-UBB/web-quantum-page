@@ -13,5 +13,6 @@ router.use(authMiddleware);
 router.post('/register', controller.register);
 router.get('/', controller.getAll);
 router.patch('/assign-role', controller.changeRole);
+router.get('/me', controller.getProfile);
 
 export default router;

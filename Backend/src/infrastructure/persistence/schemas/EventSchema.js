@@ -1,5 +1,8 @@
 import { EntitySchema } from "typeorm";
 
+/**
+ * Esquema de base de datos para la entidad de Eventos.
+ */
 export const EventSchema = new EntitySchema({
     name: "Event",
     tableName: "events",

@@ -10,10 +10,22 @@ export const getAll = async (filter = {}) => {
     });
 };
 
+/**
+ * Busca un evento por su ID.
+ * 
+ * @param {number|string} id - ID del evento.
+ * @returns {Promise<Object|null>} Evento encontrado o null.
+ */
 export const getById = async (id) => {
     return await repository.findOneBy({ id: parseInt(id) });
 };
 
+/**
+ * Crea y guarda un nuevo evento.
+ * 
+ * @param {Object} data - Datos del evento.
+ * @returns {Promise<Object>} Evento guardado.
+ */
 export const create = async (data) => {
     const eventItem = repository.create(data);
     return await repository.save(eventItem);

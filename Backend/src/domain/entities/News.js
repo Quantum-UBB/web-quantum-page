@@ -1,3 +1,6 @@
+/**
+ * Entidad de dominio que representa una Noticia.
+ */
 export class News {
     constructor({
         id,

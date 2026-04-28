@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
+/**
+ * Banner destacado (Hero) para la noticia principal.
+ * 
+ * @param {Object} props - Propiedades del componente.
+ * @param {Object} props.article - Datos de la noticia a destacar.
+ */
 const NewsHero = ({ article }) => {
   if (!article) return null;
 

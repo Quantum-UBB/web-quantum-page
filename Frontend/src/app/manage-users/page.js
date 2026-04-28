@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
-import { getAllUsers, updateUserRole } from '../../services/dataService';
+import { getAllUsers, updateUserRole } from '@/services/authService';
 import Link from 'next/link';
 
 export default function ManageUsersPage() {

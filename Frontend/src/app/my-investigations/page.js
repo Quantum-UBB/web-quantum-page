@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getMyInvestigations, toggleInvestigationVisibility } from '@/services/investigationService';
 import { useAuth } from '@/context/AuthContext';
+import LoadingScreen from '@/components/common/LoadingScreen';
 
 export default function MisInvestigacionesPage() {
     const { user, isAuthenticated, loading: authLoading } = useAuth();
@@ -54,7 +55,7 @@ export default function MisInvestigacionesPage() {
     };
 
     if (authLoading || (isLoading && isAuthenticated)) {
-        return <div className="min-h-screen pt-56 bg-slate-900 text-white text-center">Cargando tus investigaciones...</div>;
+        return <LoadingScreen message="Cargando tus investigaciones" />;
     }
 
     if (!isAuthenticated) {
@@ -103,7 +104,9 @@ export default function MisInvestigacionesPage() {
                                         <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Título de la Investigación</th>
                                         <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Estado</th>
                                         <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Última Actualización</th>
-                                        <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Acciones</th>
+                                        {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
+                                            <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Acciones</th>
+                                        )}
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-700/50">
@@ -132,20 +135,22 @@ export default function MisInvestigacionesPage() {
                                             <td className="px-6 py-5 text-center text-slate-400 text-sm">
                                                 {inv.lastUpdate}
                                             </td>
-                                            <td className="px-6 py-5">
-                                                <div className="flex items-center justify-end gap-3">
+                                            {(user?.role === 'Administrador' || user?.role === 'Moderador') && (
+                                                <td className="px-6 py-5">
+                                                    <div className="flex items-center justify-end gap-3">
 
-                                                    <button
-                                                        onClick={() => handleTogglePublicar(inv.id, inv.publicada)}
-                                                        className={`px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border ${inv.publicada
-                                                            ? 'bg-slate-600 text-white border-slate-500 hover:bg-slate-700 hover:border-slate-600'
-                                                            : 'bg-transparent border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white'
-                                                            }`}
-                                                    >
-                                                        {inv.publicada ? 'Ocultar' : 'Publicar'}
-                                                    </button>
-                                                </div>
-                                            </td>
+                                                        <button
+                                                            onClick={() => handleTogglePublicar(inv.id, inv.publicada)}
+                                                            className={`px-4 py-2 rounded text-[10px] font-bold uppercase tracking-widest transition-all border ${inv.publicada
+                                                                ? 'bg-slate-600 text-white border-slate-500 hover:bg-slate-700 hover:border-slate-600'
+                                                                : 'bg-transparent border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white'
+                                                                }`}
+                                                        >
+                                                            {inv.publicada ? 'Ocultar' : 'Publicar'}
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            )}
                                         </tr>
                                     ))}
                                 </tbody>
@@ -160,7 +165,9 @@ export default function MisInvestigacionesPage() {
                             </svg>
                             <h3 className="text-xl font-bold text-white mb-2">No tienes investigaciones todavía</h3>
                             <p className="text-slate-500 mb-8">Comienza subiendo tu primer proyecto de investigación académica.</p>
-                            <button className="text-[#14E19D] font-bold hover:underline">Subir mi primera investigación</button>
+                            <Link href="/my-investigations/create" className="text-[#14E19D] font-bold hover:underline">
+                                Subir mi primera investigación
+                            </Link>
                         </div>
                     )}
                 </div>

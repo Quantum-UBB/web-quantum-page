@@ -7,6 +7,15 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_fallback';
 
+/**
+ * Caso de uso: Autenticar un usuario.
+ * Verifica las credenciales y genera un token JWT de larga duración.
+ * 
+ * @param {string} email - Correo electrónico del usuario.
+ * @param {string} password - Contraseña en texto plano o hash.
+ * @returns {Promise<Object>} Objeto con el token y datos públicos del usuario.
+ * @throws {Error} Si las credenciales son incorrectas.
+ */
 export const execute = async (email, password) => {
     const user = await userRepository.findByEmail(email);
 

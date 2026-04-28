@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import SearchBox from '@/components/common/SearchBox';
 
 /**
  * Panel lateral de navegación (Sidebar).
@@ -41,16 +42,13 @@ const Sidebar = ({ isOpen, onClose }) => {
                         <span className="font-bold text-lg text-white">Perfil</span>
                     </div>
 
-                    {/* Search Bar - Matching Image 3 */}
+                    {/* Search Bar with autocomplete */}
                     <div className="relative mb-6">
-                        <input
-                            type="text"
-                            placeholder=""
-                            className="w-full bg-slate-700 text-white rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary"
+                        <SearchBox
+                            placeholder="Buscar en Quantum..."
+                            onClose={onClose}
+                            inputClassName="w-full bg-slate-700 text-white rounded-full py-2 px-4 pr-9 focus:outline-none focus:ring-2 focus:ring-[#14E19D] placeholder-slate-400 text-sm"
                         />
-                        <button className="absolute right-3 top-2 text-white">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        </button>
                     </div>
                 </div>
 

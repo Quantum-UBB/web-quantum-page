@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getNewsData, getEventsData } from '@/services/dataService';
+import { getNewsData } from '@/services/newsService';
+import { getEventsData } from '@/services/eventService';
 import NewsHero from '@/components/news/NewsHero';
 import RecentNewsList from '@/components/news/RecentNewsList';
 import NewsCard from '@/components/news/NewsCard';

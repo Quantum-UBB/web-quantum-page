@@ -10,6 +10,7 @@ import { Inter, Roboto_Mono, Orbitron } from 'next/font/google';
 import 'highlight.js/styles/atom-one-dark.css';
 import { getInvestigationById } from '@/services/investigationService';
 import BackButton from '@/components/common/BackButton';
+import LoadingScreen from '@/components/common/LoadingScreen';
 
 const inter = Inter({ subsets: ['latin'] });
 const robotoMono = Roboto_Mono({ subsets: ['latin'] });
@@ -44,7 +45,7 @@ export default function InvestigationDetail() {
     // Colors V2 (Simplified)
     const bgDark = '#0b0f19';
 
-    if (loading) return <div className="min-h-screen pt-40 text-center text-white bg-[#0b0f19]">Cargando detalles...</div>;
+    if (loading) return <LoadingScreen message="Cargando investigación" />;
     if (!data) return <div className="min-h-screen pt-40 text-center text-white bg-[#0b0f19]">Investigación no encontrada</div>;
 
     // Construct Markdown Content from Abstract

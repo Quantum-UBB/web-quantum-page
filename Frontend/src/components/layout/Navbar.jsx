@@ -20,7 +20,7 @@ const Navbar = () => {
     const [isLoginOpen, setIsLoginOpen] = useState(false);
 
     const pathname = usePathname();
-    const isCompactRoute = pathname?.startsWith('/news') || pathname?.startsWith('/my-investigations') || pathname?.startsWith('/investigations') || pathname?.startsWith('/my-news') || pathname?.startsWith('/my-events') || pathname?.startsWith('/create-user') || pathname?.startsWith('/manage-users');
+    const isCompactRoute = pathname?.startsWith('/news') || pathname?.startsWith('/my-investigations') || pathname?.startsWith('/investigations') || pathname?.startsWith('/my-news') || pathname?.startsWith('/my-events') || pathname?.startsWith('/create-user') || pathname?.startsWith('/manage-users') || pathname?.startsWith('/profile');
 
     // Force compact state if on compact routes, otherwise use scroll state
     const showCompactNav = isCompactRoute || isScrolled;
@@ -121,6 +121,10 @@ const Navbar = () => {
                         <div className="text-center">
                             <h3 className="text-xl font-bold text-white mb-2 font-[family-name:var(--font-orbitron)] tracking-wider">Hola, {user.name}</h3>
                             <p className="text-xs text-[#14E19D] uppercase tracking-widest font-[family-name:var(--font-orbitron)] mb-6">Rol: {user.role}</p>
+
+                            <Link href="/profile" onClick={() => setIsLoginOpen(false)} className="block w-full bg-slate-800 hover:bg-slate-700 text-[#14E19D] font-bold py-2.5 rounded-none mb-3 border border-[#14E19D]/50 transition-colors">
+                                MI PERFIL
+                            </Link>
 
                             <Link href="/my-news" onClick={() => setIsLoginOpen(false)} className="block w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-none mb-3 border border-slate-600 transition-colors">
                                 {user.role === 'Administrador' || user.role === 'Moderador' ? 'NOTICIAS' : 'MIS NOTICIAS'}

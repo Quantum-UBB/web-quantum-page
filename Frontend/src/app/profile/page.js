@@ -53,6 +53,12 @@ export default function ProfilePage() {
                             </div>
                         </div>
                         <div>
+                            <label className="block text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">Correo Electrónico</label>
+                            <div className="text-white bg-slate-800/50 border border-slate-700 px-4 py-3 rounded-lg">
+                                {user?.email || '-'}
+                            </div>
+                        </div>
+                        <div>
                             <label className="block text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">Rol</label>
                             <div className="text-white bg-slate-800/50 border border-slate-700 px-4 py-3 rounded-lg">
                                 {user?.role || '-'}

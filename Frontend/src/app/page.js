@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getLandingData } from "../services/dataService";
 import LoadingScreen from '../components/common/LoadingScreen';
+import ParticleBackground from '../components/common/ParticleBackground';
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -29,24 +30,8 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen relative">
 
-      {/* 
-         GLOBAL BACKGROUND 
-         Fixed position ensures it covers the entire scrollable area (Hero + Features),
-         creating the continuous effect the user requested.
-      */}
-      <div className="fixed inset-0 z-[-1]">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="/background.mp4" type="video/mp4" />
-        </video>
-        {/* Dark Overlay for text readability */}
-        <div className="absolute inset-0 bg-black/60"></div>
-      </div>
+      {/* GLOBAL BACKGROUND - Particle network */}
+      <ParticleBackground />
 
       {/* HERO SECTION (Directly implemented per request) */}
       <section className="relative overflow-hidden min-h-screen flex items-center pt-48 pb-20 lg:pt-64 lg:pb-32">

@@ -14,6 +14,10 @@
   padding-top: var(--navbar-height-mobile);
 }
 
+.font-orbitron {
+  font-family: var(--font-orbitron);
+}
+
 @media (min-width: 768px) {
   .main-content-offset {
     padding-top: var(--navbar-height-desktop);

@@ -119,8 +119,8 @@ const Navbar = () => {
 
                     {isAuthenticated ? (
                         <div className="text-center">
-                            <h3 className="text-xl font-bold text-white mb-2 font-[family-name:var(--font-orbitron)] tracking-wider">Hola, {user.name}</h3>
-                            <p className="text-xs text-[#14E19D] uppercase tracking-widest font-[family-name:var(--font-orbitron)] mb-6">Rol: {user.role}</p>
+                            <h3 className="text-xl font-bold text-white mb-2 font-orbitron tracking-wider">Hola, {user.name}</h3>
+                            <p className="text-xs text-[#14E19D] uppercase tracking-widest font-orbitron mb-6">Rol: {user.role}</p>
 
                             <Link href="/profile" onClick={() => setIsLoginOpen(false)} className="block w-full bg-slate-800 hover:bg-slate-700 text-[#14E19D] font-bold py-2.5 rounded-none mb-3 border border-[#14E19D]/50 transition-colors">
                                 MI PERFIL
@@ -153,29 +153,29 @@ const Navbar = () => {
                     ) : (
                         <>
                             <div className="text-center mb-6">
-                                <h3 className="text-xl font-bold text-white mb-1 font-[family-name:var(--font-orbitron)] tracking-wider">Bienvenido</h3>
-                                <p className="text-xs text-[#14E19D] uppercase tracking-widest font-[family-name:var(--font-orbitron)]">Acceso Plataforma</p>
+                                <h3 className="text-xl font-bold text-white mb-1 font-orbitron tracking-wider">Bienvenido</h3>
+                                <p className="text-xs text-[#14E19D] uppercase tracking-widest font-orbitron">Acceso Plataforma</p>
                             </div>
 
                             <form onSubmit={handleLoginSubmit} className="space-y-4">
                                 <div>
-                                    <label className="block text-gray-400 text-xs font-bold mb-1 ml-1 font-[family-name:var(--font-orbitron)] tracking-widest">EMAIL</label>
+                                    <label className="block text-gray-400 text-xs font-bold mb-1 ml-1 font-orbitron tracking-widest">EMAIL</label>
                                     <input
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full bg-slate-800/50 border border-slate-600 rounded-none px-4 py-2 text-white focus:outline-none focus:border-[#14E19D] focus:ring-1 focus:ring-[#14E19D] transition-all placeholder-gray-600 font-[family-name:var(--font-orbitron)] text-sm"
+                                        className="w-full bg-slate-800/50 border border-slate-600 rounded-none px-4 py-2 text-white focus:outline-none focus:border-[#14E19D] focus:ring-1 focus:ring-[#14E19D] transition-all placeholder-gray-600 font-orbitron text-sm"
                                         placeholder="usuario@quantum.edu"
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-gray-400 text-xs font-bold mb-1 ml-1 font-[family-name:var(--font-orbitron)] tracking-widest">CONTRASEÑA</label>
+                                    <label className="block text-gray-400 text-xs font-bold mb-1 ml-1 font-orbitron tracking-widest">CONTRASEÑA</label>
                                     <input
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full bg-slate-800/50 border border-slate-600 rounded-none px-4 py-2 text-white focus:outline-none focus:border-[#14E19D] focus:ring-1 focus:ring-[#14E19D] transition-all placeholder-gray-600 font-[family-name:var(--font-orbitron)] text-sm"
+                                        className="w-full bg-slate-800/50 border border-slate-600 rounded-none px-4 py-2 text-white focus:outline-none focus:border-[#14E19D] focus:ring-1 focus:ring-[#14E19D] transition-all placeholder-gray-600 font-orbitron text-sm"
                                         placeholder="••••••••"
                                         required
                                     />
@@ -187,7 +187,7 @@ const Navbar = () => {
                                     </div>
                                 )}
 
-                                <div className="flex items-center justify-between text-xs text-gray-400 font-[family-name:var(--font-orbitron)]">
+                                <div className="flex items-center justify-between text-xs text-gray-400 font-orbitron">
                                     <label className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
                                         <input
                                             type="checkbox"
@@ -199,7 +199,7 @@ const Navbar = () => {
                                     <a href="#" className="hover:text-[#14E19D] transition-colors">¿Olvidaste tu clave?</a>
                                 </div>
 
-                                <button type="submit" disabled={isLoggingIn} className={`w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-2.5 rounded-none shadow-lg shadow-emerald-900/20 transition-all transform hover:scale-[1.02] active:scale-95 font-[family-name:var(--font-orbitron)] tracking-widest border border-white/10 ${isLoggingIn ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                                <button type="submit" disabled={isLoggingIn} className={`w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-2.5 rounded-none shadow-lg shadow-emerald-900/20 transition-all transform hover:scale-[1.02] active:scale-95 font-orbitron tracking-widest border border-white/10 ${isLoggingIn ? 'opacity-50 cursor-not-allowed' : ''}`}>
                                     {isLoggingIn ? 'INGRESANDO...' : 'INICIAR SESIÓN'}
                                 </button>
                             </form>
@@ -243,7 +243,7 @@ const Navbar = () => {
                             }`}>
                             <SearchBox
                                 placeholder="Buscar en Quantum..."
-                                inputClassName="w-full bg-white/10 border border-white/20 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-white/50 focus:bg-white/20 placeholder-gray-400 font-[family-name:var(--font-orbitron)] tracking-wider"
+                                inputClassName="w-full bg-white/10 border border-white/20 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-white/50 focus:bg-white/20 placeholder-gray-400 font-orbitron tracking-wider"
                             />
                         </div>
 

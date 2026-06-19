@@ -43,7 +43,7 @@ export default function LoadingScreen({ message = "Cargando..." }) {
 
                 {/* Center Q icon */}
                 <span
-                    className="absolute text-2xl font-bold text-[#14E19D] font-[family-name:var(--font-orbitron)]"
+                    className="absolute text-2xl font-bold text-[#14E19D] font-orbitron"
                     style={{ textShadow: '0 0 20px rgba(20,225,157,0.5)' }}
                 >
                     Q
@@ -51,7 +51,7 @@ export default function LoadingScreen({ message = "Cargando..." }) {
             </div>
 
             {/* Message */}
-            <p className="text-slate-400 text-xs uppercase tracking-[0.3em] font-[family-name:var(--font-orbitron)] animate-pulse">
+            <p className="text-slate-400 text-xs uppercase tracking-[0.3em] font-orbitron animate-pulse">
                 {message}
             </p>
 

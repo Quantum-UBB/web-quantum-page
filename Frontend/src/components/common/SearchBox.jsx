@@ -179,7 +179,7 @@ export default function SearchBox({ placeholder = 'Buscar...', inputClassName = 
                         : 'text-white hover:bg-slate-700/40'
                         }`}
                 >
-                    <span className="text-sm font-bold font-[family-name:var(--font-orbitron)] tracking-wide">
+                    <span className="text-sm font-bold font-orbitron tracking-wide">
                         {s.label}
                     </span>
                     <span className={`text-xs ${i === activeIndex ? 'text-[#14E19D]/70' : 'text-slate-400'}`}>

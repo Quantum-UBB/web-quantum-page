@@ -15,7 +15,7 @@ export default async function AreasOfInterest() {
       {/* HERO SECTION */}
       <section className="relative overflow-hidden flex items-center pt-28 pb-10 lg:pt-36 lg:pb-16 text-center">
         <div className="container mx-auto px-4 relative z-20">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight text-white drop-shadow-lg font-[family-name:var(--font-orbitron)]">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight text-white drop-shadow-lg font-orbitron">
             {data.hero.title}
           </h1>
           <p className="max-w-3xl mx-auto text-xl text-gray-300 mb-8 leading-relaxed drop-shadow-md">
@@ -48,7 +48,7 @@ export default async function AreasOfInterest() {
                   </span>
                 </div>
 
-                <h3 className="text-2xl font-bold text-white mb-3 font-[family-name:var(--font-orbitron)] group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all">
+                <h3 className="text-2xl font-bold text-white mb-3 font-orbitron group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all">
                     {area.title}
                 </h3>
                 <p className="text-gray-300 leading-relaxed mb-6">

@@ -15,7 +15,7 @@ export default async function MissionVision() {
       {/* HERO SECTION */}
       <section className="relative overflow-hidden flex items-center pt-28 pb-10 lg:pt-36 lg:pb-16 text-center">
         <div className="container mx-auto px-4 relative z-20">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight text-white drop-shadow-lg font-[family-name:var(--font-orbitron)]">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight text-white drop-shadow-lg font-orbitron">
             {data.hero.title}
           </h1>
           <p className="max-w-3xl mx-auto text-xl text-gray-300 mb-8 leading-relaxed drop-shadow-md">
@@ -31,7 +31,7 @@ export default async function MissionVision() {
           {/* Mission */}
           <div className="mb-24 flex flex-col md:flex-row gap-12 items-center">
             <div className="md:w-1/2 p-8 rounded-2xl glass-panel bg-white/5 border border-purple-500/30 backdrop-blur-md shadow-[0_0_30px_rgba(168,85,247,0.1)]">
-                <h2 className="text-4xl font-bold mb-6 text-purple-400 font-[family-name:var(--font-orbitron)]">{data.mission.title}</h2>
+                <h2 className="text-4xl font-bold mb-6 text-purple-400 font-orbitron">{data.mission.title}</h2>
                 <p className="text-white text-lg leading-relaxed mb-6">
                     {data.mission.mainText}
                 </p>
@@ -58,7 +58,7 @@ export default async function MissionVision() {
           {/* Vision */}
           <div className="mb-24 flex flex-col md:flex-row-reverse gap-12 items-center">
             <div className="md:w-1/2 p-8 rounded-2xl glass-panel bg-white/5 border border-cyan-500/30 backdrop-blur-md shadow-[0_0_30px_rgba(6,182,212,0.1)]">
-                <h2 className="text-4xl font-bold mb-6 text-cyan-400 font-[family-name:var(--font-orbitron)]">{data.vision.title}</h2>
+                <h2 className="text-4xl font-bold mb-6 text-cyan-400 font-orbitron">{data.vision.title}</h2>
                 <p className="text-white text-lg leading-relaxed mb-6">
                     {data.vision.mainText}
                 </p>
@@ -85,7 +85,7 @@ export default async function MissionVision() {
 
           {/* STRATEGIC PILLARS */}
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-10 text-white font-[family-name:var(--font-orbitron)]">Pilares Estratégicos</h2>
+            <h2 className="text-3xl font-bold mb-10 text-white font-orbitron">Pilares Estratégicos</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {data.pillars.map((pillar, idx) => (
                     <div key={idx} className="p-6 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all group">

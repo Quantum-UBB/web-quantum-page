@@ -57,9 +57,9 @@ ${data.abstract || "No hay resumen disponible para esta investigación."}
     return (
         <>
             <div className="fixed inset-0 z-0 bg-[#0b0f19]" aria-hidden="true" />
-            <div className={`min-h-screen pb-20 relative z-10 -mt-[190px] md:-mt-[300px] ${inter.className}`} style={{ color: '#e2e8f0' }}>
+            <div className={`min-h-screen pb-20 relative z-10 -mt-[144px] md:-mt-[176px] ${inter.className}`} style={{ color: '#e2e8f0' }}>
 
-                <main className="pt-24 md:pt-32 xl:pt-40 relative z-10 max-w-[1400px] mx-auto px-8">
+                <main className="pt-20 md:pt-24 xl:pt-32 relative z-10 max-w-[1400px] mx-auto px-8">
 
                     {/* 1. HEADER */}
                     <header className="mb-12">

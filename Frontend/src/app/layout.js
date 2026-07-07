@@ -111,7 +111,7 @@ export default function RootLayout({ children }) {
         />
         <AuthProvider>
           <Navbar />
-          <main className="min-h-screen main-content-offset">
+          <main className="main-content-offset">
             {children}
           </main>
           <Footer />

@@ -15,13 +15,13 @@ export default function ProfilePage() {
     }
 
     return (
-        <main className="min-h-screen pb-20 relative bg-[#1D272E] -mt-[190px] md:-mt-[300px] z-10">
+        <main className="min-h-screen pb-20 relative bg-[#1D272E] -mt-[144px] md:-mt-[176px] z-10">
             {/* Background Overlay */}
             <div className="fixed inset-0 z-0 bg-[#1D272E]">
                 <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent"></div>
             </div>
 
-            <div className="relative z-10 max-w-4xl mx-auto px-6 pt-24 md:pt-32">
+            <div className="relative z-10 max-w-4xl mx-auto px-6 pt-20 md:pt-24">
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div>

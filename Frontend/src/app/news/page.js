@@ -92,9 +92,9 @@ export default function NewsPage() {
       {/* Fixed Background Layer to prevent any 'black rectangle' or body bg show-through */}
       <div className="fixed inset-0 z-0 bg-[#1D272E]" aria-hidden="true" />
 
-      <div className="min-h-screen bg-[#1D272E] text-gray-100 font-sans selection:bg-cyan-500/30 -mt-[190px] md:-mt-[300px] relative z-10">
+      <div className="min-h-screen bg-[#1D272E] text-gray-100 font-sans selection:bg-cyan-500/30 -mt-[144px] md:-mt-[176px] relative z-10">
           
-        <main className="pt-24 md:pt-32 pb-20 px-6 max-w-7xl mx-auto">
+        <main className="pt-20 md:pt-24 pb-20 px-6 max-w-7xl mx-auto">
           
           {/* Header & Controls */}
           <div className="flex flex-col md:flex-row justify-between items-end md:items-center mb-10 border-b border-gray-800 pb-6 gap-4">

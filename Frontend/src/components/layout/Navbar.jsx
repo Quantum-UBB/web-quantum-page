@@ -211,7 +211,7 @@ const Navbar = () => {
                 {/* TOP BAR (Main Header) - Completely hidden when scrolled OR on news section */}
                 <div className={`w-full bg-[#1D272E] flex items-center justify-between px-6 transition-[height,opacity,visibility] duration-500 ease-in-out overflow-hidden ${showCompactNav
                     ? 'h-0 opacity-0 pointer-events-none invisible'
-                    : 'h-32 md:h-48 opacity-100'
+                    : 'h-24 md:h-32 opacity-100'
                     }`}>
                     {/* Left: Hamburger */}
                     <button
@@ -225,9 +225,9 @@ const Navbar = () => {
                     {/* Center: Large Logo */}
                     <div className={`flex flex-col items-center transition-[transform,opacity] duration-700 ease-in-out origin-center will-change-transform ${showCompactNav ? 'scale-50 opacity-0' : 'scale-100 opacity-100'
                         }`}>
-                        <div className="relative w-64 h-24 md:w-96 md:h-36">
+                        <div className="relative w-56 h-14 md:w-80 md:h-20">
                             <Image
-                                src="/quantum-logo.png"
+                                src="/svg/logotipo.svg"
                                 alt="Quantum UBB - Grupo de investigacion de la Universidad del Bio-Bio"
                                 fill
                                 className="object-contain"
@@ -288,8 +288,8 @@ const Navbar = () => {
                                     </button>
                                 </div>
                                 
-                                <div className="relative w-24 h-8">
-                                    <Image src="/quantum-logo.png" alt="Logo de Quantum UBB" fill className="object-contain" />
+                                <div className="relative w-32 h-10">
+                                    <Image src="/svg/logotipo.svg" alt="Logo de Quantum UBB" fill className="object-contain" />
                                 </div>
 
                                 <button onClick={toggleLogin} className={`p-2 rounded-full ${isAuthenticated ? 'bg-white text-emerald-600' : 'bg-white/20 text-white'}`}>
@@ -320,8 +320,8 @@ const Navbar = () => {
                                 <div className="flex items-center gap-8 lg:gap-12">
                                     <Link href="/" className="text-white hover:text-black/50 transition font-bold text-[11px] tracking-wider">INICIO</Link>
                                     <Link href="/mission_vision" className="text-white hover:text-black/50 transition font-bold text-[11px] tracking-wider">MISIÓN</Link>
-                                    <div className="relative w-24 h-8 mx-2">
-                                        <Image src="/quantum-logo.png" alt="Logo de Quantum UBB" fill className="object-contain" />
+                                    <div className="relative w-36 h-11 mx-2">
+                                        <Image src="/svg/logotipo.svg" alt="Logo de Quantum UBB" fill className="object-contain" />
                                     </div>
                                     <Link href="/news" className="text-white hover:text-black/50 transition font-bold text-[11px] tracking-wider">NOTICIAS</Link>
                                     <Link href="/investigations" className="text-white hover:text-black/50 transition font-bold text-[11px] tracking-wider">INVESTIGACIONES</Link>

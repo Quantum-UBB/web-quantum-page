@@ -114,7 +114,7 @@ export default function InvestigacionesPage() {
             <div className="fixed inset-0 z-0 bg-[#0F172A]">
             </div>
 
-            <main className="min-h-screen pb-20 relative z-10 -mt-[140px] md:-mt-[250px] pt-32 xl:pt-40 max-w-[1150px] mx-auto px-6 lg:px-12">
+            <main className="min-h-screen pb-20 relative z-10 -mt-[144px] md:-mt-[176px] pt-24 xl:pt-32 max-w-[1150px] mx-auto px-6 lg:px-12">
                 {/* 1. HERO SECTION - Minimal & Professional */}
                 <div className="mb-16 text-center">
 

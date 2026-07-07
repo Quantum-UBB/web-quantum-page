@@ -13,7 +13,7 @@ export default async function MissionVision() {
       </div>
 
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden flex items-center pt-28 pb-10 lg:pt-36 lg:pb-16 text-center">
+      <section className="relative overflow-hidden flex items-center pt-4 pb-4 lg:pt-6 lg:pb-6 text-center">
         <div className="container mx-auto px-4 relative z-20">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight leading-tight text-white drop-shadow-lg font-[family-name:var(--font-orbitron)]">
             {data.hero.title}
@@ -25,7 +25,7 @@ export default async function MissionVision() {
       </section>
 
       {/* MISSION & VISION DEEP DIVE */}
-      <section className="py-12 relative">
+      <section className="pt-2 pb-12 relative">
         <div className="container mx-auto px-4">
           
           {/* Mission */}

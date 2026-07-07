@@ -80,7 +80,7 @@ export default function EventDetailPage() {
     };
 
     return (
-        <div className="bg-gray-50 min-h-screen font-sans text-gray-800 pb-20 pt-24 md:pt-32 -mt-[190px] md:-mt-[300px] relative z-10">
+        <div className="bg-gray-50 min-h-screen font-sans text-gray-800 pb-20 pt-20 md:pt-24 -mt-[144px] md:-mt-[176px] relative z-10">
             
             {/* Top RSVP Bar (Blue Alert) - Only for Upcoming Events */}
             {isUpcoming && (

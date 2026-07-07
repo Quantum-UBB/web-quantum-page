@@ -58,7 +58,7 @@ export default function CreateUserPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#1D272E] text-gray-100 font-sans selection:bg-cyan-500/30 -mt-[190px] md:-mt-[300px] relative z-10 pt-24 md:pt-32 pb-20 px-6">
+        <div className="min-h-screen bg-[#1D272E] text-gray-100 font-sans selection:bg-cyan-500/30 -mt-[144px] md:-mt-[176px] relative z-10 pt-20 md:pt-24 pb-20 px-6">
             <div className="max-w-2xl mx-auto">
                 <div className="mb-10 text-center">
                     <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400 mb-4 font-[family-name:var(--font-orbitron)]">

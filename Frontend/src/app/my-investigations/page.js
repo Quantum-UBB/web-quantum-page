@@ -87,7 +87,7 @@ export default function MisInvestigacionesPage() {
                 <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent"></div>
             </div>
 
-            <main className="min-h-screen pb-20 relative z-10 -mt-[190px] md:-mt-[250px] pt-32 xl:pt-40">
+            <main className="min-h-screen pb-20 relative z-10 -mt-[144px] md:-mt-[176px] pt-24 xl:pt-32">
                 <div className="relative z-10 max-w-7xl mx-auto px-6">
                     {/* Header Section */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">

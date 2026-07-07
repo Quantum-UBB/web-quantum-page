@@ -6,8 +6,8 @@
   --primary: #10b981;
   --primary-dark: #059669;
   --secondary: #334155;
-  --navbar-height-mobile: 190px;
-  --navbar-height-desktop: 300px;
+  --navbar-height-mobile: 144px;
+  --navbar-height-desktop: 176px;
 }
 
 .main-content-offset {

@@ -95,7 +95,7 @@ export default function NewsDetailPage({ params }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#1D272E]/95 backdrop-blur-sm text-gray-100 font-sans selection:bg-cyan-500/30 pb-20 pt-24 md:pt-32 -mt-[190px] md:-mt-[300px] relative z-10">
+    <div className="min-h-screen bg-[#1D272E]/95 backdrop-blur-sm text-gray-100 font-sans selection:bg-cyan-500/30 pb-20 pt-20 md:pt-24 -mt-[144px] md:-mt-[176px] relative z-10">
       
       <main className="max-w-4xl mx-auto px-6">
         

@@ -85,7 +85,7 @@ export default function ManageUsersPage() {
     }
 
     return (
-        <main className="min-h-screen pb-20 relative bg-[#1D272E] -mt-[190px] md:-mt-[300px] z-10 pt-24 md:pt-32 px-6">
+        <main className="min-h-screen pb-20 relative bg-[#1D272E] -mt-[144px] md:-mt-[176px] z-10 pt-20 md:pt-24 px-6">
             <div className="max-w-7xl mx-auto">
                 <div className="mb-10 flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="text-center md:text-left">

@@ -15,7 +15,7 @@ export default function CreateNewsPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh+190px)] md:min-h-[calc(100vh+300px)] text-gray-100 font-sans selection:bg-cyan-500/30 flex justify-center p-1 pt-16 -mt-[190px] md:-mt-[300px] relative z-0">
+    <div className="min-h-[calc(100vh+144px)] md:min-h-[calc(100vh+176px)] text-gray-100 font-sans selection:bg-cyan-500/30 flex justify-center p-1 pt-12 -mt-[144px] md:-mt-[176px] relative z-0">
       <div className="w-full max-w-4xl animate-in fade-in zoom-in duration-300">
         <CreateNewsWizard onSuccess={handleSuccess} onClose={handleClose} />
       </div>

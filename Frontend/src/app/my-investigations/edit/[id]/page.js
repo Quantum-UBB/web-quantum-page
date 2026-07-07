@@ -144,7 +144,7 @@ export default function EditarInvestigacionPage() {
                 <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent"></div>
             </div>
 
-            <main className={`min-h-screen pb-20 relative z-10 -mt-[190px] md:-mt-[300px] pt-24 md:pt-32 xl:pt-40 ${inter.className}`}>
+            <main className={`min-h-screen pb-20 relative z-10 -mt-[144px] md:-mt-[176px] pt-20 md:pt-24 xl:pt-32 ${inter.className}`}>
                 <div className="relative z-10 max-w-4xl mx-auto px-6">
                     <Link href="/my-investigations" className="inline-flex items-center text-slate-400 hover:text-[#14E19D] transition-colors text-sm font-medium mb-8 group">
                         <svg className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

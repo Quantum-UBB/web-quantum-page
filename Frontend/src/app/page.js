@@ -27,7 +27,7 @@ export default function Home() {
   if (!data) return <LoadingScreen message="Iniciando sistema" />;
 
   return (
-    <div className="flex flex-col min-h-screen relative">
+    <div className="flex flex-col relative">
 
       {/* 
          GLOBAL BACKGROUND 
@@ -49,7 +49,7 @@ export default function Home() {
       </div>
 
       {/* HERO SECTION (Directly implemented per request) */}
-      <section className="relative overflow-hidden min-h-screen flex items-center pt-48 pb-20 lg:pt-64 lg:pb-32">
+      <section className="relative overflow-hidden min-h-[calc(100vh-var(--navbar-height-mobile)-12px)] md:min-h-[calc(100vh-var(--navbar-height-desktop)-20px)] flex items-center pt-0 pb-8 md:pb-10 lg:pb-12">
         <div className="container mx-auto px-4 relative z-20 text-center">
 
           {/* Title */}

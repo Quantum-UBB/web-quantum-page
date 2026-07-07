@@ -24,7 +24,7 @@ export const InvestigationSchema = new EntitySchema({
             type: "varchar",
         },
         lastUpdate: {
-            type: "timestamp",
+            type: "datetime",
             updateDate: true,
         },
         tags: {
@@ -64,7 +64,7 @@ export const InvestigationSchema = new EntitySchema({
             default: false
         },
         createdAt: {
-            type: "timestamp",
+            type: "datetime",
             createDate: true,
         },
     },

@@ -29,7 +29,7 @@ export const UserSchema = new EntitySchema({
             default: "Miembro Activo",
         },
         createdAt: {
-            type: "timestamp",
+            type: "datetime",
             createDate: true,
         },
     },

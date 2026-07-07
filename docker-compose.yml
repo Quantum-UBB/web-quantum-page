@@ -1,41 +1,30 @@
-version: '3.8'
-
 services:
-  db:
-    image: postgres:15-alpine
-    container_name: quantum-db
-    restart: always
-    env_file:
-      - ./Backend/.env
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
   backend:
     build:
       context: ./Backend
-      dockerfile: Dockerfile 
+      dockerfile: Dockerfile
     container_name: quantum-backend
-    restart: always
+    restart: unless-stopped
     env_file:
-      - ./Backend/.env
-    ports:
-      - "5000:5000"
+      - ./.env
+    expose:
+      - "5000"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - PORT=5000
-      - DB_HOST=db
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - DB_PORT=5432
+      - DB_PATH=/app/data/quantum.sqlite
+    volumes:
+      - sqlite_data:/app/data
+      - uploads_data:/app/uploads
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: quantum-cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TOKEN}
     depends_on:
-      - db
+      - backend
 
 volumes:
-  postgres_data:
+  sqlite_data:
+  uploads_data:

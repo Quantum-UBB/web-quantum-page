@@ -60,11 +60,11 @@ export const NewsSchema = new EntitySchema({
             default: false
         },
         createdAt: {
-            type: "timestamp",
+            type: "datetime",
             createDate: true,
         },
         updatedAt: {
-            type: "timestamp",
+            type: "datetime",
             updateDate: true,
         },
     },

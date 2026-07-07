@@ -140,7 +140,7 @@ const CreateNewsWizard = ({ onSuccess, onClose, isEditMode = false, initialData 
              // Render a simple horizontal scroll container
              const imagesHtml = block.content.map(img => `
                 <div class="flex-shrink-0 w-80 h-64 rounded-lg overflow-hidden border border-gray-700 snap-center">
-                    <img src="${img}" class="w-full h-full object-cover" />
+                    <img src="${img}" class="w-full h-full object-cover" alt="Imagen de galeria de noticia" />
                 </div>
              `).join('');
              
@@ -239,7 +239,7 @@ const CreateNewsWizard = ({ onSuccess, onClose, isEditMode = false, initialData 
                      <h1 className="text-2xl font-bold text-white mb-2">{formData.title || 'Sin Título'}</h1>
                      <p className="text-gray-400 text-sm mb-4">{formData.description || 'Sin resumen'}</p>
                      {formData.image && (
-                         <img src={formData.image} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
+                          <img src={formData.image} alt={`Vista previa de la noticia ${formData.title || 'sin titulo'}`} className="w-full h-48 object-cover rounded-lg" />
                      )}
                 </article>
                 
@@ -313,7 +313,7 @@ const CreateNewsWizard = ({ onSuccess, onClose, isEditMode = false, initialData 
                                 className="hidden" 
                             />
                             {formData.image ? (
-                                <img src={formData.image} alt="Preview" className="h-48 w-full object-cover rounded-lg" />
+                                <img src={formData.image} alt={`Portada de la noticia ${formData.title || 'sin titulo'}`} className="h-48 w-full object-cover rounded-lg" />
                             ) : (
                                 <div className="text-gray-500 flex flex-col items-center">
                                     <svg className="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -379,7 +379,7 @@ const CreateNewsWizard = ({ onSuccess, onClose, isEditMode = false, initialData 
                                      <label className="text-xs text-purple-400 uppercase font-bold tracking-wider mb-2 block">Imagen Insertada</label>
                                      {block.content ? (
                                         <div className="relative h-48 w-full rounded-lg overflow-hidden bg-black/40">
-                                            <img src={block.content} className="w-full h-full object-contain" />
+                                            <img src={block.content} alt="Imagen insertada en el contenido de la noticia" className="w-full h-full object-contain" />
                                             <button onClick={() => updateBlock(block.id, '')} className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 hover:opacity-100 text-white font-bold transition-opacity">Cambiar</button>
                                         </div>
                                      ) : (
@@ -402,7 +402,7 @@ const CreateNewsWizard = ({ onSuccess, onClose, isEditMode = false, initialData 
                                     <div className="flex gap-2 overflow-x-auto pb-2 mb-2 custom-scrollbar">
                                         {block.content && block.content.map((img, i) => (
                                             <div key={i} className="w-20 h-20 shrink-0 rounded border border-gray-600 overflow-hidden relative group/img">
-                                                <img src={img} className="w-full h-full object-cover" />
+                                                <img src={img} alt={`Imagen ${i + 1} de la galeria de noticia`} className="w-full h-full object-cover" />
                                                 <button 
                                                     onClick={() => {
                                                         const newContent = block.content.filter((_, idx) => idx !== i);
@@ -449,7 +449,7 @@ const CreateNewsWizard = ({ onSuccess, onClose, isEditMode = false, initialData 
                 <article className="max-w-2xl mx-auto">
                     {formData.image && (
                          <div className="w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8 shadow-2xl relative">
-                            <img src={formData.image} className="w-full h-full object-cover" />
+                            <img src={formData.image} alt={`Portada de la noticia ${formData.title || 'sin titulo'}`} className="w-full h-full object-cover" />
                             <div className="absolute top-4 left-4 bg-cyan-900/80 text-cyan-400 px-3 py-1 rounded-full text-xs font-bold border border-cyan-500/30 backdrop-blur-md">
                                 {formData.tag || 'Categoría'}
                             </div>

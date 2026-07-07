@@ -228,7 +228,7 @@ const Navbar = () => {
                         <div className="relative w-64 h-24 md:w-96 md:h-36">
                             <Image
                                 src="/quantum-logo.png"
-                                alt="Quantum Student Logo"
+                                alt="Quantum UBB - Grupo de investigacion de la Universidad del Bio-Bio"
                                 fill
                                 className="object-contain"
                                 priority
@@ -289,7 +289,7 @@ const Navbar = () => {
                                 </div>
                                 
                                 <div className="relative w-24 h-8">
-                                    <Image src="/quantum-logo.png" alt="Logo" fill className="object-contain" />
+                                    <Image src="/quantum-logo.png" alt="Logo de Quantum UBB" fill className="object-contain" />
                                 </div>
 
                                 <button onClick={toggleLogin} className={`p-2 rounded-full ${isAuthenticated ? 'bg-white text-emerald-600' : 'bg-white/20 text-white'}`}>
@@ -321,7 +321,7 @@ const Navbar = () => {
                                     <Link href="/" className="text-white hover:text-black/50 transition font-bold text-[11px] tracking-wider">INICIO</Link>
                                     <Link href="/mission_vision" className="text-white hover:text-black/50 transition font-bold text-[11px] tracking-wider">MISIÓN</Link>
                                     <div className="relative w-24 h-8 mx-2">
-                                        <Image src="/quantum-logo.png" alt="Logo" fill className="object-contain" />
+                                        <Image src="/quantum-logo.png" alt="Logo de Quantum UBB" fill className="object-contain" />
                                     </div>
                                     <Link href="/news" className="text-white hover:text-black/50 transition font-bold text-[11px] tracking-wider">NOTICIAS</Link>
                                     <Link href="/investigations" className="text-white hover:text-black/50 transition font-bold text-[11px] tracking-wider">INVESTIGACIONES</Link>

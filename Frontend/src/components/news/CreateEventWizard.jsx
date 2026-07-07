@@ -130,7 +130,7 @@ const CreateEventWizard = ({ onSuccess, onClose, isEditMode = false, initialData
                      <h1 className="text-2xl font-bold text-white mb-2">{formData.title || 'Sin Título'}</h1>
                      <p className="text-gray-400 text-sm mb-4">{formData.abstract || 'Sin resumen'}</p>
                      {formData.image && (
-                         <img src={formData.image} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
+                          <img src={formData.image} alt={`Vista previa del evento ${formData.title || 'sin titulo'}`} className="w-full h-48 object-cover rounded-lg" />
                      )}
                 </article>
                 
@@ -326,7 +326,7 @@ const CreateEventWizard = ({ onSuccess, onClose, isEditMode = false, initialData
                             />
                             {formData.hostImage ? (
                                 <>
-                                    <img src={formData.hostImage} className="w-full h-full object-cover" />
+                                    <img src={formData.hostImage} alt={`Logo del organizador ${formData.host || 'del evento'}`} className="w-full h-full object-cover" />
                                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                                         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                     </div>
@@ -353,7 +353,7 @@ const CreateEventWizard = ({ onSuccess, onClose, isEditMode = false, initialData
                 {/* Main Preview Card */}
                 <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-md max-w-sm mx-auto">
                      <div className="relative aspect-video bg-gray-200">
-                        {formData.image && <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />}
+                        {formData.image && <img src={formData.image} alt={`Portada del evento ${formData.title || 'sin titulo'}`} className="w-full h-full object-cover" />}
                         <div className="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded text-xs font-bold text-gray-800 shadow-sm">
                             {new Date(formData.date).toLocaleDateString()}
                         </div>
@@ -364,7 +364,7 @@ const CreateEventWizard = ({ onSuccess, onClose, isEditMode = false, initialData
                         <p className="text-sm text-gray-500 line-clamp-2">{formData.abstract}</p>
                      </div>
                      <div className="bg-gray-50 px-4 py-2 border-t border-gray-100 flex items-center gap-2">
-                        {formData.hostImage && <img src={formData.hostImage} className="w-6 h-6 rounded-full object-cover" />}
+                         {formData.hostImage && <img src={formData.hostImage} alt={`Organizador ${formData.host || 'del evento'}`} className="w-6 h-6 rounded-full object-cover" />}
                         <span className="text-xs text-gray-600 font-medium">{formData.host}</span>
                      </div>
                 </div>

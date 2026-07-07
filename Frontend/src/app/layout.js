@@ -36,6 +36,13 @@ export const metadata = {
   alternates: {
     canonical: '/',
   },
+  icons: {
+    icon: [
+      { url: '/svg/favicon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/svg/favicon.svg',
+    apple: '/svg/favicon.svg',
+  },
   openGraph: {
     type: 'website',
     locale: 'es_CL',

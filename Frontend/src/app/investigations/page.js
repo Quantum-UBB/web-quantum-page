@@ -13,8 +13,8 @@ const AnimatedCounter = ({ value, duration = 1000 }) => {
         let start = 0;
         const end = parseInt(value) || 0;
         if (start === end) {
-            setCount(end);
-            return;
+            const timer = setTimeout(() => setCount(end), 0);
+            return () => clearTimeout(timer);
         };
 
         let totalMiliseconds = duration;

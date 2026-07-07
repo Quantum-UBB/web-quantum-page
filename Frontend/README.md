@@ -33,6 +33,18 @@ npm run dev
 
 Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el resultado.
 
+## Deploy en Vercel
+
+El repositorio incluye `vercel.json` en la raíz para desplegar solo la carpeta `Frontend`.
+
+Configura esta variable de entorno en Vercel:
+
+```bash
+NEXT_PUBLIC_API_URL=https://your-backend.example.com/api
+```
+
+Si no se configura, las rutas `/api` no se redirigen en producción.
+
 ## Documentación de Código
 
 El código utiliza **JSDoc** para documentar componentes y funciones. Puedes leer los comentarios directamente en los archivos `.jsx` y `.js` para entender el flujo de datos y las propiedades requeridas.

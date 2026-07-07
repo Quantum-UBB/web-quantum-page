@@ -7,5 +7,16 @@
 # Dependencias (por si acaso se instalan en la raíz)
 node_modules/
 
+# Builds y artefactos del frontend
+Frontend/.next/
+Frontend/out/
+Frontend/build/
+Frontend/dist/
+.vercel/
+
 # Logs
 *.log
+
+# Variables de entorno locales
+.env*
+!.env.example

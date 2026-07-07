@@ -27,7 +27,8 @@ export default function MyEventsPage() {
         if (token) {
              loadData();
         } else {
-             setIsLoading(false);
+             const timer = setTimeout(() => setIsLoading(false), 0);
+             return () => clearTimeout(timer);
         }
     }, [token, user]);
 

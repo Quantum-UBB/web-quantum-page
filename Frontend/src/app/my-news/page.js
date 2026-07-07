@@ -29,7 +29,8 @@ export default function MyNewsPage() {
         if (token) {
              loadData();
         } else {
-             setIsLoading(false); // Guest / sin sesión
+             const timer = setTimeout(() => setIsLoading(false), 0); // Guest / sin sesión
+             return () => clearTimeout(timer);
         }
     }, [token, user]);
 

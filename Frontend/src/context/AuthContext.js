@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser, validateSession } from "../services/authService";
 
@@ -16,6 +16,20 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  /**
+   * Cierra la sesión del usuario, eliminando el token de ambos almacenamientos.
+   */
+  const logout = useCallback(() => {
+    setToken(null);
+    setUser(null);
+    // Limpiar ambos storages para asegurar el cierre total
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    router.push("/");
+  }, [router]);
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -45,7 +59,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     initializeAuth();
-  }, []);
+  }, [logout]);
 
   /**
    * Realiza el inicio de sesión usando el servicio de autenticación.
@@ -74,20 +88,6 @@ export const AuthProvider = ({ children }) => {
       console.error("Error en login:", error);
       return { success: false, message: error.message };
     }
-  };
-
-  /**
-   * Cierra la sesión del usuario, eliminando el token de ambos almacenamientos.
-   */
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    // Limpiar ambos storages para asegurar el cierre total
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
-    router.push("/");
   };
 
   const hasRole = (roles) => {

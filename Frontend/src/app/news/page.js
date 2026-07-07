@@ -7,6 +7,7 @@ import RecentNewsList from '@/components/news/RecentNewsList';
 import NewsCard from '@/components/news/NewsCard';
 import EventsWidget from '@/components/news/EventsWidget';
 import FutureEventsSection from '@/components/news/FutureEventsSection';
+import EventCard from '@/components/news/EventCard';
 
   // ... (imports)
 

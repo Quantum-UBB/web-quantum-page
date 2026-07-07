@@ -73,7 +73,10 @@ export default function SearchBox({ placeholder = 'Buscar...', inputClassName = 
     const wrapperRef = useRef(null);
 
     // Ensure portal works only client-side
-    useEffect(() => { setMounted(true); }, []);
+    useEffect(() => {
+        const timer = setTimeout(() => setMounted(true), 0);
+        return () => clearTimeout(timer);
+    }, []);
 
     // Close on click outside or on scroll/wheel
     useEffect(() => {
@@ -111,11 +114,19 @@ export default function SearchBox({ placeholder = 'Buscar...', inputClassName = 
 
     // Build suggestions whenever query or auth state changes
     useEffect(() => {
+        let cancelled = false;
+
         if (!query.trim()) {
-            setSuggestions([]);
-            setIsOpen(false);
-            setActiveIndex(-1);
-            return;
+            const timer = setTimeout(() => {
+                if (cancelled) return;
+                setSuggestions([]);
+                setIsOpen(false);
+                setActiveIndex(-1);
+            }, 0);
+            return () => {
+                cancelled = true;
+                clearTimeout(timer);
+            };
         }
 
         const normalize = (str) =>
@@ -127,15 +138,23 @@ export default function SearchBox({ placeholder = 'Buscar...', inputClassName = 
             (p) => normalize(p.label).includes(q) || normalize(p.description).includes(q)
         );
 
-        setSuggestions(matched);
-        setActiveIndex(-1);
+        const timer = setTimeout(() => {
+            if (cancelled) return;
+            setSuggestions(matched);
+            setActiveIndex(-1);
 
-        if (matched.length > 0) {
-            updateDropdownPosition();
-            setIsOpen(true);
-        } else {
-            setIsOpen(false);
-        }
+            if (matched.length > 0) {
+                updateDropdownPosition();
+                setIsOpen(true);
+            } else {
+                setIsOpen(false);
+            }
+        }, 0);
+
+        return () => {
+            cancelled = true;
+            clearTimeout(timer);
+        };
     }, [query, isAuthenticated, user]);
 
     const navigate = (href) => {

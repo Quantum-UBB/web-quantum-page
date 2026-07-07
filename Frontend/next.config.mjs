@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+const apiUrl = process.env.NEXT_PUBLIC_API_URL
+  || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000/api' : undefined);
+
 const nextConfig = {
   /* config options here */
   reactCompiler: true,
@@ -15,10 +18,12 @@ const nextConfig = {
     ],
   },
   async rewrites() {
+    if (!apiUrl) return [];
+
     return [
       {
         source: '/api/:path*',
-        destination: 'http://127.0.0.1:5000/api/:path*'
+        destination: `${apiUrl.replace(/\/$/, '')}/:path*`
       }
     ]
   },
